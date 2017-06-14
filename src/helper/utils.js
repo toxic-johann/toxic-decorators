@@ -451,6 +451,14 @@ export function isDescriptor (desc: any): boolean {
   return false;
 }
 
+export function isAccessorDescriptor (desc: any): boolean %checks {
+  return isFunction(desc.get) &&
+    isFunction(desc.set) &&
+    isBoolean(desc.configurable) &&
+    isBoolean(desc.enumerable) &&
+    desc.writable === undefined;
+}
+
 export function createDefaultSetter (key: string) {
   return function set (newValue: any): any {
     Object.defineProperty(this, key, {
@@ -479,3 +487,52 @@ export function bind (fn: Function, context: Object): Function {
   }
 }
 
+export function wrapAccessorDescriptor ({get, set}: {get?: Function, set?: Function}, desc: AccessorDescriptor): AccessorDescriptor {
+  if(!isFunction(get) && !isFunction(set)) return desc;
+  const getter = isFunction(get)
+    ? function () {
+      // $FlowFixMe: isFunction has already excluded undefined.
+      return bind(get, this)(bind(desc.get, this)());
+    }
+    : desc.get;
+  const setter = isFunction(set)
+    ? function (value) {
+      // $FlowFixMe: isFunction has already excluded undefined.
+      return bind(desc.set, this)((bind(set, this)(value)));
+    }
+    : desc.set;
+  return {
+    get: getter,
+    set: setter,
+    configurable: desc.configurable,
+    enumerable: desc.enumerable
+  };
+}
+
+export function transDataIntoAccessor ({get, set}: {get?: Function, set?: Function}, desc: DataDescriptor): AccessorDescriptor {
+  let val = desc.value;
+  const getter = isFunction(get)
+    ? function () {
+      // $FlowFixMe: isFunction has already excluded undefined.
+      return bind(get, this)(val);
+    }
+    : function () {
+      return val;
+    };
+  const setter = isFunction(set)
+    ? function (value) {
+      // $FlowFixMe: isFunction has already excluded undefined.
+      val = bind(set, this)(value);
+      return val;
+    }
+    : function (value) {
+      val = value;
+      return val;
+    };
+  return {
+    get: getter,
+    set: setter,
+    configurable: desc.configurable,
+    enumerable: desc.enumerable
+  };
+}

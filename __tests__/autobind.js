@@ -59,7 +59,6 @@ describe('autobind', () => {
     Bar = null;
     barCount = null;
   });
-  
   test('returns a bound instance for a method', () => {
     const foo = new Foo();
     const { getFoo } = foo;
