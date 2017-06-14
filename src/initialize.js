@@ -8,7 +8,7 @@ export default function initialize (...fns: Array<Function>): Function {
   for(let i = fns.length - 1; i > -1; i--) {
     if(!isFunction(fns[i])) throw new TypeError('@initialize only accept function parameter');
   }
-  return function (obj: Object, prop: string, descriptor: DataDescriptor | InitialDescriptor): DataDescriptor | InitialDescriptor{
+  return function (obj: Object, prop: string, descriptor: DataDescriptor | InitialDescriptor): DataDescriptor | InitialDescriptor {
     if(isAccessorDescriptor(descriptor)) {
       throw new Error('@initialize do not support accessor descriptor');
     }
