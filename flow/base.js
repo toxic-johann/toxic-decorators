@@ -12,4 +12,4 @@ declare type DataDescriptor = {|
   enumerable: boolean
 |}
 
-// declare type Descriptor = DataDescriptor | AccessorDescriptor;
+declare type Descriptor = DataDescriptor | AccessorDescriptor;

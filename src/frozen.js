@@ -8,11 +8,12 @@ import {isAccessorDescriptor} from 'helper/utils';
  * @return {descriptor}
  */
 export default function frozen (obj: Object, prop: string, descriptor: DataDescriptor): DataDescriptor {
-  if(isAccessorDescriptor(descriptor)) {
-    throw new TypeError("@frozen can't be used on accessor descriptor");
-  }
-  descriptor.writable = false;
   descriptor.enumerable = false;
   descriptor.configurable = false;
+  if(isAccessorDescriptor(descriptor)) {
+    descriptor.set = undefined;
+    return descriptor;
+  }
+  descriptor.writable = false;
   return descriptor;
 }

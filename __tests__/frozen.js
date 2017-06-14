@@ -11,6 +11,17 @@ describe('@frozen', () => {
 
     forth = 'forth';
   }
+  class Bar {
+    _flag = true;
+    @frozen
+    get flag () {
+      return this._flage;
+    }
+    set flag (value) {
+      this._flag = value;
+      return this._flag;
+    }
+  }
   test('marks descriptor as writable === false', () => {
     expect(Object.getOwnPropertyDescriptor(Foo.prototype, 'first').writable).toBe(false);
   });
@@ -24,8 +35,10 @@ describe('@frozen', () => {
     const foo = new Foo();
     expect(() => {foo.first = 'I will error';}).toThrow("Cannot assign to read only property 'first' of object '#<Foo>'");
     expect(() => {foo.second = 'I will also error';}).toThrow("Cannot assign to read only property 'second' of object '#<Foo>'");
+    const bar = new Bar();
+    expect(() => {bar.flag = 'I still be an error';}).toThrow('Cannot set property flag of #<Bar> which has only a getter');
   });
-  test('makes delete useless', () => {
+  test('makes delete error', () => {
     const foo = new Foo();
     delete foo.first;
     expect(foo.first).not.toBe();
