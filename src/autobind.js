@@ -32,7 +32,7 @@ function getBoundSuper (obj: Object, fn: Function): Function {
  * @param {string} prop prop strong
  * @param {Object} descriptor
  */
-export default function autobind (obj: Object, prop: string, {value: fn, configurable, enumerable, writable}: {value: Function, configurable: boolean, enumerable: boolean, writable: boolean}) {
+export default function autobind (obj: Object, prop: string, {value: fn, configurable, enumerable, writable}: DataDescriptor): AccessorDescriptor {
   if(!isFunction(fn)) {
     throw new TypeError(`@autobind can only be used on functions, not: ${fn})`);
   }
