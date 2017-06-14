@@ -51,7 +51,7 @@ describe('before', () => {
     expect(() => class {
       @before()
       foo () {}
-    }).toThrow("@before accept at least one parameter. If you don't need to preprocess before your function, do not add before decorators");
+    }).toThrow("@before accept at least one parameter. If you don't need to preprocess before your function, do not add @before decorators");
   });
   test('pass one parameter in @before', () => {
     const fn = jest.fn();

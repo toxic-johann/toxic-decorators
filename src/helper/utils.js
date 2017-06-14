@@ -453,7 +453,7 @@ export function isDescriptor (desc: any): boolean {
 
 export function isAccessorDescriptor (desc: any): boolean %checks {
   return isFunction(desc.get) &&
-    isFunction(desc.set) &&
+    // isFunction(desc.set) &&
     isBoolean(desc.configurable) &&
     isBoolean(desc.enumerable) &&
     desc.writable === undefined;

@@ -12,4 +12,11 @@ declare type DataDescriptor = {|
   enumerable: boolean
 |}
 
-declare type Descriptor = DataDescriptor | AccessorDescriptor;
+declare type InitialDescriptor = {|
+  initializer: Function,
+  configurable: boolean,
+  writable: boolean,
+  enumerable: boolean
+|};
+
+declare type Descriptor = DataDescriptor | AccessorDescriptor | InitialDescriptor;
