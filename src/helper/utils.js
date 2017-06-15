@@ -459,6 +459,20 @@ export function isAccessorDescriptor (desc: any): boolean %checks {
     desc.writable === undefined;
 }
 
+export function isDataDescriptor (desc: any): boolean %checks {
+  return desc.hasOwnProperty('value') &&
+    isBoolean(desc.configurable) &&
+    isBoolean(desc.enumerable) &&
+    isBoolean(desc.writable);
+}
+
+export function isInitializerDescriptor (desc: any): boolean %checks {
+  return isFunction(desc.initializer) &&
+    isBoolean(desc.configurable) &&
+    isBoolean(desc.enumerable) &&
+    isBoolean(desc.writable);
+}
+
 export function createDefaultSetter (key: string) {
   return function set (newValue: any): any {
     Object.defineProperty(this, key, {

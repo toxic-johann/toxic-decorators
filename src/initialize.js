@@ -1,5 +1,5 @@
 // @flow
-import {isDescriptor, isFunction, isAccessorDescriptor, bind} from 'helper/utils';
+import {isDescriptor, isFunction, isAccessorDescriptor, bind, isInitializerDescriptor} from 'helper/utils';
 export default function initialize (...fns: Array<Function>): Function {
   if(fns.length === 0) throw new Error("@initialize accept at least one parameter. If you don't need to initialize your value, do not add @initialize.");
   if(fns.length > 2 && isDescriptor(fns[2])) {
@@ -18,8 +18,7 @@ export default function initialize (...fns: Array<Function>): Function {
      * as they will be attach on the instance later
      * so, we need to substitute the initializer function
      */
-    // $FlowFixMe: useless disjoint union
-    if(isFunction(descriptor.initializer)) {
+    if(isInitializerDescriptor(descriptor)) {
       // $FlowFixMe: useless disjoint union
       const {initializer} = descriptor;
       const handler = function () {
