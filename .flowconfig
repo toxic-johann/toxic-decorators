@@ -8,3 +8,4 @@ flow
 [options]
 esproposal.decorators=ignore
 module.name_mapper='^helper/\(.*\)$' -> '<PROJECT_ROOT>/src/helper/\1'
+module.name_mapper='^\(.*\)$' -> '<PROJECT_ROOT>/src/\1'

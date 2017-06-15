@@ -1,31 +1,17 @@
 // @flow
-import {isFunction, isArray, bind, isAccessorDescriptor, isInitializerDescriptor} from 'helper/utils';
-function compressFunctionArray (fns: Array<Function>): Function {
-  const errmsg = '@accessor only accept function or array of function as getter/setter';
-  if(fns.length === 1) {
-    if(!isFunction(fns[0])) {
-      throw new TypeError(errmsg);
-    }
-    return fns[0];
-  }
-  return fns.reduce((prev, curr) => {
-    if(!isFunction(curr) || !isFunction(prev)) throw new TypeError(errmsg);
-    return function (value) {
-      return bind(curr, this)(bind(prev, this)(value));
-    };
-  });
-}
+import {isFunction, isArray, bind, isAccessorDescriptor, isInitializerDescriptor, compressOneArgFnArray} from 'helper/utils';
 export default function accessor ({get, set}: {get?: Function | Array<Function>, set?: Function | Array<Function>} = {}): Function {
   if(!isFunction(get) &&
     !isFunction(set) &&
     !(isArray(get) && get.length > 0) &&
     !(isArray(set) && set.length > 0)
   ) throw new TypeError("@accessor need a getter or setter. If you don't need to add setter/getter. You should remove @accessor");
+  const errmsg = '@accessor only accept function or array of function as getter/setter';
   get = isArray(get)
-    ? compressFunctionArray(get)
+    ? compressOneArgFnArray(get, errmsg)
     : get;
   set = isArray(set)
-    ? compressFunctionArray(set)
+    ? compressOneArgFnArray(set, errmsg)
     : set;
   return function (obj: Object, prop: string, descriptor: Descriptor): AccessorDescriptor {
     const configurable = descriptor.configurable;

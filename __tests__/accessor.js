@@ -30,7 +30,7 @@ describe('accessor', () => {
     const get = function (value) {
       expect(this).toBe(foo);
       return value;
-    }
+    };
     const set = get;
     class Foo {
       @accessor({get, set})
@@ -100,7 +100,7 @@ describe('accessor', () => {
       fn(value);
       expect(this).toBe(foo);
       return value;
-    }
+    };
     const get = [handler, handler];
     const set = get;
     class Foo {

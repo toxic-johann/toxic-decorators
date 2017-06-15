@@ -292,125 +292,7 @@ export function deepAssign<T: any> (...args: Array<T>): T & T {
   args.forEach(source => _deepAssign(source, target));
   return target;
 }
-// **********************  计算类    ************************
-// 计算获取某种东西或者计算出某种东西
-// ********************************************************
-// 生成uuid
-export function uuid () {
-  return (S4() + S4() + '-' + S4() + '-' + S4() + '-' + S4() + '-' + S4() + S4() + S4());
-}
-// 生成四个随机数
-export function S4 () {
-  return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
-}
-// 生成任意长度的随机数
-export function rand (length: number): string {
-  let str = '';
-  while(str.length < length) {
-    str += S4();
-  }
-  return str.slice(0, length);
-}
-// ********************** class operation ***************************
-// class MixinBuilder {
-//   constructor (superclass) {
-//     this.superclass = superclass || class {};
-//   }
 
-//   with (...mixins) {
-//     return mixins.reduce((c, mixin) => mixin(c), this.superclass);
-//   }
-// }
-// export const mix = (superclass) => {
-//   return new MixinBuilder(superclass);
-// };
-/**
- * run a queue one by one.If include function reject or return false it will stop
- * @param  {Array} queue the queue which we want to run one by one
- * @return {Promise}    tell us whether a queue run finished
- */
-export function runRejectableQueue (queue: Array<any>, ...args: any): Promise<*> {
-  return new Promise((resolve, reject) => {
-    const step = index => {
-      if(index >= queue.length) {
-        resolve();
-        return;
-      }
-      const result = isFunction(queue[index])
-        ? queue[index](...args)
-        : queue[index];
-      if(result === false) return reject('stop');
-      return Promise.resolve(result)
-        .then(() => step(index + 1))
-        .catch(() => reject('stop'));
-    };
-    step(0);
-  });
-}
-/**
- * run a queue one by one.If include function return false it will stop
- * @param  {Array} queue the queue which we want to run one by one
- * @return {boolean} tell the user if the queue run finished
- */
-export function runStoppableQueue (queue: Array<any>, ...args: any): boolean {
-  const step = index => {
-    if(index >= queue.length) {
-      return true;
-    }
-    const result = isFunction(queue[index])
-      ? queue[index](...args)
-      : queue[index];
-    if(result === false) return false;
-    return step(++index);
-  };
-  return step(0);
-}
-/**
- * set an attribute to an object which is frozen.
- * Means you can't remove it, iterate it or rewrite it.
- * @param {!primitive} obj
- * @param {string} key
- * @param {Anything} value
- */
-export function setFrozenAttr (obj: Object, key: string, value: any) {
-  if(isPrimitive(obj)) throw TypeError('setFrozenAttr obj parameter can not be primitive type');
-  if(!isString(key)) throw TypeError('setFrozenAttr key parameter must be String');
-  Object.defineProperty(obj, key, {
-    value,
-    configurable: false,
-    enumerable: false,
-    writable: false
-  });
-}
-/**
- * set attr on an Object. We will bind getter and setter on it if you provide to us
- * @param {!primitive} obj
- * @param {string} key
- * @param {Function} options.get
- * @param {Function} options.set
- * @param {String} prefix the origin data's prefix. We do not plan to save it by closure.
- */
-export function setAttrGetterAndSetter (obj: Object, key: string, {get, set}: {get?: Function, set?: Function} = {}, prefix: string = '__') {
-  if(isPrimitive(obj)) throw TypeError('setFrozenAttr obj parameter can not be primitive type');
-  if(!isString(key)) throw TypeError('setAttrGetterAndSetter key parameter must be String');
-  const originalData = obj[key];
-  if(!isFunction(get)) {
-    Object.defineProperty(obj, prefix + key, {
-      value: originalData,
-      configurable: true,
-      writable: true,
-      enumerable: false
-    });
-    get = function () {return this[prefix + key];};
-    if(set && isFunction(set)) {
-      const originSetter = set;
-      set = function (...args) {
-        this[prefix + key] = originSetter.call(this, ...args);
-      };
-    }
-  }
-  Object.defineProperty(obj, key, {get, set});
-}
 /**
  * camelize any string, e.g hello world -> helloWorld
  * @param  {string} str only accept string!
@@ -549,4 +431,19 @@ export function transDataIntoAccessor ({get, set}: {get?: Function, set?: Functi
     configurable: desc.configurable,
     enumerable: desc.enumerable
   };
+}
+
+export function compressOneArgFnArray (fns: Array<Function>, errmsg: string): Function {
+  if(fns.length === 1) {
+    if(!isFunction(fns[0])) {
+      throw new TypeError(errmsg);
+    }
+    return fns[0];
+  }
+  return fns.reduce((prev, curr) => {
+    if(!isFunction(curr) || !isFunction(prev)) throw new TypeError(errmsg);
+    return function (value) {
+      return bind(curr, this)(bind(prev, this)(value));
+    };
+  });
 }

@@ -409,73 +409,6 @@ test('deepAssign', () => {
   });
 });
 
-test('rand', () => {
-  expect(utils.rand(4).length).toBe(4);
-});
-
-test('uuid', () => {
-  expect(utils.uuid()).not.toEqual(utils.uuid());
-});
-
-test('runRejectableQueue', async () => {
-  expect(utils.runRejectableQueue([])).resolves.toBe();
-  expect(utils.runRejectableQueue([1, 2, 3])).resolves.toBe();
-  expect(utils.runRejectableQueue([1, 2, false, 3])).rejects.toMatch('stop');
-  expect(utils.runRejectableQueue([
-    () => {},
-    () => {},
-    () => {}
-  ])).resolves.toBe();
-  expect(utils.runRejectableQueue([
-    () => {},
-    Promise.resolve(),
-    () => new Promise(resolve => resolve())
-  ])).resolves.toBe();
-  expect(utils.runRejectableQueue([
-    () => {},
-    Promise.reject(),
-    () => new Promise(resolve => resolve())
-  ])).rejects.toMatch('stop');
-  expect(utils.runRejectableQueue([
-    () => {},
-    Promise.resolve(),
-    () => new Promise((resolve, reject) => reject())
-  ])).rejects.toMatch('stop');
-  const checkArray = [];
-  await expect(utils.runRejectableQueue([
-    () => checkArray.push(1),
-    () => checkArray.push(2),
-    () => false,
-    () => checkArray.push(3),
-    () => checkArray.push(4),
-  ])).rejects.toMatch('stop');
-  expect(checkArray).toEqual([1, 2]);
-});
-
-test('runStoppableQueue', async () => {
-  expect(utils.runStoppableQueue([])).toBe(true);
-  expect(utils.runStoppableQueue([1, 2, 3])).toBe(true);
-  expect(utils.runStoppableQueue([1, 2, false, 3])).toBe(false);
-  expect(utils.runStoppableQueue([
-    () => {},
-    () => {},
-    () => {}
-  ])).toBe(true);
-  expect(utils.runStoppableQueue([
-    () => {},
-    Promise.resolve(),
-    () => new Promise(resolve => resolve())
-  ])).toBe(true);
-  const checkArray = [];
-  await expect(utils.runStoppableQueue([
-    () => checkArray.push(1),
-    () => checkArray.push(2),
-    () => false,
-    () => checkArray.push(3),
-    () => checkArray.push(4),
-  ])).toBe(false);
-  expect(checkArray).toEqual([1, 2]);
-});
 
 test('camelize', () => {
   const examples = [
@@ -501,53 +434,6 @@ test('hypenate', () => {
   });
 });
 
-test('setFrozenAttr', () => {
-  const obj = {};
-  expect(() => utils.setFrozenAttr(obj, 1, 1)).toThrow();
-  expect(() => utils.setFrozenAttr(1, 1, 1)).toThrow();
-  utils.setFrozenAttr(obj, 'test', 1);
-  expect(obj.test).toBe(1);
-  expect(() => {obj.test = 2;}).toThrow();
-  expect(() => {delete obj.test;}).toThrow();
-  const keys = [];
-  for(const key in obj) keys.push(key);
-  expect(keys).toEqual([]);
-});
-
-test('setAttrGetterAndSetter', () => {
-  const obj = {};
-  expect(() => utils.setAttrGetterAndSetter(1, 2)).toThrow();
-  expect(() => utils.setAttrGetterAndSetter(obj, 2)).toThrow();
-  const result = [];
-  const set = val => {
-    result.push(val);
-    return ++val;
-  };
-  utils.setAttrGetterAndSetter(obj, 'a', {set});
-  obj.a = 1;
-  expect(obj.a).toBe(2);
-  expect(obj.__a).toBe(2);
-  expect(result).toEqual([1]);
-  utils.setAttrGetterAndSetter(obj, 'b', {set}, '$');
-  obj.b = 1;
-  expect(obj.b).toBe(2);
-  expect(obj.__b).toBe(undefined);
-  expect(obj.$b).toBe(2);
-  expect(result).toEqual([1, 1]);
-  const option = {
-    get () {return this.__a;},
-    set (val) {this.__a = val + 2;}
-  };
-  utils.setAttrGetterAndSetter(obj, 'c', option);
-  obj.c = 3;
-  expect(obj.a).toBe(5);
-  expect(obj.c).toBe(5);
-  expect(obj.__a).toBe(5);
-  expect(obj.__c).toBe(undefined);
-  utils.setAttrGetterAndSetter(obj, 'd', {});
-  expect(() => {obj.d = 3;}).toThrow();
-  expect(obj.d).toBe();
-});
 
 test('isPromise', () => {
   const examples = [
