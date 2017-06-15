@@ -4,7 +4,7 @@
   "description": "decorators",
   "main": "lib/toxic-decorators.js",
   "scripts": {
-    "test": "jest && nyc report --temp-directory=coverage --reporter=text-lcov | coveralls",
+    "test": "jest",
     "start": "jest --coverage --watch",
     "flow": "flow",
     "lint": "flow && eslint ./src --fix",
@@ -31,7 +31,6 @@
     "babel-preset-flow": "^6.23.0",
     "babel-preset-latest": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
-    "coveralls": "^2.13.1",
     "eslint": "^4.0.0",
     "eslint-plugin-flowtype": "^2.34.0",
     "eslint-plugin-jest": "^20.0.3",
