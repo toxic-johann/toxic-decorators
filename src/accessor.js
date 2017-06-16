@@ -20,11 +20,11 @@ export default function accessor ({get, set}: {get?: Function | Array<Function>,
     const hasSet = isFunction(set);
     const handleGet = function (value) {
       // $FlowFixMe: it's really function here
-      return hasGet ? bind(get, this)(value) : value
+      return hasGet ? bind(get, this)(value) : value;
     };
     const handleSet = function (value) {
       // $FlowFixMe: it's really function here
-      return hasSet ? bind(set, this)(value) : value
+      return hasSet ? bind(set, this)(value) : value;
     };
     if(isAccessorDescriptor(descriptor)) {
       const {get: originGet, set: originSet} = descriptor;

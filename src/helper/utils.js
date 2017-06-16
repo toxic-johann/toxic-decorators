@@ -363,7 +363,7 @@ export function isInitializerDescriptor (desc: any): boolean %checks {
 }
 /**
  * set one value on the object
- * @param {string} key 
+ * @param {string} key
  */
 export function createDefaultSetter (key: string) {
   return function set (newValue: any): any {
