@@ -63,10 +63,31 @@ describe('initialize', () => {
     };
     expect(Foo.bar).toBe(2);
   });
-  test("@initialize can't handle accessor descriptor", () => {
-    expect(() => class {
-      @initialize(function () {})
-      get one () {return 1;}
-    }).toThrow('@initialize do not support accessor descriptor');
+  test("@initialize can handle accessor descriptor, and it assume that if you don't set again, it still run initialize function", () => {
+    const fn = jest.fn();
+    class Foo {
+      _value = 1;
+      @initialize(function () {
+        fn();
+        expect(this).toBe(foo);
+        return 2;
+      })
+      get value () {
+        return this._value;
+      }
+      set value (value) {
+        this._value = value;
+        return this._value;
+      }
+    };
+    const foo = new Foo();
+    expect(foo.value).toBe(2);
+    expect(foo.value).not.toBe(foo._value);
+    foo._value = 3;
+    expect(foo.value).toBe(2);
+    expect(fn).toHaveBeenCalledTimes(3);
+    foo.value = 4;
+    expect(foo.value).toBe(foo._value);
+    expect(foo._value).toBe(4);
   });
 });

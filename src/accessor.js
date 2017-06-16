@@ -1,5 +1,5 @@
 // @flow
-import {isFunction, isArray, bind, isAccessorDescriptor, isInitializerDescriptor, compressOneArgFnArray} from 'helper/utils';
+import {isFunction, isArray, bind, isAccessorDescriptor, isInitializerDescriptor, compressOneArgFnArray, warn} from 'helper/utils';
 export default function accessor ({get, set}: {get?: Function | Array<Function>, set?: Function | Array<Function>} = {}): Function {
   if(!isFunction(get) &&
     !isFunction(set) &&
@@ -16,17 +16,45 @@ export default function accessor ({get, set}: {get?: Function | Array<Function>,
   return function (obj: Object, prop: string, descriptor: Descriptor): AccessorDescriptor {
     const configurable = descriptor.configurable;
     const enumerable = descriptor.enumerable;
+    const hasGet = isFunction(get);
+    const hasSet = isFunction(set);
+    const handleGet = function (value) {
+      // $FlowFixMe: it's really function here
+      return hasGet ? bind(get, this)(value) : value
+    };
+    const handleSet = function (value) {
+      // $FlowFixMe: it's really function here
+      return hasSet ? bind(set, this)(value) : value
+    };
     if(isAccessorDescriptor(descriptor)) {
-      // we will get accessor when we are handling getter/setter
+      const {get: originGet, set: originSet} = descriptor;
+      const hasOriginGet = isFunction(originGet);
+      const hasOriginSet = isFunction(originSet);
+      if(!hasOriginGet && hasGet) {
+        warn("You are trying to set getter via @accessor on one property without getter. That's not a good idea.");
+      }
+      if(!hasOriginSet && hasSet) {
+        warn("You are trying to set setter via @accessor on one property without setter. That's not a good idea.");
+      }
+      const getter = (hasOriginGet || hasGet)
+        ? function () {
+          // $FlowFixMe: flow act like a retarded child on optional property
+          const value = hasOriginGet ? bind(originGet, this)() : undefined;
+          return bind(handleGet, this)(value);
+        }
+        : undefined;
+      const setter = (hasOriginSet || hasSet)
+        ? function (val) {
+          const value = bind(handleSet, this)(val);
+          return hasOriginSet
+            // $FlowFixMe: flow act like a retarded child on optional property
+            ? bind(originSet, this)(value)
+            : value;
+        }
+        : undefined;
       return {
-        get () {
-          // $FlowFixMe: dummy flow, get is function now.
-          return bind(get, this)(bind(descriptor.get, this)());
-        },
-        set  (value) {
-          // $FlowFixMe: dummy flow, set is function now.
-          return bind(descriptor.set, this)(bind(set, this)(value));
-        },
+        get: getter,
+        set: setter,
         configurable,
         enumerable
       };
@@ -37,16 +65,14 @@ export default function accessor ({get, set}: {get?: Function | Array<Function>,
       let inited = false;
       return {
         get () {
-          // $FlowFixMe: dummy flow, get is function now.
-          const boundFn = bind(get, this);
+          const boundFn = bind(handleGet, this);
           if(inited) return boundFn(value);
           value = bind(initializer, this)();
           inited = true;
           return boundFn(value);
         },
         set (val) {
-          // $FlowFixMe: dummy flow, set is function now.
-          value = bind(set, this)(val);
+          value = bind(handleSet, this)(val);
           return value;
         },
         configurable,
@@ -57,12 +83,10 @@ export default function accessor ({get, set}: {get?: Function | Array<Function>,
       let {value} = descriptor;
       return {
         get () {
-          // $FlowFixMe: dummy flow, get is function now.
-          return bind(get, this)(value);
+          return bind(handleGet, this)(value);
         },
         set (val) {
-          // $FlowFixMe: dummy flow, set is function now.
-          value = bind(set, this)(val);
+          value = bind(handleSet, set)(val);
           return value;
         },
         configurable,

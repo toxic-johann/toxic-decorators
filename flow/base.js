@@ -1,6 +1,6 @@
 declare type AccessorDescriptor = {|
-  get: Function,
-  set: Function,
+  get?: Function,
+  set?: Function,
   configurable: boolean,
   enumerable: boolean
 |}

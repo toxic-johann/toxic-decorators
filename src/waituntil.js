@@ -1,5 +1,6 @@
 // @flow
-import {isFunction, isPromise, bind, isString, isDescriptor, isAccessorDescriptor, wrapAccessorDescriptor, transDataIntoAccessor} from 'helper/utils';
+import {isFunction, isPromise, bind, isString, isDescriptor} from 'helper/utils';
+import accessor from 'accessor';
 const {getOwnPropertyDescriptor, defineProperty} = Object;
 export default function waituntil (fn: Function | Promise<*> | string): Object {
   if(!isFunction(fn) && !isPromise(fn) && !isString(fn)) throw new TypeError('@waitUntil only accept Function, Promise or String');
@@ -9,6 +10,7 @@ export default function waituntil (fn: Function | Promise<*> | string): Object {
   }
   const waitingQueue = [];
   return function (obj: Object, prop: string, {value, configurable, enumerable, writable}: {value: Function, configurable: boolean, enumerable: boolean, writable: boolean}) {
+    if(!isFunction(value)) throw new TypeError(`@waituntil can only be used on function, but not ${value}`);
     if(isString(fn)) {
       const descriptor = getOwnPropertyDescriptor(obj, fn);
       /**
@@ -34,18 +36,15 @@ export default function waituntil (fn: Function | Promise<*> | string): Object {
        *    if user pass into property on instance
        */
       const desc = isDescriptor(descriptor)
-        ? isAccessorDescriptor(descriptor)
-          ? wrapAccessorDescriptor({set}, descriptor)
-          : transDataIntoAccessor({set}, descriptor)
-        : transDataIntoAccessor({set}, {
-            value: undefined,
-            configurable: true,
-            enumerable: true,
-            writable: true
-          });
+        ? accessor({set})(obj, fn, descriptor)
+        : accessor({set})(obj, fn, {
+          value: undefined,
+          configurable: true,
+          enumerable: true,
+          writable: true
+        });
       defineProperty(obj, fn, desc);
     }
-    if(!isFunction(value)) throw new TypeError(`@waituntil can only be used on function, but not ${value}`);
     return {
       value (...args: Array<any>) {
         const boundFn = bind(value, this);

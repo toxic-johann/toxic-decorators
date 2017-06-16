@@ -94,6 +94,154 @@ describe('accessor', () => {
     expect(foo.bar).toBe(value);
     expect(foo.bar).toBe(2);
   });
+  test('@accessor can also handle getter and setter well even you just pass a get', () => {
+    const fn = jest.fn();
+    const get = function (value) {
+      fn();
+      return value;
+    };
+    let value = 1;
+    class Foo {
+      @accessor({get})
+      get bar () {
+        return value;
+      }
+      set bar (val) {
+        value = val;
+        return value;
+      }
+    };
+    const foo = new Foo();
+    expect(foo.bar).toBe(value);
+    expect(fn).toHaveBeenCalledTimes(1);
+    foo.bar = 2;
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(foo.bar).toBe(value);
+    expect(foo.bar).toBe(2);
+  });
+  test('@accessor can also handle getter and setter well even you just pass a set', () => {
+    const fn = jest.fn();
+    const set = function (value) {
+      fn();
+      return value;
+    };
+    let value = 1;
+    class Foo {
+      @accessor({set})
+      get bar () {
+        return value;
+      }
+      set bar (val) {
+        value = val;
+        return value;
+      }
+    };
+    const foo = new Foo();
+    expect(foo.bar).toBe(value);
+    expect(fn).toHaveBeenCalledTimes(0);
+    foo.bar = 2;
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(foo.bar).toBe(value);
+    expect(foo.bar).toBe(2);
+  });
+  test('@accessor will warn if you pass it a setter function and offer it a accessor without setter, but it still do a good job', () => {
+    const fn = jest.fn();
+    const originConsole = console;
+    global.console = Object.assign({}, originConsole, {warn: jest.fn()});
+    const get = function (value) {
+      fn();
+      return value;
+    };
+    const set = get;
+    const value = 1;
+    class Foo {
+      @accessor({get, set})
+      get bar () {
+        return value;
+      }
+    };
+    const foo = new Foo();
+    expect(console.warn).toHaveBeenCalledTimes(1);
+    expect(console.warn).lastCalledWith("You are trying to set setter via @accessor on one property without setter. That's not a good idea.");
+    expect(foo.bar).toBe(value);
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(() => {foo.bar = 2;}).not.toThrow();
+    expect(fn).toHaveBeenCalledTimes(2);
+    expect(foo.bar).toBe(value);
+    expect(foo.bar).toBe(1);
+    global.console = originConsole;
+  });
+  test('@accessor will warn if you pass it a getter function and offer it a accessor without getter, but it still do a good job', () => {
+    const fn = jest.fn();
+    const originConsole = console;
+    global.console = Object.assign({}, originConsole, {warn: jest.fn()});
+    const get = function (value) {
+      fn();
+      return value;
+    };
+    const set = get;
+    let value = 1;
+    class Foo {
+      @accessor({get, set})
+      set bar (val) {
+        value = val;
+        return value;
+      }
+    };
+    const foo = new Foo();
+    expect(console.warn).toHaveBeenCalledTimes(1);
+    expect(console.warn).lastCalledWith("You are trying to set getter via @accessor on one property without getter. That's not a good idea.");
+    expect(foo.bar).toBe(undefined);
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(() => {foo.bar = 2;}).not.toThrow();
+    expect(fn).toHaveBeenCalledTimes(2);
+    expect(foo.bar).toBe(undefined);
+    expect(value).toBe(2);
+    global.console = originConsole;
+  });
+  test('@accessor can just modify descriptor with only getter as you offet get', () => {
+    const fn = jest.fn();
+    const get = function (value) {
+      fn();
+      return value;
+    };
+    const value = 1;
+    class Foo {
+      @accessor({get})
+      get bar () {
+        return value;
+      }
+    };
+    const foo = new Foo();
+    expect(foo.bar).toBe(value);
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(() => {foo.bar = 2;}).toThrow('Cannot set property bar of #<Foo> which has only a getter');
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(foo.bar).toBe(value);
+    expect(foo.bar).toBe(1);
+  });
+  test('@accessor can just modify descriptor with only setter as you offet set', () => {
+    const fn = jest.fn();
+    const set = function (value) {
+      fn();
+      return value;
+    };
+    let value = 1;
+    class Foo {
+      @accessor({set})
+      set bar (val) {
+        value = val;
+        return value;
+      }
+    };
+    const foo = new Foo();
+    expect(foo.bar).toBe(undefined);
+    expect(fn).toHaveBeenCalledTimes(0);
+    expect(() => {foo.bar = 2;}).not.toThrow();
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(foo.bar).toBe(undefined);
+    expect(value).toBe(2);
+  });
   test('@accessor alse accept array of funtion as getter/setter', () => {
     const fn = jest.fn();
     const handler = function (value) {

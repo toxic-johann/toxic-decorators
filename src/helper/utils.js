@@ -329,32 +329,42 @@ export function isDescriptor (desc: any): boolean {
       return true;
     }
   }
-
   return false;
 }
-
+/**
+ * to check if the descirptor is an accessor descriptor
+ * @param {descriptor} desc it should be a descriptor better
+ */
 export function isAccessorDescriptor (desc: any): boolean %checks {
-  return isFunction(desc.get) &&
-    // isFunction(desc.set) &&
+  return (isFunction(desc.get) || isFunction(desc.set)) &&
     isBoolean(desc.configurable) &&
     isBoolean(desc.enumerable) &&
     desc.writable === undefined;
 }
-
+/**
+ * to check if the descirptor is an data descriptor
+ * @param {descriptor} desc it should be a descriptor better
+ */
 export function isDataDescriptor (desc: any): boolean %checks {
   return desc.hasOwnProperty('value') &&
     isBoolean(desc.configurable) &&
     isBoolean(desc.enumerable) &&
     isBoolean(desc.writable);
 }
-
+/**
+ * to check if the descirptor is an initiallizer descriptor
+ * @param {descriptor} desc it should be a descriptor better
+ */
 export function isInitializerDescriptor (desc: any): boolean %checks {
   return isFunction(desc.initializer) &&
     isBoolean(desc.configurable) &&
     isBoolean(desc.enumerable) &&
     isBoolean(desc.writable);
 }
-
+/**
+ * set one value on the object
+ * @param {string} key 
+ */
 export function createDefaultSetter (key: string) {
   return function set (newValue: any): any {
     Object.defineProperty(this, key, {
@@ -364,12 +374,15 @@ export function createDefaultSetter (key: string) {
       enumerable: true,
       value: newValue
     });
-
     return newValue;
   };
 }
-
-export function bind (fn: Function, context: Object): Function {
+/**
+ * bind the function with some context. we have some fallback strategy here
+ * @param {function} fn the function which we need to bind the context on
+ * @param {any} context the context object
+ */
+export function bind (fn: Function, context: any): Function {
   if (fn.bind) {
     return fn.bind(context);
   } else if(fn.apply) {
@@ -382,58 +395,15 @@ export function bind (fn: Function, context: Object): Function {
     };
   }
 }
-
-export function wrapAccessorDescriptor ({get, set}: {get?: Function, set?: Function}, desc: AccessorDescriptor): AccessorDescriptor {
-  if(!isFunction(get) && !isFunction(set)) return desc;
-  const getter = isFunction(get)
-    ? function () {
-      // $FlowFixMe: isFunction has already excluded undefined.
-      return bind(get, this)(bind(desc.get, this)());
-    }
-    : desc.get;
-  const setter = isFunction(set)
-    ? function (value) {
-      // $FlowFixMe: isFunction has already excluded undefined.
-      return bind(desc.set, this)((bind(set, this)(value)));
-    }
-    : desc.set;
-  return {
-    get: getter,
-    set: setter,
-    configurable: desc.configurable,
-    enumerable: desc.enumerable
-  };
-}
-
-export function transDataIntoAccessor ({get, set}: {get?: Function, set?: Function}, desc: DataDescriptor): AccessorDescriptor {
-  let val = desc.value;
-  const getter = isFunction(get)
-    ? function () {
-      // $FlowFixMe: isFunction has already excluded undefined.
-      return bind(get, this)(val);
-    }
-    : function () {
-      return val;
-    };
-  const setter = isFunction(set)
-    ? function (value) {
-      // $FlowFixMe: isFunction has already excluded undefined.
-      val = bind(set, this)(value);
-      return val;
-    }
-    : function (value) {
-      val = value;
-      return val;
-    };
-  return {
-    get: getter,
-    set: setter,
-    configurable: desc.configurable,
-    enumerable: desc.enumerable
-  };
-}
-
-export function compressOneArgFnArray (fns: Array<Function>, errmsg: string): Function {
+/**
+ * Compress many function into one function, but this function only accept one arguments;
+ * @param {Array<Function>} fns the array of function we need to compress into one function
+ * @param {string} errmsg When we check that there is something is not function, we will throw an error, you can set your own error message
+ */
+export function compressOneArgFnArray (fns: Array<Function>, errmsg: string = 'You must pass me an array of function'): Function {
+  if(!isArray(fns) || fns.length < 1) {
+    throw new TypeError(errmsg);
+  }
   if(fns.length === 1) {
     if(!isFunction(fns[0])) {
       throw new TypeError(errmsg);
@@ -446,4 +416,13 @@ export function compressOneArgFnArray (fns: Array<Function>, errmsg: string): Fu
       return bind(curr, this)(bind(prev, this)(value));
     };
   });
+}
+/**
+ * just a method to call console.warn, maybe i will add some handler on it someday
+ * @param {anything} args
+ */
+export function warn (...args: any): void {
+  const {warn, log} = console;
+  if(isFunction(warn)) return warn(...args);
+  log(...args);
 }
