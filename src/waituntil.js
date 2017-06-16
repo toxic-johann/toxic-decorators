@@ -1,8 +1,8 @@
 // @flow
-import {isFunction, isPromise, bind, isString, isDescriptor} from 'helper/utils';
+import {isFunction, isPromise, bind, isString, isDescriptor, isPrimitive} from 'helper/utils';
 import accessor from 'accessor';
 const {getOwnPropertyDescriptor, defineProperty} = Object;
-export default function waituntil (fn: Function | Promise<*> | string): Object {
+export default function waituntil (fn: Function | Promise<*> | string, other?: any): Object {
   if(!isFunction(fn) && !isPromise(fn) && !isString(fn)) throw new TypeError('@waitUntil only accept Function, Promise or String');
   if(isPromise(fn)) {
     const promise = fn;
@@ -12,7 +12,8 @@ export default function waituntil (fn: Function | Promise<*> | string): Object {
   return function (obj: Object, prop: string, {value, configurable, enumerable, writable}: {value: Function, configurable: boolean, enumerable: boolean, writable: boolean}) {
     if(!isFunction(value)) throw new TypeError(`@waituntil can only be used on function, but not ${value}`);
     if(isString(fn)) {
-      const descriptor = getOwnPropertyDescriptor(obj, fn);
+      const target = isPrimitive(other) ? obj : other;
+      const descriptor = getOwnPropertyDescriptor(target, fn);
       /**
        * create a setter hook here
        * when it get ture, it will run all function in waiting queue immediately
@@ -26,24 +27,15 @@ export default function waituntil (fn: Function | Promise<*> | string): Object {
         }
         return value;
       };
-      /**
-       * we may handle different descriptor
-       * 1. we may get an accessor desciptor
-       *    if user pass into an getter/setter property
-       * 2. we may handle an data descriptor
-       *    if user pass into an static property etc
-       * 3. we may got nothing
-       *    if user pass into property on instance
-       */
       const desc = isDescriptor(descriptor)
-        ? accessor({set})(obj, fn, descriptor)
-        : accessor({set})(obj, fn, {
+        ? accessor({set})(target, fn, descriptor)
+        : accessor({set})(target, fn, {
           value: undefined,
           configurable: true,
           enumerable: true,
           writable: true
         });
-      defineProperty(obj, fn, desc);
+      defineProperty(target, fn, desc);
     }
     return {
       value (...args: Array<any>) {

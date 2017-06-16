@@ -202,4 +202,24 @@ describe('waituntil', () => {
     expect(fn).toHaveBeenCalledTimes(3);
     expect(fn).lastCalledWith(bar, 2);
   });
+  test('@waituntil can also rely on flag on other instance', () => {
+    const fn = jest.fn();
+    class Foo {
+      flag = false;
+    }
+    const foo = new Foo();
+    class Bar {
+      @waituntil('flag', foo)
+      run (...args) {
+        expect(this).toBe(bar);
+        fn(...args);
+      }
+    }
+    const bar = new Bar();
+    bar.run(1);
+    expect(fn).toHaveBeenCalledTimes(0);
+    foo.flag = true;
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(fn).lastCalledWith(1);
+  });
 });
