@@ -11,10 +11,24 @@ import includePaths from 'rollup-plugin-includepaths';
 import babel from 'rollup-plugin-babel';
 const babelConfig = {
   common: {
-    runtimeHelpers: true
+    presets: [
+      'flow',
+      ['latest', {es2015: {modules: false}}],
+      'stage-0'
+    ],
+    plugins: ['transform-runtime'],
+    runtimeHelpers: true,
+    babelrc: false
   },
   es: {
-    runtimeHelpers: true
+    presets: [
+      'flow',
+      ['latest', {es2015: {modules: false}}],
+      'stage-0'
+    ],
+    plugins: ['transform-runtime'],
+    runtimeHelpers: true,
+    babelrc: false
   },
   umd: {
     presets: ['flow', 'es2015-rollup', 'stage-0'],

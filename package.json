@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "description": "decorators",
   "main": "lib/toxic-decorators.js",
-  "jsnext:main": "lib/toxic-decorators.mjs",  
-  "browser": "lib/toxic-decorators.browser.js",  
+  "jsnext:main": "lib/toxic-decorators.mjs",
+  "browser": "lib/toxic-decorators.browser.js",
   "scripts": {
     "test": "jest",
     "start": "jest --coverage --watch",
@@ -34,7 +34,6 @@
   "devDependencies": {
     "babel-eslint": "^7.2.3",
     "babel-jest": "^20.0.3",
-    "babel-plugin-external-helpers": "^6.22.0",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-es2015-rollup": "^3.0.0",

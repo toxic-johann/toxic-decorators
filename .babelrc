@@ -1,15 +1,10 @@
 {
  "presets": [
     "flow",
-    ["latest", {
-      "es2015": {
-        "modules": false
-      }
-    }],
+    "latest",
     "stage-0"
   ],
   "plugins": [
-    "transform-decorators-legacy",
-    "transform-runtime"
+    "transform-decorators-legacy"
   ]
 }
