@@ -22,5 +22,4 @@ node_modules
 
 .DS_Store
 .babel_cache
-lib
 package-lock.json
