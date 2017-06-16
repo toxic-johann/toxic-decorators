@@ -31,4 +31,4 @@ export {
   alwaysBoolean,
   alwaysNumber,
   alwaysString
-}
+};
