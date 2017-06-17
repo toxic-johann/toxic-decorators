@@ -108,6 +108,24 @@ describe('alias', () => {
     expect(fn).lastCalledWith(2);
     expect(foo.baz).toBe();
   });
+  test('@alias can also let you to set alias on other class for function', () => {
+    class Car {
+    };
+    const car = new Car();
+    const fn = jest.fn();
+    class Foo {
+      @alias('baz', Car.prototype)
+      bar (...args) {
+        fn(...args);
+      }
+    };
+    const foo = new Foo();
+    expect(foo.bar).toBe(car.baz);
+    car.baz(2);
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(fn).lastCalledWith(2);
+    expect(foo.baz).toBe();
+  });
   test('@alias can also let you to set alias on other object for getter/setter', () => {
     class Car {};
     const car = new Car();
