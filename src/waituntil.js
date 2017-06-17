@@ -1,5 +1,5 @@
 // @flow
-import {isFunction, isPromise, bind, isString, isDescriptor, isPrimitive, getDeepProperty} from 'helper/utils';
+import {isFunction, isPromise, bind, isString, isDescriptor, isPrimitive, getDeepProperty, isVoid} from 'helper/utils';
 import accessor from 'accessor';
 const {getOwnPropertyDescriptor, defineProperty} = Object;
 export default function waituntil (key: Function | Promise<*> | string, other?: any): Object {
@@ -19,6 +19,7 @@ export default function waituntil (key: Function | Promise<*> | string, other?: 
             const originTarget = isPrimitive(other) ? this : other;
             if(!binded) {
               const target = getDeepProperty(originTarget, keys.slice(0, -1));
+              if(isVoid(target)) return target;
               const descriptor = getOwnPropertyDescriptor(target, prop);
               /**
                * create a setter hook here
@@ -57,7 +58,7 @@ export default function waituntil (key: Function | Promise<*> | string, other?: 
         } else if(runnable === true) {
           return bind(value, this)(...args);
         } else {
-          return binded && new Promise(resolve => {
+          return new Promise(resolve => {
             const cb = function () {
               boundFn(...args);
               resolve();

@@ -251,4 +251,21 @@ describe('waituntil', () => {
     expect(fn).toHaveBeenCalledTimes(2);
     expect(fn).lastCalledWith(2);
   });
+  test('whatif the property do not exist.', () => {
+    const fn = jest.fn();
+    class Bar {
+      @waituntil('a.flag')
+      run () {
+        fn();
+      }
+    }
+    const bar = new Bar();
+    bar.run();
+    expect(fn).toHaveBeenCalledTimes(0);
+    bar.a = {};
+    bar.run();
+    expect(fn).toHaveBeenCalledTimes(0);
+    bar.a.flag = true;
+    expect(fn).toHaveBeenCalledTimes(2);
+  });
 });
