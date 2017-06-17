@@ -225,4 +225,30 @@ describe('waituntil', () => {
     expect(fn).toHaveBeenCalledTimes(2);
     expect(fn).lastCalledWith(2);
   });
+  test('@waituntil can handle deep property', () => {
+    const fn = jest.fn();
+    class Bar {
+      deepFlag = {
+        you: {
+          can: {
+            run: false
+          }
+        }
+      };
+      @waituntil('deepFlag.you.can.run')
+      run (...args) {
+        expect(this).toBe(bar);
+        fn(...args);
+      }
+    }
+    const bar = new Bar();
+    bar.run(1);
+    expect(fn).toHaveBeenCalledTimes(0);
+    bar.deepFlag.you.can.run = true;
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(fn).lastCalledWith(1);
+    bar.run(2);
+    expect(fn).toHaveBeenCalledTimes(2);
+    expect(fn).lastCalledWith(2);
+  });
 });
