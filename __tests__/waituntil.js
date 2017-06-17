@@ -221,5 +221,8 @@ describe('waituntil', () => {
     foo.flag = true;
     expect(fn).toHaveBeenCalledTimes(1);
     expect(fn).lastCalledWith(1);
+    bar.run(2);
+    expect(fn).toHaveBeenCalledTimes(2);
+    expect(fn).lastCalledWith(2);
   });
 });

@@ -76,7 +76,7 @@ You can get the compiled code in the `lib` file
 * [@before](#before)
 * [@waituntil](#waituntil)
 
-** For Classes **
+**For Classes **
 
 TODO
 
@@ -416,9 +416,7 @@ setTimeout(async () => {
 
 ```
 
-
-
-### Need lodash utilities as decorators?
+## Need lodash utilities as decorators?
 
 > We have mostly the same idea with core-decorators. So I just quote this from it's README.
 

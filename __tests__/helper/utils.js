@@ -1,6 +1,6 @@
 import * as utils from 'helper/utils';
 
-test('isObject', () => {
+describe('isObject', () => {
   const examples = [
     123, '123', true, {},
     {a: 123}, function (argument) {}, () => console.log('hello'), undefined,
@@ -14,15 +14,17 @@ test('isObject', () => {
     false, false, false, false
   ];
   examples.forEach((example, index) => {
-    expect(utils.isObject(example)).toBe(results[index]);
+    test(index.toString(), () => {
+      expect(utils.isObject(example)).toBe(results[index]);
+    });
   });
 });
 
-test('isArray', () => {
+describe('isArray', () => {
   const examples = [
     123, '123', true, { length: 10 },
     {a: 123}, function (argument) {}, () => console.log('hello'), undefined,
-    [], [1, 2, 3], null, new Array() // eslint-disable-line no-new-wrappers
+    [], [1, 2, 3], null, new Array() // eslint-disable-line
   ];
   const results = [
     false, false, false, false,
@@ -30,11 +32,13 @@ test('isArray', () => {
     true, true, false, true
   ];
   examples.forEach((example, index) => {
-    expect(utils.isArray(example)).toBe(results[index]);
+    test(index.toString(), () => {
+      expect(utils.isArray(example)).toBe(results[index]);
+    });
   });
 });
 
-test('makeArray', () => {
+describe('makeArray', () => {
   const examples = [
     { length: 10 },
     document.querySelectorAll('body'),
@@ -43,11 +47,13 @@ test('makeArray', () => {
     'str', 1, true, false
   ];
   examples.forEach((example, index) => {
-    expect(utils.makeArray(example).constructor).toBe(Array);
+    test(index.toString(), () => {
+      expect(utils.makeArray(example).constructor).toBe(Array);
+    });
   });
 });
 
-test('isNumeric', () => {
+describe('isNumeric', () => {
   const examples = [
     1, 1.1, -1.2, '1.1',
     '.2', '-1.1', '1.2px', 'sth',
@@ -61,11 +67,13 @@ test('isNumeric', () => {
     false, false, false, false
   ];
   examples.forEach((example, index) => {
-    expect(utils.isNumeric(example)).toBe(results[index]);
+    test(index.toString(), () => {
+      expect(utils.isNumeric(example)).toBe(results[index]);
+    });
   });
 });
 
-test('isNumber', () => {
+describe('isNumber', () => {
   const examples = [
     1, 1.1, -1.2, '1.1',
     '.2', '-1.1', '1.2px', 'sth',
@@ -79,11 +87,13 @@ test('isNumber', () => {
     false, false, false, false
   ];
   examples.forEach((example, index) => {
-    expect(utils.isNumber(example)).toBe(results[index]);
+    test(index.toString(), () => {
+      expect(utils.isNumber(example)).toBe(results[index]);
+    });
   });
 });
 
-test('isInteger', () => {
+describe('isInteger', () => {
   const examples = [
     1, 1.1, -1.2, '1.1',
     '0.2', '-1.1', '1.2px', 'sth',
@@ -97,11 +107,13 @@ test('isInteger', () => {
     false, false, false, false
   ];
   examples.forEach((example, index) => {
-    expect(utils.isInteger(example)).toBe(results[index]);
+    test(index.toString(), () => {
+      expect(utils.isInteger(example)).toBe(results[index]);
+    });
   });
 });
 
-test('isBoolean', () => {
+describe('isBoolean', () => {
   const examples = [
     123, '123', true, {},
     {a: 123}, function (argument) {}, () => console.log('hello'), undefined,
@@ -115,11 +127,13 @@ test('isBoolean', () => {
     false, false, false, false
   ];
   examples.forEach((example, index) => {
-    expect(utils.isBoolean(example)).toBe(results[index]);
+    test(index.toString(), () => {
+      expect(utils.isBoolean(example)).toBe(results[index]);
+    });
   });
 });
 
-test('isString', () => {
+describe('isString', () => {
   const examples = [
     1, String('123'), '1' + '2', '1.1',
         {a: 123}, {}, function (argument) {}, () => console.log('hello'),
@@ -133,11 +147,13 @@ test('isString', () => {
     false
   ];
   examples.forEach((example, index) => {
-    expect(utils.isString(example)).toBe(results[index]);
+    test(index.toString(), () => {
+      expect(utils.isString(example)).toBe(results[index]);
+    });
   });
 });
 
-test('isHTMLString', () => {
+describe('isHTMLString', () => {
   const examples = [
     '1', '1 + 1', '<img/>', '<div></div>'
   ];
@@ -145,11 +161,13 @@ test('isHTMLString', () => {
     false, false, true, true
   ];
   examples.forEach((example, index) => {
-    expect(utils.isHTMLString(example)).toBe(results[index]);
+    test(index.toString(), () => {
+      expect(utils.isHTMLString(example)).toBe(results[index]);
+    });
   });
 });
 
-test('isUrl', () => {
+describe('isUrl', () => {
   const examples = [
     'http://www.baidu.com', 'https://www.baidu.com', 'http://www.baidu.com:8360', 'http://www.baidu.com:8350/test/123/323',
     'http://www.baidu.com:8931/123?hel=er&idi=12', 'http://www.baidu.com:8931/123?hel=er&idi=12#23', 'http://www.baidu.com:8931/123?hel=er&idi=12#/123', 'http://www.baidu.com:8931/123?hel=er&idi=12#/1adv/dee1',
@@ -167,11 +185,13 @@ test('isUrl', () => {
     true, true
   ];
   examples.forEach((example, index) => {
-    expect(utils.isUrl(example)).toBe(results[index]);
+    test(index.toString(), () => {
+      expect(utils.isUrl(example)).toBe(results[index]);
+    });
   });
 });
 
-test('isEmpty', () => {
+describe('isEmpty', () => {
   const examples = [
     0, 1, '', '12',
     {}, {a: 1}, [], [1, 2, 3],
@@ -185,11 +205,13 @@ test('isEmpty', () => {
     false
   ];
   examples.forEach((example, index) => {
-    expect(utils.isEmpty(example)).toBe(results[index]);
+    test(index.toString(), () => {
+      expect(utils.isEmpty(example)).toBe(results[index]);
+    });
   });
 });
 
-test('isVoid', () => {
+describe('isVoid', () => {
   const examples = [
     0, 1, '', '12',
     {}, {a: 1}, [], [1, 2, 3],
@@ -203,11 +225,13 @@ test('isVoid', () => {
     false
   ];
   examples.forEach((example, index) => {
-    expect(utils.isVoid(example)).toBe(results[index]);
+    test(index.toString(), () => {
+      expect(utils.isVoid(example)).toBe(results[index]);
+    });
   });
 });
 
-test('isEvent', () => {
+describe('isEvent', () => {
   const examples = [
     new Event('look', {'bubbles': true, 'cancelable': false}), {}, [], new String(), // eslint-disable-line no-new-wrappers
     new Function(), function () {}
@@ -217,11 +241,13 @@ test('isEvent', () => {
     false, false
   ];
   examples.forEach((example, index) => {
-    expect(utils.isEvent(example)).toBe(results[index]);
+    test(index.toString(), () => {
+      expect(utils.isEvent(example)).toBe(results[index]);
+    });
   });
 });
 
-test('isBlob', () => {
+describe('isBlob', () => {
   const aFileParts = ['<a id="a"><b id="b">hey!</b></a>']; // an array consisting of a single DOMString
   const oMyBlob = new Blob(aFileParts, {type: 'text/html'}); // the blob
   const examples = [
@@ -233,11 +259,13 @@ test('isBlob', () => {
     false, false
   ];
   examples.forEach((example, index) => {
-    expect(utils.isBlob(example)).toBe(results[index]);
+    test(index.toString(), () => {
+      expect(utils.isBlob(example)).toBe(results[index]);
+    });
   });
 });
 
-test('isFile', () => {
+describe('isFile', () => {
   const aFileParts = ['<a id="a"><b id="b">hey!</b></a>']; // an array consisting of a single DOMString
   const oMyBlob = new Blob(aFileParts, {type: 'text/html'}); // the blob
   const examples = [
@@ -249,11 +277,13 @@ test('isFile', () => {
     false, false
   ];
   examples.forEach((example, index) => {
-    expect(utils.isFile(example)).toBe(results[index]);
+    test(index.toString(), () => {
+      expect(utils.isFile(example)).toBe(results[index]);
+    });
   });
 });
 
-test('isDate', () => {
+describe('isDate', () => {
   const examples = [
     new Date(), {}, [], new String(), // eslint-disable-line no-new-wrappers
     new Function(), function () {}, '2017-02-03', new Date('2017-02-03')
@@ -263,11 +293,13 @@ test('isDate', () => {
     false, false, false, true
   ];
   examples.forEach((example, index) => {
-    expect(utils.isDate(example)).toBe(results[index]);
+    test(index.toString(), () => {
+      expect(utils.isDate(example)).toBe(results[index]);
+    });
   });
 });
 
-test('isPrimitive', () => {
+describe('isPrimitive', () => {
   const examples = [
     1, String('123'), '1' + '2', '1.1',
         {a: 123}, {}, function (argument) {}, () => console.log('hello'),
@@ -281,11 +313,13 @@ test('isPrimitive', () => {
     false, true, false, false
   ];
   examples.forEach((example, index) => {
-    expect(utils.isPrimitive(example)).toBe(results[index]);
+    test(index.toString(), () => {
+      expect(utils.isPrimitive(example)).toBe(results[index]);
+    });
   });
 });
 
-test('isFunction', () => {
+describe('isFunction', () => {
   const examples = [
     /./, 1, '123', true,
     new Boolean(), new String(), new Date(), new Number(), // eslint-disable-line no-new-wrappers
@@ -299,11 +333,13 @@ test('isFunction', () => {
     true, true, true
   ];
   examples.forEach((example, index) => {
-    expect(utils.isFunction(example)).toBe(results[index]);
+    test(index.toString(), () => {
+      expect(utils.isFunction(example)).toBe(results[index]);
+    });
   });
 });
 
-test('isNode', () => {
+describe('isNode', () => {
   const examples = [
     undefined, null, true, 1,
     '1', {}, [], document.createElement('test')
@@ -313,11 +349,13 @@ test('isNode', () => {
     false, false, false, true
   ];
   examples.forEach((example, index) => {
-    expect(utils.isNode(example)).toBe(results[index]);
+    test(index.toString(), () => {
+      expect(utils.isNode(example)).toBe(results[index]);
+    });
   });
 });
 
-test('isElement', () => {
+describe('isElement', () => {
   const examples = [
     undefined, null, true, 1,
     '1', {}, [], document.createElement('test')
@@ -327,7 +365,9 @@ test('isElement', () => {
     false, false, false, true
   ];
   examples.forEach((example, index) => {
-    expect(utils.isElement(example)).toBe(results[index]);
+    test(index.toString(), () => {
+      expect(utils.isElement(example)).toBe(results[index]);
+    });
   });
 });
 
@@ -365,7 +405,7 @@ test('isPosterityNode', () => {
   expect(utils.isPosterityNode(child, orphan)).toBe(false);
 });
 
-test('deepClone', () => {
+describe('deepClone', () => {
   expect(() => utils.deepClone()).toThrow('deepClone only accept non primitive type');
     // 不考虑循环引用
   const examples = [
@@ -375,16 +415,20 @@ test('deepClone', () => {
   ];
   const results = examples;
   examples.forEach((example, index) => {
-    const answer = utils.deepClone(example);
-    expect(answer).not.toBe(results[index]);
-    expect(answer).toEqual(results[index]);
+    test(index.toString(), () => {
+      const answer = utils.deepClone(example);
+      expect(answer).not.toBe(results[index]);
+      expect(answer).toEqual(results[index]);
+    });
   });
 });
 
-test('deepAssign', () => {
-  expect(() => utils.deepAssign()).toThrow('deepAssign accept two and more argument');
-  expect(() => utils.deepAssign(1)).toThrow('deepAssign accept two and more argument');
-  expect(() => utils.deepAssign(1, 2)).toThrow('deepAssign only accept non primitive type');
+describe('deepAssign', () => {
+  test('throw error', () => {
+    expect(() => utils.deepAssign()).toThrow('deepAssign accept two and more argument');
+    expect(() => utils.deepAssign(1)).toThrow('deepAssign accept two and more argument');
+    expect(() => utils.deepAssign(1, 2)).toThrow('deepAssign only accept non primitive type');
+  });
   const examples = [
     [[], []], [[0, 1, 2, 3, 4], [5, 6, 7, 8]], [[0, 1, 2], [4, 5, 6], [7, 8, 9]], [[], [0, 1, 2]],
     [[0, 1, 2], []], [[0, 1, 2], {}], [{}, [0, 1, 2]], [{'0': 0, '1': 1, '2': 2}, [7, 8, 9]],
@@ -402,37 +446,45 @@ test('deepAssign', () => {
     {a: 1, b: {c: 21, d: 4, e: 5}}
   ];
   examples.forEach((example, index) => {
-    const origin = example[0];
-    const result = utils.deepAssign(...example);
-    expect(origin).toBe(result);
-    expect(result).toEqual(results[index]);
+    test(index.toString(), () => {
+      const origin = example[0];
+      const result = utils.deepAssign(...example);
+      expect(origin).toBe(result);
+      expect(result).toEqual(results[index]);
+    });
   });
 });
-test('camelize', () => {
+describe('camelize', () => {
   const examples = [
     'helloWorld', 'hello world', 'hello-world', 'hello - world',
     'HelloWorld', '   Hello, world'
   ];
-  examples.forEach(example => {
-    expect(utils.camelize(example)).toBe('helloWorld');
+  examples.forEach((example, index) => {
+    test('small ' + index.toString(), () => {
+      expect(utils.camelize(example)).toBe('helloWorld');
+    });
   });
   const examples2 = [
     'helloWorld', 'hello world', 'hello-world', 'hello - world',
     'HelloWorld', '   Hello, world'
   ];
-  examples2.forEach(example => {
-    expect(utils.camelize(example, true)).toBe('HelloWorld');
+  examples2.forEach((example, index) => {
+    test('big ' + index.toString(), () => {
+      expect(utils.camelize(example, true)).toBe('HelloWorld');
+    });
   });
 });
 
-test('hypenate', () => {
+describe('hypenate', () => {
   const examples = ['helloWorld', '  hello  world', 'hello-world', 'HelloWorld'];
-  examples.forEach(example => {
-    expect(utils.hypenate(example)).toBe('hello-world');
+  examples.forEach((example, index) => {
+    test(index.toString(), () => {
+      expect(utils.hypenate(example)).toBe('hello-world');
+    });
   });
 });
 
-test('isPromise', () => {
+describe('isPromise', () => {
   const examples = [
     1, 0, true, false,
     {}, [], new Promise(() => {}), Promise.resolve(),
@@ -444,7 +496,9 @@ test('isPromise', () => {
     true
   ];
   examples.forEach((example, index) => {
-    expect(utils.isPromise(example)).toBe(results[index]);
+    test(index.toString(), () => {
+      expect(utils.isPromise(example)).toBe(results[index]);
+    });
   });
 });
 
@@ -550,4 +604,32 @@ describe('warn', () => {
     expect(console.log).lastCalledWith('123');
     global.console = originConsole;
   });
+});
+
+describe('getDeepProperty', () =>{
+ const obj = {
+   a: {
+     b: {
+       c: 1
+     }
+   }
+ };
+ test('key is not an array', () => {
+   expect(() => utils.getDeepProperty()).toThrow('keys of getDeepProperty must be string or Array<string>');
+ });
+ test('obj is empty and throw Error', () => {
+   expect(() => utils.getDeepProperty(null, 'hello', {throwError: true})).toThrow('obj itself is null');
+ });
+ test('obj is empty but do not throw error', () => {
+   expect(utils.getDeepProperty(undefined, 'nothing')).toBe();
+ });
+ test('obj is not empty but property do not exist, and i want it to throw error', () => {
+   expect(() => utils.getDeepProperty(obj, 'a.c.d', {throwError: true})).toThrow('obj.a.c is undefined');
+ });
+ test('key can be an array', () => {
+   expect(utils.getDeepProperty(obj, ['a', 'b', 'c'])).toBe(1);
+ });
+ test('key can be string', () => {
+   expect(utils.getDeepProperty(obj, 'a.b.c')).toBe(1);
+ });
 });
