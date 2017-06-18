@@ -6,7 +6,7 @@
   "jsnext:main": "lib/toxic-decorators.mjs",
   "browser": "lib/toxic-decorators.browser.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --coverage && flow",
     "start": "jest --coverage --watch",
     "flow": "flow",
     "lint": "flow && eslint ./src --fix",

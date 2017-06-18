@@ -8,6 +8,14 @@ export default function initialize (...fns: Array<Function>): Function {
   }
   const fn = compressOneArgFnArray(fns, '@initialize only accept function parameter');
   return function (obj: Object, prop: string, descriptor: Descriptor): Descriptor {
+    if(descriptor === undefined) {
+      return {
+        value: bind(fn, obj)(),
+        configurable: true,
+        writable: true,
+        enumerable: true
+      };
+    }
     if(isAccessorDescriptor(descriptor)) {
       let hasBeenReset = false;
       return accessor({

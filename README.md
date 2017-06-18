@@ -76,15 +76,13 @@ You can get the compiled code in the `lib` file
 * [@before](#before)
 * [@waituntil](#waituntil)
 
-**For Classes **
+**For Classes**
 
 TODO
 
 ## Helpers
 
-TODO
-
-Or maybe you can use [applyDecorators in  core-decorators ](https://github.com/jayphelps/core-decorators.js#applydecorators-helper)
+* [applyDecorators()](#applyDecorators)
 
 ## Docs
 
@@ -414,6 +412,65 @@ setTimeout(async () => {
   // Promise is resolve!
 }, 0)
 
+```
+
+### applyDecorators()
+
+If you want to use decorators, you may need to use [babel-plugin-transform-decorators-legacy](https://github.com/loganfsmyth/babel-plugin-transform-decorators-legacy) to compile. What if you don't want to use that. You can use `applyDecorators`.
+
+```javascript
+import {applyDecorators, before} from 'toxic-decorators';
+
+class Person {
+  run () {
+    console.log('i am running');
+  }
+  walk () {
+    console.log('i am walking');
+  }
+}
+
+// Besides class, you can also use normal function like `function foo {}`
+applyDecorators(Foo, {
+  // you can add only one function
+  walk: before(() => console.log('go')),
+  run: [before(() => console.log('ready')), before(() => console.log('go'))]
+});
+
+const foo = new Foo();
+foo.walk();
+// go
+// i am walking
+foo.run();
+// ready
+// go
+// i am running
+```
+
+In the way above, we can apply decorators on function's prototype. That's enough for methods. But what if we want to apply some property decorators.
+
+You can act like above, but it will modify portotype's property. They make take effect on multiple instance, and it's works bad on some situation.
+
+So, if you want to apply decorators on property, I advice you to pass in an instance in self mode.
+
+```javascript
+import {initialize, applyDecorators} from 'toxic-decorators';
+
+class Foo {
+  a = 1;
+  b = 2;
+};
+const foo = new Foo();
+console.log(foo.a); // 1
+console.log(foo.b); // 2
+
+applyDecorators(foo, {
+  a: initialize(function () {return 2;}),
+  b: initialize(function () {return 3;})
+}, {self: true});
+
+console.log(foo.a); // 2
+console.log(foo.b); // 3
 ```
 
 ## Need lodash utilities as decorators?

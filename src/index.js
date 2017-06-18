@@ -14,6 +14,7 @@ import alwaysString from 'always/string';
 import alwaysBoolean from 'always/boolean';
 import alwaysArray from 'always/array';
 import alwaysNumber from 'always/number';
+import applyDecorators from 'helper/apply-decorators';
 export {
   accessor,
   before,
@@ -30,5 +31,6 @@ export {
   alwaysArray,
   alwaysBoolean,
   alwaysNumber,
-  alwaysString
+  alwaysString,
+  applyDecorators
 };
