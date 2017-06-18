@@ -6,6 +6,7 @@ export {default as autobind} from 'autobind';
 export {default as frozen} from 'frozen';
 export {default as initialize} from 'initialize';
 export {default as waituntil} from 'waituntil';
+export {default as lazyInit} from 'lazy-initialize';
 
 export {default as enumerable} from 'enumerable';
 export {default as nonenumerable} from 'nonenumerable';

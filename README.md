@@ -71,6 +71,7 @@ You can get the compiled code in the `lib` file
 * [@alwaysNumber](#alwaysNumber)
 * [@alwaysArray](#alwaysArray)
 * [@alwaysBoolean](#alwaysBoolean)
+* [@lazyInit](#lazyInit)
 
 **For Methods**
 
@@ -409,6 +410,36 @@ Ensure the property's value always be boolean. You can see the detail in [@alway
 ### @alwaysArray
 
 Ensure the property's value always be Array. You can see the detail in [@alwaysString](#alwaysString)
+
+### @lazyInit
+
+Prevents a property initializer from running until the decorated property is actually looked up. Useful to prevent excess allocations that might otherwise not be used, but be careful not to over-optimize things.
+
+**arguments** none.
+
+```javascript
+import { lazyInit } from 'toxic-decorators';
+
+function createHugeBuffer() {
+  console.log('huge buffer created');
+  return new Array(1000000);
+}
+
+class Editor {
+  @lazyInit
+  hugeBuffer = createHugeBuffer();
+}
+
+var editor = new Editor();
+// createHugeBuffer() has not been called yet
+
+editor.hugeBuffer;
+// logs 'huge buffer created', now it has been called
+
+editor.hugeBuffer;
+// already initialized and equals our buffer, so
+// createHugeBuffer() is not called again
+```
 
 ### @autobind
 
