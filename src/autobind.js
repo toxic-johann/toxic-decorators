@@ -1,5 +1,6 @@
 // @flow
 import {isFunction, createDefaultSetter, bind, isDescriptor} from 'helper/utils';
+import autobindClass from 'class/autobind';
 let mapStore;
 // save bound function for super
 function getBoundSuper (obj: Object, fn: Function): Function {
@@ -33,6 +34,7 @@ function getBoundSuper (obj: Object, fn: Function): Function {
  * @param {Object} descriptor
  */
 export default function autobind (obj: Object, prop: string, descriptor: DataDescriptor): AccessorDescriptor {
+  if(arguments.length === 1) return autobindClass()(obj);
   if(!isDescriptor(descriptor)) {
     throw new Error('@autobind must used on descriptor, are you using it on undefined property?');
   }

@@ -53,8 +53,6 @@ You can get the compiled code in the `lib` file
 **For Properties a Methods**
 
 * [@accessor](#accessor)
-
-
 * [@alias](#alias)
 * [@enumerable](#enumerable)
 * [@initialize](#initialize)
@@ -76,12 +74,14 @@ You can get the compiled code in the `lib` file
 
 **For Methods**
 
+* [@autobind](#autobind)
 * [@before](#before)
 * [@waituntil](#waituntil)
 
 **For Classes**
 
-TODO
+* [@autobind](#autobind)
+* [@autobindClass](#autobindClass)
 
 ## Helpers
 
@@ -92,6 +92,12 @@ TODO
 ### @accessor
 
 Set getter/setter hook on any properties or methods. In fact, it will change all kind of descriptors into an accessor descriptor.
+
+**arguments**
+
+* **handler**: `Object`
+  * get: `Function | Array<Function>`
+  * set: `Function | Array<Function>`
 
 ```javascript
 import {accessor} from 'toxic-decorators';
@@ -117,6 +123,11 @@ console.log(foo.bar); // 5
 ### @alias
 
 Help you to set alias for properties  on any instance or for methods on any class.
+
+**arguments**
+
+* **name**: `string` the alias name
+* **other**: `non-primitive` the other instance you want set alias on
 
 ```javascript
 import {alias} from 'toxic-decorators';
@@ -156,6 +167,8 @@ console.log(dog.old); // 1
 
 Makes a porperty or method so that they cannot be deleted. Also accroding to the specification, it can prevent them from editing via `Object.defineProperty`. But it doesn't work quiet well. In that situation,  [@readonly](#readonly) may be a better choice.
 
+**arguments** none.
+
 ```javascript
 import {nonconfigurable} from 'toxic-decorators';
 
@@ -169,6 +182,8 @@ delete foo.bar; // Cannot delete property 'bar' of #<Foo>"
 ### @enumerable
 
 Marks a property or method as being enumerable. As we know, property is enumerable by default.
+
+**arguments** none.
 
 ```javascript
 import {enumerable} from 'toxic-decoarators';
@@ -188,6 +203,8 @@ for (const key in foo) console.log(key);
 
 Marks a property as not being enumerable. Note that methods aren't enumerable by default.
 
+**arguments** none.
+
 ```javascript
 import {nonenumerable} from 'toxic-decorators';
 
@@ -204,6 +221,12 @@ for (const key in foo) console.log(key); // b
 ### @initialize
 
 Help you to do something when you initialize your property or function.
+
+**arguments** 
+
+* **fn1** `Function` the handler
+* **fn2** `Function` the handler
+* … and so on
 
 ```javascript
 import {initialize} from 'toxic-decorators';
@@ -225,6 +248,8 @@ console.log(foo.bar); // 3
 ### @readonly
 
 You cannot write the porperty again.
+
+**arguments** none
 
 ```javascript
 import { readonly } from 'toxic-decorators';
@@ -267,6 +292,8 @@ console.log(dinner.entree); // 'salmon'
 ### @frozen
 
 We will totally freeze the property. It can not be rewrite, delete or iterate.
+
+**arguments** none
 
 ```javascript
 import { frozen } from 'toxic-decorators';
@@ -312,6 +339,12 @@ console.log(dinner.entree); // 'steak'
 
 Ensure a property's initial value must be string. You can also pass another function as you want. It's just a grammar sugar for [@initialize](#initialize).
 
+**arguments** 
+
+* **fn1** `Function` the handler
+* **fn2** `Function` the handler
+* … and so on
+
 ```Javascript
 import {initString} from 'toxic-decorators';
 
@@ -344,7 +377,13 @@ Ensure a property's initial value must be Array. You can see the detial in [@int
 
 ### @alwaysString
 
-Ensure the property's value always be string. We change the property into getter/setter to implement this. It's a grammar sugar for [@accessor](#accessor)
+Ensure the property's value always be string. We change the property into getter/setter to implement this. It's a grammar sugar for [@accessor](#accessor).
+
+**arguments** 
+
+* **fn1** `Function` the handler
+* **fn2** `Function` the handler
+* … and so on
 
 ```Javascript
 import {initString} from 'toxic-decorators';
@@ -371,9 +410,68 @@ Ensure the property's value always be boolean. You can see the detail in [@alway
 
 Ensure the property's value always be Array. You can see the detail in [@alwaysString](#alwaysString)
 
+### @autobind
+
+Forces invocation of this function to always have `this` refet to the class instance, even if the class  is passed around or would otherwise lose its `this`. e.g. `const fn = context.method`.
+
+You can use it on the methods.
+
+**arguments** none.
+
+```javascript
+import { autobind } from 'toxic-decorators';
+
+class Person {
+  @autobind
+  getPerson() {
+  	return this;
+  }
+}
+
+const person = new Person();
+const { getPerson } = person;
+
+getPerson() === person;
+// true
+```
+
+ You can use it on entire class, it will bind all methods of the class.
+
+```Javascript
+import { autobind } from 'toxic-decorators';
+
+@autobind
+class Person {
+  getPerson() {
+    return this;
+  }
+
+  getPersonAgain() {
+    return this;
+  }
+}
+
+const person = new Person();
+const { getPerson, getPersonAgain } = person;
+
+getPerson() === person;
+// true
+
+getPersonAgain() === person;
+// true
+```
+
+Well, sometime we have lots of methods of class to bind, but not all of them. So we maybe need to exclude some of them. In this situation, you can use [@autobindClass](#autobindClass).
+
 ### @before
 
 You can add your preprocessor here on your methods.Mostly, we will use this to do some arguments check.
+
+**arguments** 
+
+* **fn1** `Function` the handler
+* **fn2** `Function` the handler
+* … and so on
 
 ```javascript
 import {before} from 'toxic-decorators';
@@ -397,36 +495,29 @@ foo.sum('1', 3); // only accept number
 
 ### @waituntil
 
-In some situation, our application is not ready. But others can call our function. We hope that they can wait for us. Most of time, we offer them a Promise to wait. 
+In some situation, our application is not ready. But others can call our function. We hope that they can wait for us. This decorators can let your function do not run until the flag is true
 
-However, can we just offer them a method, and run it until we are ready.
+**arguments**
 
-@waituntil will help us do this stuff.
-
-We set a method to waituntil a flag, you can pass in a promise or a boolean.
-
-If you pass in a promise or a function return promise
-
-1. When the promise is pending, we will wait.
-2. When the promise resolve, we run all the function
-3. When the promise reject, we do not run at all.
-
-But in this way, your method will become async.
-
-If you pass in a function return boolean
-
-1. when the function return `true`, we will call the method.
-2. when the function return `false`,  we do nothing.
-
-This way your method will only be called when you are ready.
-
-But in this way, we can't delay the call that when you're not ready.
-
-So the better way is, pass in a string represent the property's name, alse you can pass another instance.
-
-1. if the property is `false`, we will put the call into waiting queue
-2. once the property get `true`, we will run all the call in the waiting queue.
-3. if the property is `true`, you call will be run.
+* **handler** `Function | Promise<*> | string`
+  * `Function` will tell us can we call the function
+    * `return promise` , we will wait until resolved
+    * `return true`, we will run immediately
+    * `return false`, we would not run it.
+    * when you return promise, your function will become an **asynchronous** function.
+    * when you return false, your call will be throw away and **never run**.
+  * `Promise<*>`, we will wait until resolved.
+    *  your function will become an **asynchronous** function.
+  * `string` **recommend**
+    * we will get the property and spy on it according to the string.
+    * if the property do not equal to true when the function is called, we will put the function into waiting queue.
+    * once the property become true, we will run the function in the waiting queue
+    * if the property is true when the function is called, we will run the function immediately.
+* **other** `non-primitive`
+  * optional
+  * only useful when handler is `string`
+  * if it exist, we will look up the property on this instance
+  * else, we will look up on the class itself
 
 ```Javascript
 import {waituntil} from 'toxic-decorators';
@@ -465,12 +556,50 @@ setTimeout(async () => {
   await foo.ready;
   // Promise is resolve!
 }, 0)
+```
 
+### @autobindClass
+
+When you not pass options. [@autobindClass](#autobindClass) does totally the same as [@autobind](#autobind). 
+
+**arguments**
+
+* **options**: Object
+  * exclude: Array
+    * Defaults: []
+
+```Javascript
+import {autobindClass} from 'toxic-decorators';
+
+@autobindClass({exclude: ['b']})
+class Foo {
+  a () {
+    return this;
+  }
+  b () {
+    return this;
+  }
+}
+
+const foo = new Foo();
+const {a, b} = foo;
+a() === foo; // true
+b() === foo; // false
 ```
 
 ### applyDecorators()
 
 If you want to use decorators, you may need to use [babel-plugin-transform-decorators-legacy](https://github.com/loganfsmyth/babel-plugin-transform-decorators-legacy) to compile. What if you don't want to use that. You can use `applyDecorators`.
+
+**arguments**
+
+* **Class** the class you want to handle
+* **props** `{[string]: Function | Array<Function>}` the props map and their handler
+* **option**
+  * **self** `boolean` 
+    * `false` we will handle on the `Class.prototype`
+    * `true` we will handle on the Class itself
+    * default is false
 
 ```javascript
 import {applyDecorators, before} from 'toxic-decorators';
@@ -526,6 +655,34 @@ applyDecorators(foo, {
 console.log(foo.a); // 2
 console.log(foo.b); // 3
 ```
+
+What's more, you can also use applyDecorators to decorate the whole class.
+
+**arguments**
+
+* **Class** the class you want us to handle
+* **decorators** `Function | Array<Function>` handlers
+
+```Javascript
+import {autobindClass, applyDecoratos} from 'toxic-decorators';
+
+class Foo {
+  a () {
+    return this;
+  }
+  b () {
+    return this;
+  }
+}
+
+applyDecorators(Foo, autobindClass({exclude: ['b']}))
+const foo = new Foo();
+const {a, b} = foo;
+a() === foo; // true
+b() === foo; // false
+```
+
+
 
 ## Need lodash utilities as decorators?
 

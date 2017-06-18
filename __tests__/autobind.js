@@ -189,4 +189,25 @@ describe('autobind', () => {
       a: autobind
     })).toThrow('@autobind must used on descriptor, are you using it on undefined property?');
   });
+
+  test('@autobind can alse be used on class, but you cannot pass it option', () => {
+    @autobind
+    class Foo {
+      a () {
+        return this;
+      }
+      static b () {
+        return this;
+      }
+    }
+
+    const foo = new Foo();
+    expect(foo.a()).toBe(foo);
+    expect(Foo.b()).toBe(Foo);
+
+    const {a} = foo;
+    const {b} = Foo;
+    expect(a()).toBe(foo);
+    expect(b()).toBe();
+  });
 });

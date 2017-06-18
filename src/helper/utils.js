@@ -1,4 +1,5 @@
 // @flow
+const {getOwnPropertyNames, getOwnPropertySymbols, getOwnPropertyDescriptor} = Object;
 // **********************  judgement   ************************
 /**
  * check if the code running in browser environment (not include worker env)
@@ -459,3 +460,20 @@ export function getDeepProperty (obj: any, keys: string | Array<string>, {
   }
   return target;
 }
+
+export const getOwnKeys = isFunction(getOwnPropertySymbols)
+  ? function (obj: any) {
+    // $FlowFixMe: do not support symwbol yet
+    return getOwnPropertyNames(obj).concat(getOwnPropertySymbols(obj));
+  }
+  : getOwnPropertyNames;
+
+// $FlowFixMe: In some environment, Object.getOwnPropertyDescriptors has been implemented;
+export const getOwnPropertyDescriptors = isFunction(Object.getOwnPropertyDescriptors)
+  ? Object.getOwnPropertyDescriptors
+  : function (obj: any) {
+      return getOwnKeys(obj).reduce((descs, key) => {
+        descs[key] = getOwnPropertyDescriptor(obj, key);
+        return descs;
+      }, {});
+    };

@@ -1,4 +1,4 @@
-import {applyDecorators, initialize, frozen, before} from 'index';
+import {applyDecorators, initialize, frozen, before, autobindClass} from 'index';
 describe('applyDecorators', () => {
   test('when Class is not a class, throw error', () => {
     expect(() => applyDecorators()).toThrow('applyDecorators only accept class as first arguments');
@@ -91,4 +91,16 @@ describe('applyDecorators', () => {
   test("even in self mode, we can't not handle primitive value", () => {
     expect(() => applyDecorators(1, {}, {self: true})).toThrow("We can't apply docorators on a primitive value, even in self mode");
   });
+   test('applyDecorators can be used on class, but you have to passed a legal class', () => {
+     expect(() => applyDecorators(1, function () {})).toThrow('If you want to decorator class, you must pass it a legal class');
+   });
+   test('applyDecorators can used on class with decorator', () => {
+     expect(() => applyDecorators(function () {}, autobindClass())).not.toThrow();
+   });
+   test('appyDecorators can used on class with multiple decorators', () => {
+     expect(() => applyDecorators(function () {}, [autobindClass()])).not.toThrow();
+   });
+   test('appyDecorators can used on class with multiple decorators, but you must pass array of function', () => {
+     expect(() => applyDecorators(function () {}, [1])).toThrow('If you want to decorate an class, you must pass it function or array of function');
+   });
 });

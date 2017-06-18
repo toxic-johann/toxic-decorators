@@ -21,4 +21,6 @@ export {default as alwaysBoolean} from 'always/boolean';
 export {default as alwaysArray} from 'always/array';
 export {default as alwaysNumber} from 'always/number';
 
+export {default as autobindClass} from 'class/autobind';
+
 export {default as applyDecorators} from 'helper/apply-decorators';
