@@ -307,7 +307,7 @@ describe('accessor', () => {
     class Foo {};
     applyDecorators(Foo, {
       a: accessor({
-        get () {return value},
+        get () {return value;},
         set (val) {
           value = val;
           return value;
