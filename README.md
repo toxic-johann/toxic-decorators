@@ -7,7 +7,7 @@
 
 
 
-> Inspired by [core-decorators written by jayhelps](https://github.com/jayphelps/core-decorators.js). I think decorators will one powerful util for developer. So I create some function I want to use.
+> Inspired by [core-decorators written by jayphelps](https://github.com/jayphelps/core-decorators.js). I think decorators will one powerful util for developer. So I create some function I want to use.
 
 Library of [JavaScript stage-0 decorators](https://github.com/wycats/javascript-decorators) (aka ES2016/ES7 decorators [but that's not accurate](https://medium.com/@jayphelps/please-stop-referring-to-proposed-javascript-features-as-es7-cad29f9dcc4b)) include methods like @autobind, @waituntil, @alias etc. It's mainly focus on some useful methods to help us create javascript application.
 
@@ -29,13 +29,13 @@ A version compiled to ES5 in CJS format is published to npm as [toxic-decorators
 
 If you want to use it in Node.js.
 
-```javascript
+```sh
 npm install --save toxic-decorators
 ```
 
 If you want to use it in the front-end project, I encourage you to use:
 
-```javascript
+```sh
 npm install --save-dev toxic-decorators
 ```
 
