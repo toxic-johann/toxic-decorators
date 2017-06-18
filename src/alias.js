@@ -24,6 +24,12 @@ export default function alias (key: string, other?: Object): Function {
     throw new TypeError('@alias need a string as a key to find the porperty to set alias on');
   }
   return function (obj: Object, prop: string, descriptor: Descriptor): Descriptor {
+    descriptor = descriptor || {
+      value: undefined,
+      configurable: true,
+      writable: true,
+      enumerable: true
+    };
     const isOtherLegal = other && isFunction(other.hasOwnProperty);
     if(isInitializerDescriptor(descriptor)) {
       return initialize(function (value) {

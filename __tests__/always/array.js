@@ -1,10 +1,10 @@
-import array from 'always/array';
+import {alwaysArray} from 'index';
 describe('always/array', () => {
   class Foo {
-    @array()
+    @alwaysArray()
     bar = 1;
     _car = 1;
-    @array()
+    @alwaysArray()
     get car () {
       return this._car;
     }
@@ -13,7 +13,7 @@ describe('always/array', () => {
       return this._car;
     }
   }
-  test('@array can may property always be array', () => {
+  test('@alwaysArray can may property always be array', () => {
     const foo = new Foo();
     expect(Array.isArray(foo.bar)).toBe(true);
     foo.bar = '123';
@@ -21,7 +21,7 @@ describe('always/array', () => {
     foo.bar = 456;
     expect(Array.isArray(foo.bar)).toBe(true);
   });
-  test('@array can may getter/setter always be array', () => {
+  test('@alwaysArray can may getter/setter always be array', () => {
     const foo = new Foo();
     expect(Array.isArray(foo.car)).toBe(true);
     expect(Array.isArray(foo._car)).not.toBe(true);

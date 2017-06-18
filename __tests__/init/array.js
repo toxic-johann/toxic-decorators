@@ -1,10 +1,10 @@
-import array from 'init/array';
+import {initArray} from 'index';
 describe('init/array', () => {
-  test('@array can set property initialize to be array', () => {
+  test('@initArray can set property initialize to be array', () => {
     class Foo {
-      @array()
+      @initArray()
       bar = 1;
-      @array()
+      @initArray()
       car = [];
     }
     const foo = new Foo();

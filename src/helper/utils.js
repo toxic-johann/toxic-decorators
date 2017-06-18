@@ -336,7 +336,8 @@ export function isDescriptor (desc: any): boolean {
  * @param {descriptor} desc it should be a descriptor better
  */
 export function isAccessorDescriptor (desc: any): boolean %checks {
-  return (isFunction(desc.get) || isFunction(desc.set)) &&
+  return !!desc &&
+    (isFunction(desc.get) || isFunction(desc.set)) &&
     isBoolean(desc.configurable) &&
     isBoolean(desc.enumerable) &&
     desc.writable === undefined;
@@ -346,7 +347,8 @@ export function isAccessorDescriptor (desc: any): boolean %checks {
  * @param {descriptor} desc it should be a descriptor better
  */
 export function isDataDescriptor (desc: any): boolean %checks {
-  return desc.hasOwnProperty('value') &&
+  return !!desc &&
+    desc.hasOwnProperty('value') &&
     isBoolean(desc.configurable) &&
     isBoolean(desc.enumerable) &&
     isBoolean(desc.writable);
@@ -356,7 +358,8 @@ export function isDataDescriptor (desc: any): boolean %checks {
  * @param {descriptor} desc it should be a descriptor better
  */
 export function isInitializerDescriptor (desc: any): boolean %checks {
-  return isFunction(desc.initializer) &&
+  return !!desc &&
+    isFunction(desc.initializer) &&
     isBoolean(desc.configurable) &&
     isBoolean(desc.enumerable) &&
     isBoolean(desc.writable);

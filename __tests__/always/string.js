@@ -1,10 +1,10 @@
-import string from 'always/string';
+import {alwaysString} from 'index';
 describe('always/string', () => {
   class Foo {
-    @string()
+    @alwaysString()
     bar = 1;
     _car = 1;
-    @string()
+    @alwaysString()
     get car () {
       return this._car;
     }
@@ -13,7 +13,7 @@ describe('always/string', () => {
       return this._car;
     }
   }
-  test('@string can may property always be string', () => {
+  test('@alwaysString can may property always be string', () => {
     const foo = new Foo();
     expect(typeof foo.bar).toBe('string');
     foo.bar = '123';
@@ -21,7 +21,7 @@ describe('always/string', () => {
     foo.bar = 456;
     expect(typeof foo.bar).toBe('string');
   });
-  test('@string can may getter/setter always be string', () => {
+  test('@alwaysString can may getter/setter always be string', () => {
     const foo = new Foo();
     expect(typeof foo.car).toBe('string');
     expect(typeof foo._car).not.toBe('string');

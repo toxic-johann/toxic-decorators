@@ -1,7 +1,4 @@
-import applyDecorators from 'helper/apply-decorators.js';
-import initialize from 'initialize';
-import frozen from 'frozen';
-import before from 'before';
+import {applyDecorators, initialize, frozen, before} from 'index';
 describe('applyDecorators', () => {
   test('when Class is not a class, throw error', () => {
     expect(() => applyDecorators()).toThrow('applyDecorators only accept class as first arguments');

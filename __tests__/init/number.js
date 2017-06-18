@@ -1,10 +1,10 @@
-import number from 'init/number';
+import {initNumber} from 'index';
 describe('init/string', () => {
   test('@string can set property initialize to be number', () => {
     class Foo {
-      @number()
+      @initNumber()
       bar = 1;
-      @number()
+      @initNumber()
       car = 'car';
     }
     const foo = new Foo();

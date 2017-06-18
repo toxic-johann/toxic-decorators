@@ -1,4 +1,4 @@
-import frozen from 'frozen';
+import {frozen, applyDecorators} from 'index';
 describe('@frozen', () => {
   class Foo {
     @frozen
@@ -75,10 +75,23 @@ describe('@frozen', () => {
     }
     const car = new Car();
     expect(console.warn).toHaveBeenCalledTimes(1);
-    expect(console.warn).lastCalledWith("You are using @frozen on one accessor descriptor without getter. This property will become a frozen undefined finally.Which maybe meaningless.");
+    expect(console.warn).lastCalledWith('You are using @frozen on one accessor descriptor without getter. This property will become a frozen undefined finally.Which maybe meaningless.');
     expect(Object.getOwnPropertyDescriptor(car, 'one')).toBe();
     expect(car.one).toBe();
-    expect(() => {car.one = 2}).toThrow('Cannot set property one of #<Car> which has only a getter');
+    expect(() => {car.one = 2;}).toThrow('Cannot set property one of #<Car> which has only a getter');
+    global.console = originConsole;
+  });
+  test('@frozen can frozen undefined,(It may be sound useless..', () => {
+    const originConsole = console;
+    global.console = Object.assign({}, originConsole, {warn: jest.fn()});
+    class Foo {};
+    applyDecorators(Foo, {
+      a: frozen
+    });
+    expect(console.warn).lastCalledWith('You are using @frozen on an undefined property. This property will become a frozen undefined forever, which is meaningless');
+    expect(Foo.prototype.a).toBe();
+    expect(() => {Foo.prototype.a = 3;}).toThrow();
+    expect(() => {delete Foo.prototype.a;}).toThrow();
     global.console = originConsole;
   });
 });

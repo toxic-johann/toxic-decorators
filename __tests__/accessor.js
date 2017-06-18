@@ -1,4 +1,4 @@
-import accessor from 'accessor';
+import {accessor, applyDecorators} from 'index';
 describe('accessor', () => {
   test('@accessor must accept a getter or setter', () => {
     expect(() => class {
@@ -301,5 +301,23 @@ describe('accessor', () => {
     expect(fn).toHaveBeenCalledTimes(2);
     expect(foo.bar).toBe(2);
     expect(fn).lastCalledWith(2);
+  });
+  test('@accessor can accessor undefined', () => {
+    let value = 1;
+    class Foo {};
+    applyDecorators(Foo, {
+      a: accessor({
+        get () {return value},
+        set (val) {
+          value = val;
+          return value;
+        }
+      })
+    });
+    const foo = new Foo();
+    expect(foo.a).toBe(value);
+    foo.a = 2;
+    expect(foo.a).toBe(value);
+    expect(value).toBe(2);
   });
 });

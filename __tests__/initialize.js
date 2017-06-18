@@ -1,4 +1,4 @@
-import initialize from 'initialize';
+import {initialize} from 'index';
 describe('initialize', () => {
   test('@initialize only accept function parameter', () => {
     expect(() => {

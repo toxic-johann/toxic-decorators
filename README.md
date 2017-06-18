@@ -56,7 +56,10 @@ You can get the compiled code in the `lib` file
 
 
 * [@alias](#alias)
+* [@enumerable](#enumerable)
 * [@initialize](#initialize)
+* [@nonconfigurable](#nonconfigurable)
+* [@configurable](#configurable)
 * [@readonly](#readonly)
 * [@frozen](@frozen)
 
@@ -148,6 +151,55 @@ console.log(dog.old); // 1
 > But there's one problem is we will set the alias until the origin one has been initialized.
 >
 > It means that you must get access to your origin property before you get access to your alias property, otherwise the alias one will be undefined.
+
+### @nonconfigurable
+
+Makes a porperty or method so that they cannot be deleted. Also accroding to the specification, it can prevent them from editing via `Object.defineProperty`. But it doesn't work quiet well. In that situation,  [@readonly](#readonly) may be a better choice.
+
+```javascript
+import {nonconfigurable} from 'toxic-decorators';
+
+class Foo {
+  @nonconfigurable
+  bar = 1;
+}
+delete foo.bar; // Cannot delete property 'bar' of #<Foo>"
+```
+
+### @enumerable
+
+Marks a property or method as being enumerable. As we know, property is enumerable by default.
+
+```javascript
+import {enumerable} from 'toxic-decoarators';
+
+class Foo {
+  @enumerable
+  bar () {}
+  car () {}
+}
+
+const foo = new Foo();
+for (const key in foo) console.log(key);
+// bar
+```
+
+### @nonenumerable
+
+Marks a property as not being enumerable. Note that methods aren't enumerable by default.
+
+```javascript
+import {nonenumerable} from 'toxic-decorators';
+
+class Foo {
+  @nonenumerable
+  a = 1;
+  b = 2;
+}
+
+const foo = new Foo();
+for (const key in foo) console.log(key); // b
+```
 
 ### @initialize
 
@@ -253,6 +305,8 @@ dinner.entree = 'salmon';
 dish = 'salmon';
 console.log(dinner.entree); // 'steak'
 ```
+
+> Note: Escpecially on property, Once you set frozen, it can't be change, even with decorators. So you may better put it on the top.
 
 ### @initString
 

@@ -1,4 +1,4 @@
-import autobind from 'autobind';
+import {autobind, applyDecorators} from 'index';
 describe('autobind', () => {
   let Foo;
   let Bar;
@@ -176,10 +176,17 @@ describe('autobind', () => {
         @autobind
         a = 2;
       };
-    }).toThrow('@autobind can only be used on functions, not: undefined')
+    }).toThrow('@autobind can only be used on functions, not: undefined');
   });
 
   test('lookup on the prototype', () => {
     Object.getPrototypeOf(new Car()).getFoo();
+  });
+
+  test('throw error if descirptor is undefined', () => {
+    class Foo {};
+    expect(() => applyDecorators(Foo, {
+      a: autobind
+    })).toThrow('@autobind must used on descriptor, are you using it on undefined property?');
   });
 });

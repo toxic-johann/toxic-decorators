@@ -1,4 +1,4 @@
-import alias from 'alias';
+import {alias, applyDecorators} from 'index';
 describe('alias', () => {
   test('@alias need a string as key', () => {
     expect(() => class {
@@ -148,5 +148,17 @@ describe('alias', () => {
     expect(foo._bar).toBe(2);
     expect(car.baz).toBe(foo.bar);
     expect(foo.baz).toBe();
+  });
+  test('@alias works well with undefined', () => {
+    class Foo {}
+    const foo = new Foo();
+    applyDecorators(foo, {
+      a: alias('b')
+    }, {self: true});
+    expect(foo.a).toBe(Foo.b);
+    expect(foo.a).toBe();
+    foo.a = 1;
+    expect(foo.a).toBe(foo.b);
+    expect(foo.a).toBe(1);
   });
 });

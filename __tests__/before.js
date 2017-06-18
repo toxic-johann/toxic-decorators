@@ -1,5 +1,11 @@
-import before from 'before';
+import {before, applyDecorators} from 'index';
 describe('before', () => {
+  test('throw error if descirptor is undefined', () => {
+    class Foo {};
+    expect(() => applyDecorators(Foo, {
+      a: before(function () {})
+    })).toThrow('@before must used on descriptor, are you using it on undefined property?');
+  });
   test('@before only accept function parameter', () => {
     expect(() => {
       return class {

@@ -1,10 +1,10 @@
-import string from 'init/string';
+import {initString} from 'index';
 describe('init/string', () => {
-  test('@string can set property initialize to be string', () => {
+  test('@initString can set property initialize to be string', () => {
     class Foo {
-      @string()
+      @initString()
       bar = 1;
-      @string()
+      @initString()
       car = 'car';
     }
     const foo = new Foo();

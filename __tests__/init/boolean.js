@@ -1,10 +1,10 @@
-import boolean from 'init/boolean';
+import {initBoolean} from 'index';
 describe('init/boolean', () => {
-  test('@boolean can set property initialize to be boolean', () => {
+  test('@initBoolean can set property initialize to be boolean', () => {
     class Foo {
-      @boolean()
+      @initBoolean()
       bar = true;
-      @boolean()
+      @initBoolean()
       car = 'car';
     }
     const foo = new Foo();

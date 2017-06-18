@@ -1,10 +1,10 @@
-import boolean from 'always/boolean';
+import {alwaysBoolean} from 'index';
 describe('always/boolean', () => {
   class Foo {
-    @boolean()
+    @alwaysBoolean()
     bar = 1;
     _car = 1;
-    @boolean()
+    @alwaysBoolean()
     get car () {
       return this._car;
     }
@@ -13,7 +13,7 @@ describe('always/boolean', () => {
       return this._car;
     }
   }
-  test('@boolean can may property always be boolean', () => {
+  test('@alwaysBoolean can may property always be boolean', () => {
     const foo = new Foo();
     expect(typeof foo.bar).toBe('boolean');
     foo.bar = '123';
@@ -21,7 +21,7 @@ describe('always/boolean', () => {
     foo.bar = 456;
     expect(typeof foo.bar).toBe('boolean');
   });
-  test('@boolean can may getter/setter always be boolean', () => {
+  test('@alwaysBoolean can may getter/setter always be boolean', () => {
     const foo = new Foo();
     expect(typeof foo.car).toBe('boolean');
     expect(typeof foo._car).not.toBe('boolean');

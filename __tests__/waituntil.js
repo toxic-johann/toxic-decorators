@@ -1,4 +1,4 @@
-import waituntil from 'waituntil';
+import {waituntil, applyDecorators} from 'index';
 describe('waituntil', () => {
   let run;
   let fn;
@@ -267,5 +267,11 @@ describe('waituntil', () => {
     expect(fn).toHaveBeenCalledTimes(0);
     bar.a.flag = true;
     expect(fn).toHaveBeenCalledTimes(2);
+  });
+  test('throw error if descirptor is undefined', () => {
+    class Foo {};
+    expect(() => applyDecorators(Foo, {
+      a: waituntil('b')
+    })).toThrow('@waituntil must used on descriptor, are you using it on undefined property?');
   });
 });

@@ -8,7 +8,11 @@ export default function before (...fns: Array<Function>): Function {
   for(let i = fns.length - 1; i > -1; i--) {
     if(!isFunction(fns[i])) throw new TypeError('@before only accept function parameter');
   }
-  return function (obj: Object, prop: string, {value: fn, configurable, enumerable, writable}: DataDescriptor): DataDescriptor {
+  return function (obj: Object, prop: string, descriptor: DataDescriptor): DataDescriptor {
+    if(descriptor === undefined) {
+      throw new Error('@before must used on descriptor, are you using it on undefined property?');
+    }
+    const {value: fn, configurable, enumerable, writable} = descriptor;
     if(!isFunction(fn)) throw new TypeError('@before can only be used on function');
     const handler = function (...args: any) {
         const paras = fns.reduce((paras, fn) => {

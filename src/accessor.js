@@ -14,6 +14,15 @@ export default function accessor ({get, set}: {get?: Function | Array<Function>,
     ? compressOneArgFnArray(set, errmsg)
     : set;
   return function (obj: Object, prop: string, descriptor: Descriptor): AccessorDescriptor {
+    if(descriptor === undefined) {
+      // $FlowFixMe: ok, that's enough, disjoint union
+      return {
+        get,
+        set,
+        configurable: true,
+        enumerable: true
+      };
+    }
     const configurable = descriptor.configurable;
     const enumerable = descriptor.enumerable;
     const hasGet = isFunction(get);

@@ -9,6 +9,15 @@ const {defineProperty} = Object;
  * @return {descriptor}
  */
 export default function frozen (obj: Object, prop: string, descriptor: Descriptor): Descriptor | void {
+  if(descriptor === undefined) {
+    warn('You are using @frozen on an undefined property. This property will become a frozen undefined forever, which is meaningless');
+    return {
+      value: undefined,
+      writable: false,
+      enumerable: false,
+      configurable: false
+    };
+  }
   descriptor.enumerable = false;
   descriptor.configurable = false;
   if(isAccessorDescriptor(descriptor)) {
