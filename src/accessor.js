@@ -14,17 +14,8 @@ export default function accessor ({get, set}: {get?: Function | Array<Function>,
     ? compressOneArgFnArray(set, errmsg)
     : set;
   return function (obj: Object, prop: string, descriptor: Descriptor): AccessorDescriptor {
-    if(descriptor === undefined) {
-      // $FlowFixMe: ok, that's enough, disjoint union
-      return {
-        get,
-        set,
-        configurable: true,
-        enumerable: true
-      };
-    }
-    const configurable = descriptor.configurable;
-    const enumerable = descriptor.enumerable;
+    const configurable = descriptor ? descriptor.configurable : true;
+    const enumerable = descriptor ? descriptor.enumerable : true;
     const hasGet = isFunction(get);
     const hasSet = isFunction(set);
     const handleGet = function (value) {
@@ -89,7 +80,7 @@ export default function accessor ({get, set}: {get?: Function | Array<Function>,
       };
     } else {
       // $FlowFixMe: disjoint union is horrible, descriptor is DataDescriptor now
-      let {value} = descriptor;
+      let {value} = descriptor || {};
       return {
         get () {
           return bind(handleGet, this)(value);
