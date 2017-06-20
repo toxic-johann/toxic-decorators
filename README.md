@@ -342,6 +342,7 @@ Ensure a property's initial value must be string. You can also pass another func
 
 **arguments** 
 
+* **defaultValue** *optional* set the default value when value is not string
 * **fn1** `Function` the handler
 * **fn2** `Function` the handler
 * … and so on
@@ -382,6 +383,7 @@ Ensure the property's value always be string. We change the property into getter
 
 **arguments** 
 
+* **defaultValue** *optional* set the default value for situation that value is not string
 * **fn1** `Function` the handler
 * **fn2** `Function` the handler
 * … and so on

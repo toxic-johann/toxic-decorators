@@ -1,7 +1,7 @@
 import {alwaysNumber} from 'index';
 describe('always/number', () => {
   class Foo {
-    @alwaysNumber()
+    @alwaysNumber(3)
     bar = '1';
     _car = '1';
     @alwaysNumber()
@@ -13,6 +13,10 @@ describe('always/number', () => {
       return this._car;
     }
   }
+  test('@alwaysNumber support custom value', () => {
+    const foo = new Foo();
+    expect(foo.bar).toBe(3);
+  });
   test('@alwaysNumber can may property always be number', () => {
     const foo = new Foo();
     expect(typeof foo.bar).toBe('number');

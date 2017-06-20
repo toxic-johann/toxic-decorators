@@ -1,7 +1,7 @@
 import {alwaysString} from 'index';
 describe('always/string', () => {
   class Foo {
-    @alwaysString()
+    @alwaysString('hello')
     bar = 1;
     _car = 1;
     @alwaysString()
@@ -13,6 +13,10 @@ describe('always/string', () => {
       return this._car;
     }
   }
+  test('@alwaysString support custom value', () => {
+    const foo = new Foo();
+    expect(foo.bar).toBe('hello');
+  });
   test('@alwaysString can may property always be string', () => {
     const foo = new Foo();
     expect(typeof foo.bar).toBe('string');

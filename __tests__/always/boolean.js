@@ -1,7 +1,7 @@
 import {alwaysBoolean} from 'index';
 describe('always/boolean', () => {
   class Foo {
-    @alwaysBoolean()
+    @alwaysBoolean(true)
     bar = 1;
     _car = 1;
     @alwaysBoolean()
@@ -13,6 +13,10 @@ describe('always/boolean', () => {
       return this._car;
     }
   }
+  test('@alwaysBoolean support custom vaule', () => {
+    const foo = new Foo();
+    expect(foo.bar).toBe(true);
+  });
   test('@alwaysBoolean can may property always be boolean', () => {
     const foo = new Foo();
     expect(typeof foo.bar).toBe('boolean');
