@@ -59,20 +59,20 @@ You can get the compiled code in the `lib` file
 * [@nonconfigurable](#nonconfigurable)
 * [@configurable](#configurable)
 * [@readonly](#readonly)
-* [@frozen](@frozen)
+* [@frozen](#frozen)
 * [@lock](#lock)
 
 **For Properties**
 
-* [@initString](#initString)
-* [@initNumber](#initNumber)
-* [@initArray](#initArray)
-* [@initBoolean](#initBoolean)
-* [@alwaysString](#alwaysString)
-* [@alwaysNumber](#alwaysNumber)
-* [@alwaysArray](#alwaysArray)
-* [@alwaysBoolean](#alwaysBoolean)
-* [@lazyInit](#lazyInit)
+* [@initString](#initstring)
+* [@initNumber](#initnumber)
+* [@initArray](#initarray)
+* [@initBoolean](#initboolean)
+* [@alwaysString](#alwaysstring)
+* [@alwaysNumber](#alwaysnumber)
+* [@alwaysArray](#alwaysarray)
+* [@alwaysBoolean](#alwaysboolean)
+* [@lazyInit](#lazyinit)
 
 **For Methods**
 
@@ -83,11 +83,11 @@ You can get the compiled code in the `lib` file
 **For Classes**
 
 * [@autobind](#autobind)
-* [@autobindClass](#autobindClass)
+* [@autobindClass](#autobindclass)
 
 ## Helpers
 
-* [applyDecorators()](#applyDecorators)
+* [applyDecorators()](#applydecorators())
 
 ## Docs
 
