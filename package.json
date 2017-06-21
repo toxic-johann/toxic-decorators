@@ -3,6 +3,7 @@
   "version": "0.1.8",
   "description": "decorators",
   "main": "lib/toxic-decorators.js",
+  "module": "lib/toxic-decorators.mjs",
   "jsnext:main": "lib/toxic-decorators.mjs",
   "browser": "lib/toxic-decorators.browser.js",
   "scripts": {

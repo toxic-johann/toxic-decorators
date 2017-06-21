@@ -1,11 +1,16 @@
 // @flow
-import {isString, isFunction, isAccessorDescriptor, isInitializerDescriptor} from 'helper/utils';
+import {isString, isAccessorDescriptor, isInitializerDescriptor, getDeepProperty, isPrimitive, isObject} from 'helper/utils';
 import accessor from 'accessor';
 import initialize from 'initialize';
 const {getOwnPropertyDescriptor, defineProperty} = Object;
-function setAlias (root: Object, prop: string, descriptor: Descriptor, obj: Object, key: string): void {
-  if(getOwnPropertyDescriptor(obj, key) !== undefined) {
-    throw new Error("@alias can't set alias on an existing attribute");
+function setAlias (root: Object, prop: string, {configurable, enumerable}: Descriptor, obj: Object, key: string, {force, omit}: {force: boolean, omit: boolean}): void {
+  const originDesc = getOwnPropertyDescriptor(obj, key);
+  if(originDesc !== undefined) {
+    if(omit) return;
+    if(!force) throw new Error("@alias can't set alias on an existing attribute");
+    if(!originDesc.configurable) {
+      throw new Error("You are tring to set alias on an existing attribute which its configurable is false. That's impossible. Please check if you have set @frozen on it.");
+    }
   }
   defineProperty(obj, key, {
     get () {
@@ -15,14 +20,28 @@ function setAlias (root: Object, prop: string, descriptor: Descriptor, obj: Obje
       root[prop] = value;
       return prop;
     },
-    configurable: descriptor.configurable,
-    enumerable: descriptor.enumerable
+    configurable,
+    enumerable
   });
 }
-export default function alias (key: string, other?: Object): Function {
-  if(!isString(key)) {
-    throw new TypeError('@alias need a string as a key to find the porperty to set alias on');
+export default function alias (other?: any, key: string, option?: {force: boolean, omit: boolean}): Function {
+  // set argument into right position
+  if(arguments.length === 2) {
+    if(isString(other)) {
+      // $FlowFixMe: i will check this later
+      option = key;
+      key = other;
+      other = undefined;
+    }
+  } else if(arguments.length === 1) {
+    // $FlowFixMe: i will check this later
+    key = other;
+    other = undefined;
   }
+  // argument validate
+  if(!isString(key)) throw new TypeError('@alias need a string as a key to find the porperty to set alias on');
+  if(other !== undefined && isPrimitive(other)) throw new TypeError('If you want to use @alias to set alias on other instance, you must pass in a legal instance');
+  const {force, omit} = isObject(option) ? option : {force: false, omit: false};
   return function (obj: Object, prop: string, descriptor: Descriptor): Descriptor {
     descriptor = descriptor || {
       value: undefined,
@@ -30,11 +49,20 @@ export default function alias (key: string, other?: Object): Function {
       writable: true,
       enumerable: true
     };
-    const isOtherLegal = other && isFunction(other.hasOwnProperty);
+    function getTargetAndName (other: any, obj: any, key: string): {target: any, name: string} {
+      let target = isPrimitive(other) ? obj : other;
+      const keys = key.split('.');
+      const [name] = keys.slice(-1);
+      target = getDeepProperty(target, keys.slice(0, -1));
+      return {
+        target,
+        name
+      };
+    }
     if(isInitializerDescriptor(descriptor)) {
       return initialize(function (value) {
-        // $FlowFixMe: Jesus, you have check it already!!
-        setAlias(this, prop, descriptor, isOtherLegal ? other : this, key);
+        const {target, name} = getTargetAndName(other, this, key);
+        setAlias(this, prop, descriptor, target, name, {force, omit});
         return value;
       })(obj, prop, descriptor);
     }
@@ -42,15 +70,15 @@ export default function alias (key: string, other?: Object): Function {
       let inited;
       const handler = function (value) {
         if(inited) return value;
-        // $FlowFixMe: Jesus, you have check it already!!
-        setAlias(this, prop, descriptor, isOtherLegal ? other : this, key);
+        const {target, name} = getTargetAndName(other, this, key);
+        setAlias(this, prop, descriptor, target, name, {force, omit});
         inited = true;
         return value;
       };
       return accessor({get: handler, set: handler})(obj, prop, descriptor);
     }
-    // $FlowFixMe: Jesus, you have check it already!!
-    setAlias(obj, prop, descriptor, isOtherLegal ? other : obj, key);
+    const {target, name} = getTargetAndName(other, obj, key);
+    setAlias(obj, prop, descriptor, target, name, {force, omit});
     return descriptor;
   };
 }

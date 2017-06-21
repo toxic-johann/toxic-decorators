@@ -127,8 +127,14 @@ Help you to set alias for properties  on any instance or for methods on any clas
 
 **arguments**
 
+* **other**: `non-primitive` *optional* the other instance you want set alias on
 * **name**: `string` the alias name
-* **other**: `non-primitive` the other instance you want set alias on
+* options: `object` *optional*
+  * force: `boolean`
+    * when it's true, we will redifine the exiting property, otherwise, we will throw an error when we find you are setting alias on existing property
+    * But it's impossible to do something on frozen value.
+  * omit: `boolean`
+    * when it's true, we will just skip the existing property.
 
 ```javascript
 import {alias} from 'toxic-decorators';
