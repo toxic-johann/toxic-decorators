@@ -75,4 +75,16 @@ describe('before', () => {
     expect(fn).toHaveBeenCalledTimes(1);
     expect(fn).lastCalledWith(1);
   });
+  test('the function should be call before setter', () => {
+    const result = [];
+    class Foo {
+      @before(() => result.push(2), () => result.push(3))
+      bar () {
+        result.push(1);
+      }
+    }
+    const foo = new Foo();
+    foo.bar();
+    expect(result).toEqual([2, 3, 1]);
+  });
 });

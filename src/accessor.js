@@ -1,6 +1,6 @@
 // @flow
 import {isFunction, isArray, bind, isAccessorDescriptor, isInitializerDescriptor, compressOneArgFnArray, warn} from 'helper/utils';
-export default function accessor ({get, set}: {get?: Function | Array<Function>, set?: Function | Array<Function>} = {}): Function {
+export default function accessor ({get, set}: {get?: Function | Array<Function>, set?: Function | Array<Function>} = {}, {preGet = false, preSet = true}: {preGet: boolean, preSet: boolean} = {}): Function {
   if(!isFunction(get) &&
     !isFunction(set) &&
     !(isArray(get) && get.length > 0) &&
@@ -38,18 +38,27 @@ export default function accessor ({get, set}: {get?: Function | Array<Function>,
       }
       const getter = (hasOriginGet || hasGet)
         ? function () {
-          // $FlowFixMe: flow act like a retarded child on optional property
-          const value = hasOriginGet ? bind(originGet, this)() : undefined;
-          return bind(handleGet, this)(value);
+          const boundGetter = bind(handleGet, this);
+          const originBoundGetter = () => {
+            return hasOriginGet
+              // $FlowFixMe: we have do a check here
+              ? bind(originGet, this)()
+              : undefined;
+          };
+          const order = preGet ? [boundGetter, originBoundGetter] : [originBoundGetter, boundGetter];
+          // $FlowFixMe: it's all function here
+          return order.reduce((value, fn) => fn(value), undefined);
         }
         : undefined;
       const setter = (hasOriginSet || hasSet)
         ? function (val) {
-          const value = bind(handleSet, this)(val);
-          return hasOriginSet
+          const boundSetter = bind(handleSet, this);
+          const originBoundSetter = value => hasOriginSet
             // $FlowFixMe: flow act like a retarded child on optional property
             ? bind(originSet, this)(value)
             : value;
+          const order = preSet ? [boundSetter, originBoundSetter] : [originBoundSetter, boundSetter];
+          return order.reduce((value, fn) => fn(value), val);
         }
         : undefined;
       return {
@@ -72,7 +81,12 @@ export default function accessor ({get, set}: {get?: Function | Array<Function>,
           return boundFn(value);
         },
         set (val) {
-          value = bind(handleSet, this)(val);
+          const boundFn = bind(handleSet, this);
+          value = preSet ? boundFn(val) : val;
+          inited = true;
+          if(!preSet) {
+            boundFn(val);
+          }
           return value;
         },
         configurable,
@@ -86,7 +100,11 @@ export default function accessor ({get, set}: {get?: Function | Array<Function>,
           return bind(handleGet, this)(value);
         },
         set (val) {
-          value = bind(handleSet, set)(val);
+          const boundFn = bind(handleSet, this);
+          value = preSet ? boundFn(val) : val;
+          if(!preSet) {
+            boundFn(val);
+          }
           return value;
         },
         configurable,

@@ -320,4 +320,115 @@ describe('accessor', () => {
     expect(foo.a).toBe(value);
     expect(value).toBe(2);
   });
+  describe('preSet and preGet in getter/setter', () => {
+    let result;
+    class Foo {
+      @accessor({
+        get (val) {
+          result.push(2);
+          return val;
+        },
+        set (val) {
+          result.push(4);
+          return val;
+        }
+      }, {preGet: true, preSet: true})
+      get a () {
+        result.push(1);
+        return 'a';
+      }
+      set a (value) {
+        result.push(3);
+      }
+      @accessor({
+        get (val) {
+          result.push(2);
+          return val;
+        },
+        set (val) {
+          result.push(4);
+          return val;
+        }
+      }, {preGet: false, preSet: false})
+      get b () {
+        result.push(1);
+        return 'b';
+      }
+      set b (value) {
+        result.push(3);
+      }
+    }
+    const foo = new Foo();
+    beforeEach(() => {
+      result = [];
+    });
+    test('pre is true', () => {
+      expect(foo.a).toBe('a');
+      foo.a = 1;
+      expect(result).toEqual([2, 1, 4, 3])
+    });
+    test('pre is false', () => {
+      expect(foo.b).toBe('b');
+      foo.b = 2;
+      expect(result).toEqual([1, 2, 3, 4]);
+    });
+  });
+  describe('preset in intialize descriptor', () => {
+    let result;
+    class Foo {
+      @accessor({
+        set () {
+          result.push(this.a);
+        }
+      }, {preSet: false})
+      a = 1;
+      @accessor({
+        set () {
+          result.push(this.b);
+        }
+      }, {preSet: true})
+      b = 1;
+    }
+    const foo = new Foo();
+    beforeEach(() => {
+      result = [];
+    });
+    test('preset is false', () => {
+      foo.a = 2;
+      expect(result[0]).toBe(2);
+    });
+    test('preset is true', () => {
+      foo.b = 2;
+      expect(result[0]).toBe(1);
+    });
+  });
+  describe('preset on data descriptor', () => {
+    let result;
+    class Foo {
+      @accessor({
+        set () {
+          result.push(this.a())
+        }
+      }, {preSet: false})
+      a () {return 1;}
+      @accessor({
+        set () {
+          result.push(this.b())
+        }
+      }, {preSet: true})
+      b () {return 1;}
+    }
+    const foo = new Foo();
+    beforeEach(()=> {
+      result = [];
+    });
+    test('preset is false', () => {
+      foo.a = () => 2;
+      expect(result[0]).toBe(2);
+    });
+    test('preset is true', () => {
+      foo.b = () => 2;
+      expect(result[0]).toBe(1);
+    });
+  });
 });

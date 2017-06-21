@@ -1,5 +1,6 @@
 export {default as accessor} from 'accessor';
 export {default as before} from 'before';
+export {default as after} from 'after';
 export {default as readonly} from 'readonly';
 export {default as alias} from 'alias';
 export {default as autobind} from 'autobind';
