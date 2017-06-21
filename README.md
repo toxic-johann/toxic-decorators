@@ -60,6 +60,7 @@ You can get the compiled code in the `lib` file
 * [@configurable](#configurable)
 * [@readonly](#readonly)
 * [@frozen](@frozen)
+* [@lock](#lock)
 
 **For Properties**
 
@@ -341,6 +342,52 @@ console.log(dinner.entree); // 'steak'
 ```
 
 > Note: Escpecially on property, Once you set frozen, it can't be change, even with decorators. So you may better put it on the top.
+
+### @lock
+
+We will totally lock the property. It can not be rewrite, delete. But we would not force it be nonenumerable.
+
+**arguments** none
+
+```javascript
+import { lock } from 'toxic-decorators';
+
+class Meal {
+  @lock
+  entree = 'steak';
+}
+
+const dinner = new Meal();
+dinner.entree = 'salmon';
+// Cannot assign to read only property 'entree' of [object Object]
+delete dinner.entree;
+// Cannot delete property 'entree' of #<Meal>"
+```
+
+You can also set the getter/setter property locked. In this way, it's value could change once it's settle down.
+
+```javascript
+import { frozen } from 'toxic-decorators';
+
+let dish = 'steak'
+
+class Meal {
+  @lock
+  get entree () {return dish};
+  set entree (value) {
+    dish = value;
+    return dish
+  }
+}
+
+const dinner = new Meal();
+dinner.entree = 'salmon';
+// Cannot set property dinner of #<Meal> which has only a getter
+dish = 'salmon';
+console.log(dinner.entree); // 'steak'
+```
+
+> Note: Escpecially on property, Once you set locked, it can't be change, even with decorators. So you may better put it on the top.
 
 ### @initString
 
