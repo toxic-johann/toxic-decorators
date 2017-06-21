@@ -87,7 +87,7 @@ You can get the compiled code in the `lib` file
 
 ## Helpers
 
-* [applyDecorators()](#applydecorators())
+* [applyDecorators()](#applydecorators)
 
 ## Docs
 
