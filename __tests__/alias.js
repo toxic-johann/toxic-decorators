@@ -217,4 +217,27 @@ describe('alias', () => {
     expect(bar.run).toBe(3);
     expect(bar.deepFlag.you.can.run).toBe(3);
   });
+  test('@alias can do nothing if deepproperty is not exist', () => {
+    class Bar {
+      deepFlag = {
+        can: {
+          }
+      };
+      @alias('deepFlag.you.can.run')
+      run = 1;
+    }
+    expect(() => new Bar()).toThrow('obj.deepFlag.you is undefined');
+  });
+  test('@alias require you to pass in legal instance even you are using deepproperty.', () => {
+    class Bar {
+      deepFlag = {
+        you: {
+          can: 1
+        }
+      };
+      @alias('deepFlag.you.can.run')
+      run = 1;
+    }
+    expect(() => new Bar()).toThrow('If you want to use @alias to set alias on other instance, you must pass in a legal instance');
+  });
 });

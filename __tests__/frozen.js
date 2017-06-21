@@ -27,7 +27,7 @@ describe('@frozen', () => {
   });
   test('@frozen marks descriptor as enumerable === false', () => {
     expect(Object.getOwnPropertyDescriptor(Foo.prototype, 'first').enumerable).toBe(false);
-    const foo =new Foo();
+    const foo = new Foo();
     expect(Object.getOwnPropertyDescriptor(foo, 'second').enumerable).toBe(false);
   });
   test('@frozen marks descriptor as configurable === false', () => {

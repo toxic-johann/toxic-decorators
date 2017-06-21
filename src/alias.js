@@ -40,7 +40,8 @@ export default function alias (other?: any, key: string, option?: {force: boolea
   }
   // argument validate
   if(!isString(key)) throw new TypeError('@alias need a string as a key to find the porperty to set alias on');
-  if(other !== undefined && isPrimitive(other)) throw new TypeError('If you want to use @alias to set alias on other instance, you must pass in a legal instance');
+  const illegalObjErrorMsg = 'If you want to use @alias to set alias on other instance, you must pass in a legal instance';
+  if(other !== undefined && isPrimitive(other)) throw new TypeError(illegalObjErrorMsg);
   const {force, omit} = isObject(option) ? option : {force: false, omit: false};
   return function (obj: Object, prop: string, descriptor: Descriptor): Descriptor {
     descriptor = descriptor || {
@@ -53,7 +54,10 @@ export default function alias (other?: any, key: string, option?: {force: boolea
       let target = isPrimitive(other) ? obj : other;
       const keys = key.split('.');
       const [name] = keys.slice(-1);
-      target = getDeepProperty(target, keys.slice(0, -1));
+      target = getDeepProperty(target, keys.slice(0, -1), {throwError: true});
+      if(isPrimitive(target)) {
+        throw new TypeError(illegalObjErrorMsg);
+      }
       return {
         target,
         name

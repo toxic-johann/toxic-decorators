@@ -27,7 +27,7 @@ describe('@lock', () => {
   });
   test('@lock marks descriptor as enumerable what it should be', () => {
     expect(Object.getOwnPropertyDescriptor(Foo.prototype, 'first').enumerable).toBe(false);
-    const foo =new Foo();
+    const foo = new Foo();
     expect(Object.getOwnPropertyDescriptor(foo, 'second').enumerable).toBe(true);
   });
   test('@lock marks descriptor as configurable === false', () => {
