@@ -23,7 +23,6 @@ class Hooks {
   }
   post (value, context) {
     const {oldVal, handler, deep, prop} = this;
-    console.log(handler, value)
     if(oldVal === value) return value;
     const newVal = this.newVal = context[prop];
     bind(handler, context)(newVal, oldVal);
@@ -111,7 +110,7 @@ export default function watch (keyOrFn: string | Function, {deep, other, omit}: 
       }, {preSet: true}),
       accessor({
         set (value) {
-          console.log('you call this', value)
+          console.log('you call this', value);
           return hooks.post(value, this);
         }
       }, {preSet: false}))(obj, prop, descriptor);
