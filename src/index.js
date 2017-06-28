@@ -9,6 +9,7 @@ export {default as initialize} from 'initialize';
 export {default as waituntil} from 'waituntil';
 export {default as lazyInit} from 'lazy-initialize';
 export {default as lock} from 'lock';
+export {default as watch} from './watch';
 
 export {default as enumerable} from 'enumerable';
 export {default as nonenumerable} from 'nonenumerable';
@@ -27,3 +28,5 @@ export {default as alwaysNumber} from 'always/number';
 export {default as autobindClass} from 'class/autobind';
 
 export {default as applyDecorators} from 'helper/apply-decorators';
+
+export {getOwnKeys, getOwnPropertyDescriptors} from 'helper/utils';

@@ -1,6 +1,6 @@
 // @flow
 import {isFunction, isArray, bind, isAccessorDescriptor, isInitializerDescriptor, compressOneArgFnArray, warn} from 'helper/utils';
-export default function accessor ({get, set}: {get?: Function | Array<Function>, set?: Function | Array<Function>} = {}, {preGet = false, preSet = true}: {preGet: boolean, preSet: boolean} = {}): Function {
+export default function accessor ({get, set}: {get?: Function | Array<Function>, set?: Function | Array<Function>} = {}, {preGet = false, preSet = true}: {preGet?: boolean, preSet?: boolean} = {}): Function {
   if(!isFunction(get) &&
     !isFunction(set) &&
     !(isArray(get) && get.length > 0) &&
@@ -14,8 +14,13 @@ export default function accessor ({get, set}: {get?: Function | Array<Function>,
     ? compressOneArgFnArray(set, errmsg)
     : set;
   return function (obj: Object, prop: string, descriptor: Descriptor): AccessorDescriptor {
-    const configurable = descriptor ? descriptor.configurable : true;
-    const enumerable = descriptor ? descriptor.enumerable : true;
+    const {
+      configurable = true,
+      enumerable = true
+    } = descriptor || {};
+    // const configurable = descriptor ? descriptor.configurable : true;
+    // const enumerable = descriptor ? descriptor.enumerable : true;
+    // const writable = descriptor ? descriptor.w : true;
     const hasGet = isFunction(get);
     const hasSet = isFunction(set);
     const handleGet = function (value) {
@@ -85,7 +90,7 @@ export default function accessor ({get, set}: {get?: Function | Array<Function>,
           value = preSet ? boundFn(val) : val;
           inited = true;
           if(!preSet) {
-            boundFn(val);
+            boundFn(value);
           }
           return value;
         },
@@ -103,7 +108,7 @@ export default function accessor ({get, set}: {get?: Function | Array<Function>,
           const boundFn = bind(handleSet, this);
           value = preSet ? boundFn(val) : val;
           if(!preSet) {
-            boundFn(val);
+            boundFn(value);
           }
           return value;
         },

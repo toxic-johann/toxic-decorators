@@ -12,7 +12,13 @@ describe('applyDecorators', () => {
     expect(() => applyDecorators(fn, {})).toThrow('The class muse have a prototype, please take a check');
   });
   test('props must accept array of function', () => {
+    const originConsole = global.console;
+    global.console = Object.assign({}, originConsole, {
+      warn: jest.fn()
+    });
     expect(() => applyDecorators(function () {}, {a: ['what']})).toThrow('The decorators set on props must be Function or Array of Function');
+    expect(console.warn).toHaveBeenCalledTimes(1);
+    global.console = originConsole;
   });
   test('empty props is ok', () => {
     expect(() => applyDecorators(function () {}, {})).not.toThrow();

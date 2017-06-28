@@ -477,3 +477,18 @@ export const getOwnPropertyDescriptors = isFunction(Object.getOwnPropertyDescrip
         return descs;
       }, {});
     };
+
+export function compressMultipleDecorators (...fns: Array<Function>): Function {
+  const fnOnlyErrorMsg = 'compressMultipleDecorators only accept function';
+  if(fns.length === 1) {
+    if(!isFunction(fns[0])) throw new TypeError(fnOnlyErrorMsg);
+    return fns[0];
+  }
+  return function (obj: any, prop: string, descirptor: Descriptor | void): Descriptor {
+    // $FlowFixMe: the reduce will return a descriptor
+    return fns.reduce((descirptor, fn) => {
+      if(!isFunction(fn)) throw new TypeError(fnOnlyErrorMsg);
+      return fn(obj, prop, descirptor);
+    }, descirptor);
+  };
+}

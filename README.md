@@ -3,7 +3,8 @@
 [![Build Status](https://img.shields.io/travis/toxic-johann/toxic-decorators/master.svg?style=flat-square)](https://travis-ci.org/toxic-johann/toxic-decorators.svg?branch=master)
 [![Coverage Status](https://img.shields.io/coveralls/toxic-johann/toxic-decorators/master.svg?style=flat-square)](https://coveralls.io/github/toxic-johann/toxic-decorators?branch=master)
 [![npm](https://img.shields.io/npm/v/toxic-decorators.svg?colorB=brightgreen&style=flat-square)](https://www.npmjs.com/package/toxic-decorators)
-[![devDependency Status](https://david-dm.org/toxic-johann/toxic-decorators.svg)](https://david-dm.org/toxic-johann/toxic-decorators)
+[![dependency Status](https://david-dm.org/toxic-johann/toxic-decorators.svg)](https://david-dm.org/toxic-johann/toxic-decorators)
+[![devDependency Status](https://david-dm.org/toxic-johann/toxic-decorators/dev-status.svg)](https://david-dm.org/toxic-johann/toxic-decorators?type=dev)
 
 
 

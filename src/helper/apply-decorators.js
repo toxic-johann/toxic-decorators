@@ -1,5 +1,5 @@
 // @flow
-import {isVoid, isObject, isFunction, isArray, isPrimitive} from 'helper/utils';
+import {isVoid, isObject, isFunction, isArray, isPrimitive, compressMultipleDecorators, warn} from 'helper/utils';
 const { defineProperty, getOwnPropertyDescriptor } = Object;
 
 export default function applyDecorators (Class: any, props: {[string]: Array<Function> | Function} | Function | Array<Function>, {self = false}: {self?: boolean} = {}) {
@@ -28,14 +28,15 @@ export default function applyDecorators (Class: any, props: {[string]: Array<Fun
   for (const key in props) {
     const value = props[key];
     const decorators = isArray(value) ? value : [value];
-
-    for (let i = 0, l = decorators.length; i < l; i++) {
-      const decorator = decorators[i];
-      if(!isFunction(decorator)) throw new Error('The decorators set on props must be Function or Array of Function');
-      const descriptor = getOwnPropertyDescriptor(prototype, key);
-
-      defineProperty(prototype, key, decorator(prototype, key, descriptor));
+    let handler;
+    try {
+      handler = compressMultipleDecorators(...decorators);
+    } catch (err) {
+      warn(err && err.message);
+      throw new Error('The decorators set on props must be Function or Array of Function');
     }
+    const descriptor = getOwnPropertyDescriptor(prototype, key);
+    defineProperty(prototype, key, handler(prototype, key, descriptor));
   }
   return Class;
 }
