@@ -1,6 +1,6 @@
 {
   "name": "toxic-decorators",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "decorators",
   "main": "lib/toxic-decorators.js",
   "module": "lib/toxic-decorators.mjs",
@@ -41,7 +41,6 @@
     "babel-preset-flow": "^6.23.0",
     "babel-preset-latest": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
-    "babel-runtime": "^6.23.0",
     "eslint": "^4.0.0",
     "eslint-plugin-flowtype": "^2.34.0",
     "eslint-plugin-jest": "^20.0.3",
@@ -69,5 +68,8 @@
     "transform": {
       ".*": "babel-jest"
     }
+  },
+  "dependencies": {
+    "babel-runtime": "^6.23.0"
   }
 }
