@@ -8,6 +8,7 @@ const {getOwnPropertyNames, getOwnPropertySymbols, getOwnPropertyDescriptor} = O
 export const inBrowser =
     typeof window !== 'undefined' &&
     Object.prototype.toString.call(window) !== '[object Object]';
+export const supportProxy = typeof Proxy !== undefined;
 /**
  * is void element or not ? Means it will return true when val is undefined or null
  * @param  {Anything}  obj

@@ -10,6 +10,7 @@ export {default as waituntil} from 'waituntil';
 export {default as lazyInit} from 'lazy-initialize';
 export {default as lock} from 'lock';
 export {default as watch} from './watch';
+export {default as nonextendable} from 'nonextendable';
 
 export {default as enumerable} from 'enumerable';
 export {default as nonenumerable} from 'nonenumerable';

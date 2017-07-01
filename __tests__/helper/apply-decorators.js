@@ -1,4 +1,4 @@
-import {applyDecorators, initialize, frozen, before, autobindClass} from 'index';
+import {applyDecorators, initialize, frozen, before, autobindClass, autobind} from 'index';
 describe('applyDecorators', () => {
   test('when Class is not a class, throw error', () => {
     expect(() => applyDecorators()).toThrow('applyDecorators only accept class as first arguments');
@@ -77,7 +77,7 @@ describe('applyDecorators', () => {
     expect(() => {delete foo.a;}).not.toThrow();
     expect(() => {delete Foo.prototype.a;}).toThrow();
   });
-  test('support self mode, so that you can handle instance directly', () => {
+  test('support self mode, so that you can handle instance property directly', () => {
     class Foo {
       a = 1;
       b = 2;
@@ -93,6 +93,20 @@ describe('applyDecorators', () => {
     expect(foo.a).toBe(2);
     expect(Foo.prototype.b).toBe();
     expect(foo.b).toBe(3);
+  });
+  test('support self mode, so that you can handle instance method directly', () => {
+    class Foo {
+      a () {
+        expect(this).toBe(foo);
+      };
+    };
+    const foo = new Foo();
+    applyDecorators(Foo.prototype, {
+      a: autobind
+    }, {self: true});
+    foo.a();
+    const {a: b} = foo;
+    b();
   });
   test("even in self mode, we can't not handle primitive value", () => {
     expect(() => applyDecorators(1, {}, {self: true})).toThrow("We can't apply docorators on a primitive value, even in self mode");

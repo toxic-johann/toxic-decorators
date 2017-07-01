@@ -1,7 +1,8 @@
 // @flow
-import {getOwnKeys, isFunction, isString, isPrimitive, getDeepProperty, bind, compressMultipleDecorators, isObject} from 'helper/utils';
+import {getOwnKeys, isFunction, isString, isPrimitive, getDeepProperty, bind, compressMultipleDecorators, isObject, isArray} from 'helper/utils';
 const {getOwnPropertyDescriptor, defineProperty} = Object;
 import accessor from 'accessor';
+
 class Hooks {
   oldVal: any;
   newVal: any;
@@ -12,7 +13,7 @@ class Hooks {
   oldVal = undefined;
   newVal = undefined;
   inited = false;
-  constructor ({prop, handler, deep}: {prop: string, handler: Function, deep: boolean} = {}) {
+  constructor ({prop, handler, deep}: {prop: string, handler: Function, deep: boolean}) {
     this.prop = prop;
     this.handler = handler;
     this.deep = deep;
@@ -26,13 +27,7 @@ class Hooks {
     if(oldVal === value) return value;
     const newVal = this.newVal = context[prop];
     bind(handler, context)(newVal, oldVal);
-    if(deep && isObject(oldVal)) {
-      const keys = getOwnKeys(newVal);
-      for(let i = 0, len = keys.length; i < len; i++) {
-        const key = keys[i];
-        this.deepObeserve(newVal, key, context);
-      }
-    }
+    if(deep) this.iterate(newVal, context);
     this.inited = true;
     this.oldVal = newVal;
     return value;
@@ -42,20 +37,14 @@ class Hooks {
     if(!inited && oldVal !== value) {
       this.inited = true;
       this.oldVal = value;
-      if(deep && isObject(value)) {
-        const keys = getOwnKeys(value);
-        for(let i = 0, len = keys.length; i < len; i++) {
-          const key = keys[i];
-          this.deepObeserve(value, key, context);
-        }
-      }
+      if(deep) this.iterate(value, context);
     }
     return value;
   }
   deepObeserve (obj, key, context) {
     const {handler, deep} = this;
     const descriptor = getOwnPropertyDescriptor(obj, key);
-    if(descriptor.writable === false) return;
+    if(descriptor.writable === false || descriptor.configurable === false) return;
     // $FlowFixMe: flow do not support symbol yet
     const hooks = new Hooks({prop: key, handler, deep});
     defineProperty(obj, key, compressMultipleDecorators(
@@ -73,6 +62,15 @@ class Hooks {
         }
       }, {preSet: false}))(obj, key, descriptor));
   }
+  iterate (value, context): void {
+    if(isObject(value) || isArray(value)) {
+      const keys = getOwnKeys(value);
+      for(let i = 0, len = keys.length; i < len; i++) {
+        const key = keys[i];
+        this.deepObeserve(value, key, context);
+      }
+    }
+  }
 }
 export default function watch (keyOrFn: string | Function, {deep, other, omit}: {
   deep: boolean,
@@ -84,14 +82,14 @@ export default function watch (keyOrFn: string | Function, {deep, other, omit}: 
   return function (obj: any, prop: string, descriptor: void | Descriptor): AccessorDescriptor {
     const handler = isString(keyOrFn)
     ? function (newVal, oldVal) {
-      const target = isPrimitive(other) ? obj : other;
+      const target = other || obj;
       // $FlowFixMe: we have ensure it must be a string
       const fn = getDeepProperty(target, keyOrFn);
       if(!isFunction(fn)) {
         if(!omit) throw new Error('You pass in a function for us to trigger, please ensure the property to be a function or set omit flag true');
-        return function () {};
+        return;
       }
-      return fn;
+      return bind(fn, this)(newVal, oldVal);
     }
     : keyOrFn;
     const hooks = new Hooks({
@@ -110,7 +108,6 @@ export default function watch (keyOrFn: string | Function, {deep, other, omit}: 
       }, {preSet: true}),
       accessor({
         set (value) {
-          console.log('you call this', value);
           return hooks.post(value, this);
         }
       }, {preSet: false}))(obj, prop, descriptor);

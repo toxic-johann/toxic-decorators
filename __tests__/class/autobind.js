@@ -57,4 +57,15 @@ describe('autobindClass', () => {
     expect(a()).toBe(foo);
     expect(b()).toBe();
   });
+  test('@autobindClass should not affect static method', () => {
+    @autobindClass()
+    class Foo {
+      static b () {
+        return this;
+      }
+    }
+    expect(Foo.b()).toBe(Foo);
+    const {b: c} = Foo;
+    expect(c()).toBe();
+  });
 });
