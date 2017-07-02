@@ -1,6 +1,6 @@
 {
   "name": "toxic-decorators",
-  "version": "0.2.1",
+  "version": "0.2.3",
   "description": "decorators",
   "main": "lib/toxic-decorators.js",
   "module": "lib/toxic-decorators.mjs",
@@ -50,8 +50,10 @@
     "nyc": "^11.0.3",
     "rollup": "^0.43.0",
     "rollup-plugin-babel": "^2.7.1",
+    "rollup-plugin-commonjs": "^8.0.2",
     "rollup-plugin-flow-no-whitespace": "^1.0.0",
     "rollup-plugin-includepaths": "^0.2.2",
+    "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-uglify": "^2.0.1"
   },
   "jest": {
@@ -70,7 +72,7 @@
   },
   "dependencies": {
     "babel-runtime": "^6.23.0",
-    "toxic-predicate-functions": "^0.1.1",
-    "toxic-utils": "^0.1.0"
+    "toxic-predicate-functions": "^0.1.2",
+    "toxic-utils": "^0.1.1"
   }
 }
