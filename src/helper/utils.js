@@ -1,14 +1,10 @@
 // @flow
 export * from 'toxic-predicate-functions';
-import {isFunction, isArray, isObject, isBoolean, isString, isPrimitive, isVoid} from 'toxic-predicate-functions';
+import {isFunction, isArray, isBoolean, isString, isVoid} from 'toxic-predicate-functions';
+export * from 'toxic-utils';
+import {bind} from 'toxic-utils';
 const {getOwnPropertyNames, getOwnPropertySymbols, getOwnPropertyDescriptor} = Object;
 // **********************  对象操作  ************************
-/**
- * 转变一个类数组对象为数组
- */
-export function makeArray (obj: any): Array<any> {
-  return Array.from(obj);
-}
 /**
  * sort Object attributes by function
  * and transfer them into array
@@ -22,75 +18,6 @@ export function transObjectAttrIntoArray (obj: Object, fn: Function = (a, b) => 
   .reduce((order, key) => {
     return order.concat(obj[key]);
   }, []);
-}
-/**
- * 生成深度遍历函数的处理器，常用于生成深度拷贝等
- * @param  {Function} fn 遍历到深度变量的时候的操作
- * @return {Function}     可用的操作函数
- */
-export function genTraversalHandler (fn: Function): Function {
-  function recursiveFn (source, target, key) {
-    if(isArray(source) || isObject(source)) {
-      target = target || (isObject(source) ? {} : []);
-      for(const key in source) {
-        target[key] = recursiveFn(source[key], target[key], key);
-      }
-      return target;
-    }
-    return fn(source, target, key);
-  };
-  return recursiveFn;
-};
-const _deepAssign = genTraversalHandler(val => val);
-/**
- * 对象克隆
- * @param  {Array|Object} source 传其他值会直接返回
- * @return {clone-target}        [description]
- */
-export function deepClone<T: Object | Array<any>> (source: T): T {
-  if(isPrimitive(source)) {
-      throw new TypeError('deepClone only accept non primitive type');
-    }
-  return _deepAssign(source);
-};
-/**
- * merge multiple objects
- * @param  {...Object} args [description]
- * @return {merge-object}         [description]
- */
-export function deepAssign<T: any> (...args: Array<T>): T & T {
-  if(args.length < 2) {
-    throw new Error('deepAssign accept two and more argument');
-  }
-  for(let i = args.length - 1; i > -1; i--) {
-    if(isPrimitive(args[i])) {
-      throw new TypeError('deepAssign only accept non primitive type');
-    }
-  }
-  const target = args.shift();
-  args.forEach(source => _deepAssign(source, target));
-  return target;
-}
-
-/**
- * camelize any string, e.g hello world -> helloWorld
- * @param  {string} str only accept string!
- * @return {string}     camelize string
- */
-export function camelize (str: string, isBig: ?boolean): string {
-  return str.replace(/(^|[^a-zA-Z]+)([a-zA-Z])/g, function (match, spilt, initials, index) {
-    return (!isBig && index === 0)
-      ? initials.toLowerCase()
-      : initials.toUpperCase();
-  });
-}
-/**
- * hypenate any string e.g hello world -> hello-world
- * @param  {string} str only accept string
- * @return {string}
- */
-export function hypenate (str: string): string {
-  return camelize(str).replace(/([A-Z])/g, match => '-' + match.toLowerCase());
 }
 /**
  * to check if an descriptor
@@ -159,24 +86,7 @@ export function createDefaultSetter (key: string) {
     return newValue;
   };
 }
-/**
- * bind the function with some context. we have some fallback strategy here
- * @param {function} fn the function which we need to bind the context on
- * @param {any} context the context object
- */
-export function bind (fn: Function, context: any): Function {
-  if (fn.bind) {
-    return fn.bind(context);
-  } else if(fn.apply) {
-    return function __autobind__ (...args: any) {
-      return fn.apply(context, args);
-    };
-  } else {
-    return function __autobind__ (...args: any) {
-      return fn.call(context, ...args);
-    };
-  }
-}
+
 /**
  * Compress many function into one function, but this function only accept one arguments;
  * @param {Array<Function>} fns the array of function we need to compress into one function
