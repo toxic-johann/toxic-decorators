@@ -1,5 +1,6 @@
 // @flow
-import {getOwnKeys, isFunction, isString, isPrimitive, getDeepProperty, bind, compressMultipleDecorators, isObject, isArray} from 'helper/utils';
+import {getOwnKeys, isFunction, isString, isPrimitive, getDeepProperty, compressMultipleDecorators, isObject, isArray} from 'helper/utils';
+import {bind} from 'toxic-utils';
 const {getOwnPropertyDescriptor, defineProperty} = Object;
 import accessor from 'accessor';
 

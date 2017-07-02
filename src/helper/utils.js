@@ -1,7 +1,6 @@
 // @flow
 export * from 'toxic-predicate-functions';
 import {isFunction, isArray, isBoolean, isString, isVoid} from 'toxic-predicate-functions';
-export * from 'toxic-utils';
 import {bind} from 'toxic-utils';
 const {getOwnPropertyNames, getOwnPropertySymbols, getOwnPropertyDescriptor} = Object;
 // **********************  对象操作  ************************

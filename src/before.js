@@ -1,5 +1,6 @@
 // @flow
-import {isFunction, isArray, bind, isDescriptor} from 'helper/utils';
+import {isFunction, isArray, isDescriptor} from 'helper/utils';
+import {bind} from 'toxic-utils';
 export default function before (...fns: Array<Function>): Function {
   if(fns.length === 0) throw new Error("@before accept at least one parameter. If you don't need to preprocess before your function, do not add @before decorators");
   if(fns.length > 2 && isDescriptor(fns[2])) {

@@ -1,5 +1,6 @@
 // @flow
-import {isAccessorDescriptor, bind, isFunction, warn} from 'helper/utils';
+import {isAccessorDescriptor, isFunction, warn} from 'helper/utils';
+import {bind} from 'toxic-utils';
 const {defineProperty} = Object;
 /**
  * make one attr only can be read, but could not be rewrited/ deleted

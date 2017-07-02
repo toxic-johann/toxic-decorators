@@ -1,5 +1,6 @@
 // @flow
-import {isFunction, createDefaultSetter, bind, isDescriptor} from 'helper/utils';
+import {isFunction, createDefaultSetter, isDescriptor} from 'helper/utils';
+import {bind} from 'toxic-utils';
 import autobindClass from 'class/autobind';
 let mapStore;
 // save bound function for super
