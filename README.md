@@ -74,11 +74,13 @@ You can get the compiled code in the `lib` file
 * [@alwaysArray](#alwaysarray)
 * [@alwaysBoolean](#alwaysboolean)
 * [@lazyInit](#lazyinit)
+* [@nonextendable](#nonextendable)
 
 **For Methods**
 
 * [@autobind](#autobind)
 * [@before](#before)
+* [@after](#after)
 * [@waituntil](#waituntil)
 
 **For Classes**
@@ -89,6 +91,11 @@ You can get the compiled code in the `lib` file
 ## Helpers
 
 * [applyDecorators()](#applydecorators)
+
+## Utils
+
+* [getOwnKeys](#getOwnKeys)
+* [getOwnPropertyDescriptors](#getOwnPropertyDescriptors)
 
 ## Docs
 
@@ -101,6 +108,9 @@ Set getter/setter hook on any properties or methods. In fact, it will change all
 * **handler**: `Object`
   * get: `Function | Array<Function>`
   * set: `Function | Array<Function>`
+* **option**: `Object`
+  * preSet: `boolean`
+  * preGet: `boolean`
 
 ```javascript
 import {accessor} from 'toxic-decorators';
@@ -497,6 +507,24 @@ editor.hugeBuffer;
 // createHugeBuffer() is not called again
 ```
 
+### @nonextendable
+
+To make the object property could not be extend.
+
+```javascript
+import { nonextendable} from 'toxic-decorators';
+
+class Foo {
+  @nonextendable
+  bar = {
+    a: 1
+  }
+}
+
+const foo = new Foo();
+foo.bar.b = 2; // error!!
+```
+
 ### @autobind
 
 Forces invocation of this function to always have `this` refet to the class instance, even if the class  is passed around or would otherwise lose its `this`. e.g. `const fn = context.method`.
@@ -578,6 +606,31 @@ class Foo {
 const foo = new Foo();
 foo.sum(1, 3); // 4
 foo.sum('1', 3); // only accept number
+```
+
+### @after
+
+You can add your postprocessor here on your methods.
+
+**arguments** 
+
+* **fn1** `Function` the handler
+* **fn2** `Function` the handler
+* … and so on
+
+```javascript
+import {before} from 'toxic-decorators';
+
+class Foo {
+  @after(function (ret) {
+    return ret + 1;
+  })
+  sum (a, b) {
+    return a + b;
+  }
+}
+const foo = new Foo();
+foo.sum(1, 3); // 5
 ```
 
 ### @waituntil
