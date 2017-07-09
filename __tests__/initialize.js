@@ -90,4 +90,21 @@ describe('initialize', () => {
     expect(foo.value).toBe(foo._value);
     expect(foo._value).toBe(4);
   });
+  test('initialize with only getter', () => {
+    const origin = global.console.warn
+    const fn = jest.fn();
+    global.console.warn = fn;
+    class Foo {
+      @initialize(function () {
+        return 2;
+      })
+      get a () {
+        return 1;
+      }
+    }
+    const foo = new Foo();
+    expect(foo.a).toBe(2);
+    expect(fn).toHaveBeenCalledTimes(0);
+    global.console.warn = origin;
+  });
 });

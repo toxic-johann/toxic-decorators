@@ -58,7 +58,6 @@ describe('isDataDescriptor', () => {
   });
 });
 
-
 describe('warn', () => {
   test('normal mode', () => {
     const originConsole = console;

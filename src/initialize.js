@@ -19,15 +19,18 @@ export default function initialize (...fns: Array<Function>): Function {
     }
     if(isAccessorDescriptor(descriptor)) {
       let hasBeenReset = false;
+      const {set: originSet} = descriptor;
       return accessor({
         get (value) {
           if(hasBeenReset) return value;
           return bind(fn, this)(value);
         },
-        set (value) {
-          hasBeenReset = true;
-          return value;
-        }
+        set: originSet
+          ? function (value) {
+            hasBeenReset = true;
+            return value;
+          }
+          : undefined
       })(obj, prop, descriptor);
     }
     /**
