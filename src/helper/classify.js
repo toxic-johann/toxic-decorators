@@ -31,7 +31,7 @@ export default function classify (decorator: Function, {
       .forEach(key => {
         const desc = descs[key];
         if((key === 'constructor' && !construct) ||
-          (self && isClass && ['name', 'length', 'prototype'].indexOf(key) > -1) || 
+          (self && isClass && ['name', 'length', 'prototype'].indexOf(key) > -1) ||
           exclude.indexOf(key) > -1 ||
           isFunction(requirement) && !requirement(prototype, key, desc, {self})) return;
         defineProperty(prototype, key, decorator(prototype, key, desc));
