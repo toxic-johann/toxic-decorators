@@ -46,7 +46,6 @@ class Hooks {
     const {handler, deep} = this;
     const descriptor = getOwnPropertyDescriptor(obj, key);
     if(descriptor.writable === false || descriptor.configurable === false) return;
-    // $FlowFixMe: flow do not support symbol yet
     const hooks = new Hooks({prop: key, handler, deep});
     defineProperty(obj, key, compressMultipleDecorators(
       accessor({

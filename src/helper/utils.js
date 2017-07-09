@@ -151,7 +151,7 @@ export function getDeepProperty (obj: any, keys: string | Array<string>, {
 export const getOwnKeys = isFunction(getOwnPropertySymbols)
   ? function (obj: any) {
     // $FlowFixMe: do not support symwbol yet
-    return getOwnPropertyNames(obj).concat(getOwnPropertySymbols(obj));
+    return Array.from(getOwnPropertyNames(obj).concat(getOwnPropertySymbols(obj)));
   }
   : getOwnPropertyNames;
 

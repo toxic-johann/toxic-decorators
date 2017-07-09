@@ -16,7 +16,7 @@ describe('autobindClass', () => {
   test('prototype can be void', () => {
     function Foo () {}
     Foo.prototype = null;
-    expect(() => applyDecorators(Foo, autobindClass())).toThrow('The prototype of the class is empty, please check it');
+    expect(() => applyDecorators(Foo, autobindClass())).toThrow('The prototype of the Foo is empty, please check it');
   });
   test('You can use @autobindClass on class', () => {
     @autobindClass()

@@ -30,5 +30,6 @@ export {default as alwaysNumber} from 'always/number';
 export {default as autobindClass} from 'class/autobind';
 
 export {default as applyDecorators} from 'helper/apply-decorators';
+export {default as classify} from 'helper/classify';
 
 export {getOwnKeys, getOwnPropertyDescriptors} from 'helper/utils';
