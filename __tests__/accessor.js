@@ -162,7 +162,7 @@ describe('accessor', () => {
     };
     const foo = new Foo();
     expect(console.warn).toHaveBeenCalledTimes(1);
-    expect(console.warn).lastCalledWith("You are trying to set setter via @accessor on one property without setter. That's not a good idea.");
+    expect(console.warn).lastCalledWith("You are trying to set setter via @accessor on  bar without setter. That's not a good idea.");
     expect(foo.bar).toBe(value);
     expect(fn).toHaveBeenCalledTimes(1);
     expect(() => {foo.bar = 2;}).not.toThrow();
@@ -190,7 +190,7 @@ describe('accessor', () => {
     };
     const foo = new Foo();
     expect(console.warn).toHaveBeenCalledTimes(1);
-    expect(console.warn).lastCalledWith("You are trying to set getter via @accessor on one property without getter. That's not a good idea.");
+    expect(console.warn).lastCalledWith("You are trying to set getter via @accessor on bar without getter. That's not a good idea.");
     expect(foo.bar).toBe(undefined);
     expect(fn).toHaveBeenCalledTimes(1);
     expect(() => {foo.bar = 2;}).not.toThrow();

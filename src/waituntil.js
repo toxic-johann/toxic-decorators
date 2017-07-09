@@ -3,7 +3,7 @@ import {isFunction, isPromise, isString, isDescriptor, isPrimitive, getDeepPrope
 import accessor from 'accessor';
 import {bind} from 'toxic-utils';
 const {getOwnPropertyDescriptor, defineProperty} = Object;
-export default function waituntil (key: Function | Promise<*> | string, other?: any): Object {
+export default function waituntil (key: Function | Promise<*> | string, {other}: {other?: any} = {}): Function {
   if(!isFunction(key) && !isPromise(key) && !isString(key)) throw new TypeError('@waitUntil only accept Function, Promise or String');
   return function (obj: Object, prop: string, descriptor: DataDescriptor): DataDescriptor {
     if(descriptor === undefined) {
