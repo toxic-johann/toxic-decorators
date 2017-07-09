@@ -28,6 +28,10 @@ export {default as alwaysArray} from 'always/array';
 export {default as alwaysNumber} from 'always/number';
 
 export {default as autobindClass} from 'class/autobind';
+export {default as beforeClass} from 'class/before';
+export {default as afterClass} from 'class/after';
+export {default as runnableClass} from 'class/runnable';
+export {default as waituntilClass} from 'class/waituntil';
 
 export {default as applyDecorators} from 'helper/apply-decorators';
 export {default as classify} from 'helper/classify';

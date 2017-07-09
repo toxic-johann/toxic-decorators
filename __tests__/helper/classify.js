@@ -73,6 +73,29 @@ describe('classify', () => {
     expect(fn).toHaveBeenCalledTimes(0);
     expect(props).toEqual([]);
   });
+  test('custom args', () => {
+    fn = jest.fn();
+    decorator = function (...args) {
+      fn(...args);
+      return function (obj, prop, desc) {
+        if(!desc) {
+          return {
+            value: fn,
+            writable: true,
+            configurable: true,
+            enumerable: false
+          };
+        }
+        return desc;
+      };
+    };
+    Foo = class Foo {
+      a () {}
+    };
+    classify(decorator, {customArgs: true})({}, 'a', 'b', 'c')(Foo);
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(fn).lastCalledWith('a', 'b', 'c');
+  });
   test('exclude must be an array', () => {
     expect(() => classify(decorator)({exclude: 1})(Foo)).toThrow('options.exclude must be an array');
   });

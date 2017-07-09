@@ -2,9 +2,11 @@
 import {getOwnKeys, getOwnPropertyDescriptors, isVoid, isFunction, isArray, isPrimitive} from 'helper/utils';
 const {defineProperty} = Object;
 export default function classify (decorator: Function, {
-  requirement
+  requirement,
+  customArgs = false
 }: {
-  requirement?: Function
+  requirement?: Function,
+  customArgs?: boolean
 } = {}): Function {
   return function ({
     exclude = [],
@@ -12,10 +14,10 @@ export default function classify (decorator: Function, {
     construct = false,
     self = false,
   }: {
-    exclude: Array<string>,
-    include: Array<string>,
-    construct: boolean,
-    self: boolean
+    exclude?: Array<string>,
+    include?: Array<string>,
+    construct?: boolean,
+    self?: boolean
   } = {}, ...args: any): Function {
     if(!isArray(exclude)) throw new TypeError('options.exclude must be an array');
     if(!isArray(include)) throw new TypeError('options.include must be an array');
@@ -34,7 +36,7 @@ export default function classify (decorator: Function, {
           (self && isClass && ['name', 'length', 'prototype'].indexOf(key) > -1) ||
           exclude.indexOf(key) > -1 ||
           isFunction(requirement) && !requirement(prototype, key, desc, {self})) return;
-        defineProperty(prototype, key, decorator(prototype, key, desc));
+        defineProperty(prototype, key, (customArgs ? decorator(...args) : decorator)(prototype, key, desc));
       });
     };
   };

@@ -365,7 +365,7 @@ describe('accessor', () => {
     test('pre is true', () => {
       expect(foo.a).toBe('a');
       foo.a = 1;
-      expect(result).toEqual([2, 1, 4, 3])
+      expect(result).toEqual([2, 1, 4, 3]);
     });
     test('pre is false', () => {
       expect(foo.b).toBe('b');
@@ -407,13 +407,13 @@ describe('accessor', () => {
     class Foo {
       @accessor({
         set () {
-          result.push(this.a())
+          result.push(this.a());
         }
       }, {preSet: false})
       a () {return 1;}
       @accessor({
         set () {
-          result.push(this.b())
+          result.push(this.b());
         }
       }, {preSet: true})
       b () {return 1;}

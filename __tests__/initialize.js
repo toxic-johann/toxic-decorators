@@ -91,7 +91,7 @@ describe('initialize', () => {
     expect(foo._value).toBe(4);
   });
   test('initialize with only getter', () => {
-    const origin = global.console.warn
+    const origin = global.console.warn;
     const fn = jest.fn();
     global.console.warn = fn;
     class Foo {
