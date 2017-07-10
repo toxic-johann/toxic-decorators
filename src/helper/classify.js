@@ -35,7 +35,7 @@ export default function classify (decorator: Function, {
         if((key === 'constructor' && !construct) ||
           (self && isClass && ['name', 'length', 'prototype'].indexOf(key) > -1) ||
           exclude.indexOf(key) > -1 ||
-          isFunction(requirement) && !requirement(prototype, key, desc, {self})) return;
+          isFunction(requirement) && requirement(prototype, key, desc, {self}) === false) return;
         defineProperty(prototype, key, (customArgs ? decorator(...args) : decorator)(prototype, key, desc));
       });
     };

@@ -3,6 +3,7 @@
 [![Build Status](https://img.shields.io/travis/toxic-johann/toxic-decorators/master.svg?style=flat-square)](https://travis-ci.org/toxic-johann/toxic-decorators.svg?branch=master)
 [![Coverage Status](https://img.shields.io/coveralls/toxic-johann/toxic-decorators/master.svg?style=flat-square)](https://coveralls.io/github/toxic-johann/toxic-decorators?branch=master)
 [![npm](https://img.shields.io/npm/v/toxic-decorators.svg?colorB=brightgreen&style=flat-square)](https://www.npmjs.com/package/toxic-decorators)
+[![npm download times](https://img.shields.io/npm/dm/toxic-decorators.svg)](https://www.npmjs.com/package/toxic-decorators)
 [![dependency Status](https://david-dm.org/toxic-johann/toxic-decorators.svg)](https://david-dm.org/toxic-johann/toxic-decorators)
 [![devDependency Status](https://david-dm.org/toxic-johann/toxic-decorators/dev-status.svg)](https://david-dm.org/toxic-johann/toxic-decorators?type=dev)
 
@@ -82,15 +83,21 @@ You can get the compiled code in the `lib` file
 * [@before](#before)
 * [@after](#after)
 * [@waituntil](#waituntil)
+* [@runnable](#runnable)
 
 **For Classes**
 
 * [@autobind](#autobind)
 * [@autobindClass](#autobindclass)
+* [@beforeClass](#beforeClass)
+* [@afterClass](#afterClass)
+* [@waituntilClass](#waituntilClass)
+* [@runnableClass][#runnableClass]
 
 ## Helpers
 
 * [applyDecorators()](#applydecorators)
+* [classify()](#classify)
 
 ## Utils
 
@@ -633,6 +640,48 @@ const foo = new Foo();
 foo.sum(1, 3); // 5
 ```
 
+### @runnable
+
+In some situation, you may want your method could not be called. You can use [@waituntil](#waituntil) to implement this. But it may cost too much. So we offer you this method.
+
+**arguments**
+
+* **handler** `Function | string`
+  * `Function` will tell us can we call the function
+    * `return true;` we will call the method
+    * else we would not call the method
+  * `string`
+    * the string indicate the property's name. We will fetch the property
+    * if the property's value is `true`, we will call the method
+    * else we would not call it
+* **option**
+  - **other** `non-primitive`
+    - optional
+    - only useful when handler is `string`
+    - if it exist, we will look up the property on this instance
+    - else, we will look up on the class itself
+  - **backup** `Function`
+    - optional
+    - when backup is not a function, we will just skip the original method and do nothing
+    - if you provide a backup function, we will called it.
+    - It's useful if you want to throw out some error, when people call your method, but it's not runnable.
+
+```javascript
+import {runnable} from 'toxic-decorators';
+class Foo {
+  @runnable('b', {backup () {console.error('it is not runnable now');}})
+  a () {
+    console.log('i have been called');
+  }
+  b = false;
+}
+
+const foo = new Foo();
+foo.a(); // it is not runnable now
+foo.b = true;
+foo.a(); // i have been called
+```
+
 ### @waituntil
 
 In some situation, our application is not ready. But others can call our function. We hope that they can wait for us. This decorators can let your function do not run until the flag is true
@@ -653,11 +702,12 @@ In some situation, our application is not ready. But others can call our functio
     * if the property do not equal to true when the function is called, we will put the function into waiting queue.
     * once the property become true, we will run the function in the waiting queue
     * if the property is true when the function is called, we will run the function immediately.
-* **other** `non-primitive`
-  * optional
-  * only useful when handler is `string`
-  * if it exist, we will look up the property on this instance
-  * else, we will look up on the class itself
+* **option**
+  * **other** `non-primitive`
+    * optional
+    * only useful when handler is `string`
+    * if it exist, we will look up the property on this instance
+    * else, we will look up on the class itself
 
 ```Javascript
 import {waituntil} from 'toxic-decorators';
@@ -700,13 +750,9 @@ setTimeout(async () => {
 
 ### @autobindClass
 
-When you not pass options. [@autobindClass](#autobindClass) does totally the same as [@autobind](#autobind). 
+When you not pass options. [@autobindClass](#autobindClass) does totally the same as [@autobind](#autobind). It can decorate all the method of the class.
 
-**arguments**
-
-* **options**: Object
-  * exclude: Array
-    * Defaults: []
+[@autobindClass](#autobindClass) is created by [@classify](#classify), so it's arguments it's the same as the classifiedDecorator's arguments in [@classify](#classify).
 
 ```Javascript
 import {autobindClass} from 'toxic-decorators';
@@ -725,6 +771,102 @@ const foo = new Foo();
 const {a, b} = foo;
 a() === foo; // true
 b() === foo; // false
+```
+
+### @beforeClass
+
+[@beforeClass](#beforeClass) is created by [@classify](#classify) and [@before](#before), so it's arguments it's the same as the classifiedDecorator's arguments in [@classify](#classify) and [@before](#before).
+
+```javascript
+import {beforeClass} from 'toxic-decorators';
+import {isFunction} from 'toxic-predicate-functions';
+
+@beforeClass({}, () => console.log('i am called before'))
+class Foo {
+  a () {
+    console.log('i am a');
+  }
+  b () {
+    console.log('i am b');
+  }
+}
+const foo = new Foo();
+foo.a();
+// i am called before
+// i am a
+foo.b();
+// i am caleed before
+// i am b
+```
+
+### @afterClass
+
+[@afterClass](#afterClass) is created by [@classify](#classify) and [@after](#after), so it's arguments it's the same as the classifiedDecorator's arguments in [@classify](#classify) and [@after](#after).
+
+```javascript
+import {afterClass} from 'toxic-decorators';
+import {isFunction} from 'toxic-predicate-functions';
+
+@afterClass({}, () => console.log('i am called after'))
+class Foo {
+  a () {
+    console.log('i am a');
+  }
+  b () {
+    console.log('i am b');
+  }
+}
+const foo = new Foo();
+foo.a();
+// i am a
+// i am called after
+foo.b();
+// i am b
+// i am caleed after
+```
+
+### runnableClass
+
+[@runnableClass](#runnableClass) is created by [@classify](#classify) and [@runnable](#runnable), so it's arguments it's the same as the classifiedDecorator's arguments in [@classify](#classify) and [@runnable](#runnable).
+
+```javascript
+import {runnableClass} from 'toxic-decorators';
+@runnableClass({}, 'b', {backup () {console.error('it is not runnable now');}})
+class Foo {
+  a () {
+    console.log('i have been called');
+  }
+  b = false;
+}
+
+const foo = new Foo();
+foo.a(); // it is not runnable now
+foo.b = true;
+foo.a(); // i have been called
+```
+
+### waituntilClass
+
+[@waituntilClass](#waituntilClass) is created by [@classify](#classify) and [@waituntil](#waituntil), so it's arguments it's the same as the classifiedDecorator's arguments in [@classify](#classify) and [@waituntil](#waituntil).
+
+```javascript
+import {waituntilClass} from 'toxic-decorators';
+let promiseResolve;
+class Bar {
+  flag = false;
+}
+const bar = new Bar();
+@waituntilClass({}, function () {return bar.flag});
+class Foo {
+  runUntilTrue () {
+    console.log('flag is true!');
+  }
+}
+const foo = new Foo();
+foo.runUntilTrue();
+bar.flag = true;
+foo.runUntilTrue();
+// flag is true!
 ```
 
 ### applyDecorators()
@@ -822,7 +964,78 @@ a() === foo; // true
 b() === foo; // false
 ```
 
+### classify()
 
+If you want to decorate your class. You should add `@decorator` before your class. But what if you don't want to  [babel-plugin-transform-decorators-legacy](https://github.com/loganfsmyth/babel-plugin-transform-decorators-legacy) . You can use classify to create a function to decorate your class.
+
+What's more, adding `@decorator` before your class could only decorate the method. You may want to decorate the property too. In this situation, you may need to use the function created by `classify` with `self: true`.
+
+**arguments**
+
+* **decorator**
+  * `Function`
+  * the `decorator` you want to use
+* **option**
+  * **requirement**
+    * `Function`
+    * optional
+    * if you do not offer requirement, we will decorate all property and method
+    * if you offer us a requirement, we would not decorate the property and method if you return false
+  * **customeArgs**
+    * `boolean`
+    * default: `false`
+    * some decorator may support customArgs, you need to tell us that.
+
+**return**
+
+* **classifiedDecorator**
+  * `Function`
+  * the decorator which you can used on class
+  * **arguments**
+    * **option**
+      * **exclude**
+        * `Array<string>`
+        * The name of property which you don't want to decorate
+      * **include**
+        * `Array<string>`
+        * the name of property which is not exist now but you want to decorate on.
+      * **construct**
+        * `boolean`
+        * Default: `false`
+        * we will decorate the `constructor` if you set it  `true`
+      * **self**
+        * `boolean`
+        * Default: `false`
+        * when you want to decorate an instance, you should set `self` to be `true`, we will decorate the instance itself.
+    * other arguments will be pass into the decorator
+
+```javascript
+import {before, classify} from 'toxic-decorators';
+import {isFunction} from 'toxic-predicate-functions';
+const beforeClass = classify(before, {
+  requirement (obj, prop, desc) {
+    return desc && isFunction(desc.value);
+  },
+  customArgs: true
+});
+
+@beforeClass({}, () => console.log('i am called before'))
+class Foo {
+  a () {
+    console.log('i am a');
+  }
+  b () {
+    console.log('i am b');
+  }
+}
+const foo = new Foo();
+foo.a();
+// i am called before
+// i am a
+foo.b();
+// i am caleed before
+// i am b
+```
 
 ## Need lodash utilities as decorators?
 
