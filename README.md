@@ -92,7 +92,7 @@ You can get the compiled code in the `lib` file
 * [@beforeClass](#beforeClass)
 * [@afterClass](#afterClass)
 * [@waituntilClass](#waituntilClass)
-* [@runnableClass][#runnableClass]
+* [@runnableClass](#runnableClass)
 
 ## Helpers
 
