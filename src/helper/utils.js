@@ -113,9 +113,9 @@ export function compressOneArgFnArray (fns: Array<Function>, errmsg: string = 'Y
  * @param {anything} args
  */
 export function warn (...args: any): void {
-  const {warn, log} = console;
-  if(isFunction(warn)) return warn(...args);
-  log(...args);
+  const {warn} = console;
+  if(isFunction(warn)) return console.warn(...args);
+  console.log(...args);
 }
 
 export function getDeepProperty (obj: any, keys: string | Array<string>, {
