@@ -123,4 +123,9 @@ describe('applyDecorators', () => {
    test('appyDecorators can used on class with multiple decorators, but you must pass array of function', () => {
      expect(() => applyDecorators(function () {}, [1])).toThrow('If you want to decorate an class, you must pass it function or array of function');
    });
+  test('throw error when you are trying to apply decorators on unconfigurable property', () => {
+    const foo = {};
+    Object.defineProperty(foo, 'bar', {value: 1});
+    expect(() => applyDecorators(foo, {bar: frozen}, {self: true})).toThrow('bar of [object Object] is unconfigurable');
+  });
 });
