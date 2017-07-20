@@ -7,7 +7,7 @@ import initialize from 'initialize';
 import applyDecorators from 'helper/apply-decorators';
 const arrayChangeMethod = ['push', 'pop', 'unshift', 'shift', 'splice', 'sort', 'reverse'];
 
-function deepProxy (value: Object | Array<*>, hook: Function): Object | Array<*> {
+function deepProxy (value: Object | Array<*>, hook: Function, {diff}): Object | Array<*> {
   const mapStore = {};
   let arrayChanging = false;
   const proxyValue = new Proxy(value, {
@@ -23,7 +23,7 @@ function deepProxy (value: Object | Array<*>, hook: Function): Object | Array<*>
       }
       if(mapStore[property] === true) return value;
       if(isObject(value) || isArray(value)) {
-        const proxyValue = mapStore[property] || deepProxy(value, hook);
+        const proxyValue = mapStore[property] || deepProxy(value, hook, {diff});
         mapStore[property] = proxyValue;
         return proxyValue;
       }
@@ -31,11 +31,13 @@ function deepProxy (value: Object | Array<*>, hook: Function): Object | Array<*>
       return value;
     },
     set (target: any, property: string, value: any) {
-      target[property] = (isObject(value) || isArray(value))
-        ? deepProxy(value, hook)
+      const oldVal = target[property];
+      const newVal = (isObject(value) || isArray(value))
+        ? deepProxy(value, hook, {diff})
         : value;
+      target[property] = newVal;
       mapStore[property] = true;
-      if(arrayChanging) return true;
+      if(arrayChanging || (diff && oldVal === newVal)) return true;
       hook();
       return true;
     },
@@ -50,27 +52,36 @@ function deepProxy (value: Object | Array<*>, hook: Function): Object | Array<*>
   return proxyValue;
 }
 
-function deepObserve (value: Object | Array<*>, hook: Function, {operationPrefix}): Object | Array<*> {
+function deepObserve (value: Object | Array<*>, hook: Function, {operationPrefix, diff}): Object | Array<*> {
   const mapStore = {};
   let arrayChanging = false;
   function getPropertyDecorators (keys: Array<string>): {[string]: Function | Array<Function>} {
+    let oldVal;
     return keys.reduce((props, key) => {
-      props[key] = accessor({
-        get (val) {
-          if(mapStore[key]) return val;
-          if(isObject(val) || isArray(val)) {
-            deepObserve(val, hook, {operationPrefix});
+      props[key] = [
+        accessor({
+          set (value) {
+            oldVal = this[key];
+            return value;
           }
-          mapStore[key] = true;
-          return val;
-        },
-        set (val) {
-          if(isObject(val) || isArray(val)) deepObserve(val, hook, {operationPrefix});
-          mapStore[key] = true;
-          if(!arrayChanging) hook();
-          return val;
-        }
-      }, {preSet: false});
+        }),
+        accessor({
+          get (val) {
+            if(mapStore[key]) return val;
+            if(isObject(val) || isArray(val)) {
+              deepObserve(val, hook, {operationPrefix, diff});
+            }
+            mapStore[key] = true;
+            return val;
+          },
+          set (val) {
+            if(isObject(val) || isArray(val)) deepObserve(val, hook, {operationPrefix, diff});
+            mapStore[key] = true;
+            if(!arrayChanging && (!diff || oldVal !== val)) hook();
+            return val;
+          }
+        }, {preSet: false})
+      ];
       return props;
     }, {});
   }
@@ -146,13 +157,14 @@ function deepObserve (value: Object | Array<*>, hook: Function, {operationPrefix
 
 export default function watch (...args: Array<string | Function | {
   deep?: boolean,
+  diff?: boolean,
   omit?: boolean,
   proxy?: boolean,
   other?: any,
   operationPrefix?: string
 }>): Function {
   // $FlowFixMe: we have check if it's an object
-  const {deep, omit, proxy, other, operationPrefix = '__'} = isObject(args[args.length - 1])
+  const {deep, omit, proxy, other, operationPrefix = '__', diff = true} = isObject(args[args.length - 1])
     ? args[args.length - 1]
     : {};
   if(!args.length) throw new TypeError('You must pass a function or a string to find the hanlder function.');
@@ -192,23 +204,23 @@ export default function watch (...args: Array<string | Function | {
           const hook = () => bind(handler, this)(newVal, oldVal);
           return (deep && (isObject(value) || isArray(value)))
             ? proxy
-              ? deepProxy(value, hook)
-              : deepObserve(value, hook, {operationPrefix})
+              ? deepProxy(value, hook, {diff})
+              : deepObserve(value, hook, {operationPrefix, diff})
             : value;
         },
         get (value) {
           if(proxyValue) return proxyValue;
-          if(!inited && oldVal !== value) {
+          if(!inited) {
             inited = true;
             const hook = () => bind(handler, this)(newVal, oldVal);
             if(deep && (isObject(value) || isArray(value))) {
               if(proxy) {
-                proxyValue = deepProxy(value, hook);
+                proxyValue = deepProxy(value, hook, {diff});
                 oldVal = proxyValue;
                 newVal = proxyValue;
                 return proxyValue;
               }
-              deepObserve(value, hook, {operationPrefix});
+              deepObserve(value, hook, {operationPrefix, diff});
             }
             oldVal = value;
             newVal = value;
@@ -219,7 +231,7 @@ export default function watch (...args: Array<string | Function | {
       accessor({
         set (value) {
           newVal = value;
-          if(oldVal !== value) bind(handler, this)(newVal, oldVal);
+          if(!diff || oldVal !== value) bind(handler, this)(newVal, oldVal);
           oldVal = value;
           return value;
         }

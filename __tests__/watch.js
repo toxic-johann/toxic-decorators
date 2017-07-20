@@ -90,6 +90,101 @@ describe('watch', () => {
     expect(fn).lastCalledWith(3, 1);
     expect(foo.a).toBe(3);
   });
+  test('we willt trigger the function when the oldval is the same as new value if you set diff false', () => {
+    const fn = jest.fn();
+    class Foo {
+      @watch(function (...args) {
+        expect(this).toBe(foo);
+        fn(...args);
+      }, {diff: false})
+      a = 1;
+    }
+    const foo = new Foo();
+    expect(foo.a).toBe(1);
+    foo.a = 1;
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(fn).lastCalledWith(1, 1);
+    expect(foo.a).toBe(1);
+    foo.a = 3;
+    expect(fn).toHaveBeenCalledTimes(2);
+    expect(fn).lastCalledWith(3, 1);
+    expect(foo.a).toBe(3);
+  });
+  describe('deep diff', () => {
+    let foo;
+    let Foo;
+    let fn;
+    beforeEach(() => {
+      fn = jest.fn();
+      Foo = class Foo {
+        @watch(fn, {deep: true})
+        a = {
+          baz: {
+            bar: 1
+          }
+        }
+        @watch(fn, {deep: true, diff: false})
+        b = {
+          baz: {
+            bar: 1
+          }
+        }
+        @watch(fn, {deep: true, proxy: true})
+        c = {
+          baz: {
+            bar: 1
+          }
+        }
+        @watch(fn, {deep: true, diff: false, proxy: true})
+        d = {
+          baz: {
+            bar: 1
+          }
+        }
+      };
+      foo = new Foo();
+    });
+    test('deep observe', () => {
+      expect(foo.a.baz.bar).toBe(1);
+      foo.a.baz.bar = 1;
+      expect(fn).toHaveBeenCalledTimes(0);
+      foo.a.baz.bar = 2;
+      expect(fn).toHaveBeenCalledTimes(1);
+      expect(fn).lastCalledWith(foo.a, foo.a);
+      expect(foo.a.baz.bar).toBe(2);
+    });
+    test('deep observer but without diff', () => {
+      expect(foo.b.baz.bar).toBe(1);
+      foo.b.baz.bar = 1;
+      expect(fn).toHaveBeenCalledTimes(1);
+      expect(fn).lastCalledWith(foo.b, foo.b);
+      expect(foo.b.baz.bar).toBe(1);
+      foo.b.baz.bar = 2;
+      expect(fn).toHaveBeenCalledTimes(2);
+      expect(fn).lastCalledWith(foo.b, foo.b);
+      expect(foo.b.baz.bar).toBe(2);
+    });
+    test('deep proxy', () => {
+      expect(foo.c.baz.bar).toBe(1);
+      foo.c.baz.bar = 1;
+      expect(fn).toHaveBeenCalledTimes(0);
+      foo.c.baz.bar = 2;
+      expect(fn).toHaveBeenCalledTimes(1);
+      expect(fn).lastCalledWith(foo.c, foo.c);
+      expect(foo.c.baz.bar).toBe(2);
+    });
+    test('deep proxy but without diff', () => {
+      expect(foo.d.baz.bar).toBe(1);
+      foo.d.baz.bar = 1;
+      expect(fn).toHaveBeenCalledTimes(1);
+      expect(fn).lastCalledWith(foo.d, foo.d);
+      expect(foo.d.baz.bar).toBe(1);
+      foo.d.baz.bar = 2;
+      expect(fn).toHaveBeenCalledTimes(2);
+      expect(fn).lastCalledWith(foo.d, foo.d);
+      expect(foo.d.baz.bar).toBe(2);
+    });
+  });
   test('we can watch a single property on the function indicate by string', () => {
     const fn = jest.fn();
     class Foo {
@@ -506,7 +601,6 @@ describe('watch', () => {
       expect(foo.bar.l[4]).toBe(7);
     });
   });
-  // todo multiple watch functon
   describe('multiple watch', () => {
     test('watch both obj and subobject without proxy', () => {
       const obj = {
