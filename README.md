@@ -882,6 +882,11 @@ If you want to use decorators, you may need to use [babel-plugin-transform-decor
     * `false` we will handle on the `Class.prototype`
     * `true` we will handle on the Class itself
     * default is false
+  * **omit** `boolean`
+    * If you want to apply decorators on unconfigurable property, it will throw error
+    * `false` to throw out the error
+    * `true` to omit the error
+    * default is false
 
 ```javascript
 import {applyDecorators, before} from 'toxic-decorators';
