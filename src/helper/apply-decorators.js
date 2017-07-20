@@ -2,7 +2,13 @@
 import {isVoid, isObject, isFunction, isArray, isPrimitive, compressMultipleDecorators, warn} from 'helper/utils';
 const { defineProperty, getOwnPropertyDescriptor } = Object;
 
-export default function applyDecorators (Class: any, props: {[string]: Array<Function> | Function} | Function | Array<Function>, {self = false}: {self?: boolean} = {}) {
+export default function applyDecorators (Class: any, props: {[string]: Array<Function> | Function} | Function | Array<Function>, {
+  self = false,
+  omit = false
+}: {
+  self?: boolean,
+  omit?: boolean
+} = {}) {
   const isPropsFunction = isFunction(props);
   if(isPropsFunction || isArray(props)) {
     // apply decorators on class
@@ -36,6 +42,10 @@ export default function applyDecorators (Class: any, props: {[string]: Array<Fun
       throw new Error('The decorators set on props must be Function or Array of Function');
     }
     const descriptor = getOwnPropertyDescriptor(prototype, key);
+    if(descriptor && !descriptor.configurable) {
+      if(!omit) throw new Error(`${key} of ${prototype} is unconfigurable`);
+      continue;
+    }
     defineProperty(prototype, key, handler(prototype, key, descriptor));
   }
   return Class;
