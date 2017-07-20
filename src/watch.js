@@ -1,5 +1,5 @@
 // @flow
-import {getOwnKeys, isFunction, isString, isPrimitive, getDeepProperty, compressMultipleDecorators, isObject, isArray} from 'helper/utils';
+import {getOwnKeys, isFunction, isString, isPrimitive, getDeepProperty, compressMultipleDecorators, isObject, isArray, warn} from 'helper/utils';
 import {bind} from 'toxic-utils';
 import accessor from 'accessor';
 import nonenumerable from 'nonenumerable';
@@ -7,7 +7,7 @@ import initialize from 'initialize';
 import applyDecorators from 'helper/apply-decorators';
 const arrayChangeMethod = ['push', 'pop', 'unshift', 'shift', 'splice', 'sort', 'reverse'];
 
-function deepProxy (value: Object | Array<*>, hook: Function, {diff}): Object | Array<*> {
+function deepProxy (value: Object | Array<*>, hook: Function, {diff, operationPrefix}): Object | Array<*> {
   const mapStore = {};
   let arrayChanging = false;
   const proxyValue = new Proxy(value, {
@@ -23,7 +23,7 @@ function deepProxy (value: Object | Array<*>, hook: Function, {diff}): Object | 
       }
       if(mapStore[property] === true) return value;
       if(isObject(value) || isArray(value)) {
-        const proxyValue = mapStore[property] || deepProxy(value, hook, {diff});
+        const proxyValue = mapStore[property] || deepProxy(value, hook, {diff, operationPrefix});
         mapStore[property] = proxyValue;
         return proxyValue;
       }
@@ -33,7 +33,7 @@ function deepProxy (value: Object | Array<*>, hook: Function, {diff}): Object | 
     set (target: any, property: string, value: any) {
       const oldVal = target[property];
       const newVal = (isObject(value) || isArray(value))
-        ? deepProxy(value, hook, {diff})
+        ? deepProxy(value, hook, {diff, operationPrefix})
         : value;
       target[property] = newVal;
       mapStore[property] = true;
@@ -49,6 +49,27 @@ function deepProxy (value: Object | Array<*>, hook: Function, {diff}): Object | 
       return true;
     }
   });
+  const operateProps = {
+    [operationPrefix + 'set']: [
+      initialize(method => {
+        return (property, val) => {
+          // $FlowFixMe: we have check the computed value
+          proxyValue[property] = val;
+        };
+      }),
+      nonenumerable
+    ],
+    [operationPrefix + 'del']: [
+      initialize(method => {
+        return (property) => {
+          // $FlowFixMe: we have check the computed value
+          delete proxyValue[property];
+        };
+      }),
+      nonenumerable
+    ]
+  };
+  applyDecorators(proxyValue, operateProps, {self: true});
   return proxyValue;
 }
 
@@ -163,12 +184,20 @@ export default function watch (...args: Array<string | Function | {
   other?: any,
   operationPrefix?: string
 }>): Function {
-  // $FlowFixMe: we have check if it's an object
-  const {deep, omit, proxy, other, operationPrefix = '__', diff = true} = isObject(args[args.length - 1])
+  const option = isObject(args[args.length - 1])
     ? args[args.length - 1]
     : {};
+  // $FlowFixMe: we have check if it's an object
+  const {deep, omit, other, operationPrefix = '__', diff = true} = option;
+  // $FlowFixMe: we have check if it's an object
+  let {proxy} = option;
+  if(!Proxy) {
+    proxy = false;
+    warn('You browser do not support Proxy, we will change back into observe mode.');
+  }
   if(!args.length) throw new TypeError('You must pass a function or a string to find the hanlder function.');
   if(other !== undefined && isPrimitive(other)) throw new TypeError('If you want us to trigger function on the other instance, you must pass in a legal instance');
+  if(!isString(operationPrefix)) throw new TypeError('operationPrefix must be an string');
   return function (obj: any, prop: string, descriptor: void | Descriptor): AccessorDescriptor {
     const fns = args.reduce((fns, keyOrFn, index) => {
       if(!isString(keyOrFn) && !isFunction(keyOrFn)) {
@@ -204,7 +233,7 @@ export default function watch (...args: Array<string | Function | {
           const hook = () => bind(handler, this)(newVal, oldVal);
           return (deep && (isObject(value) || isArray(value)))
             ? proxy
-              ? deepProxy(value, hook, {diff})
+              ? deepProxy(value, hook, {diff, operationPrefix})
               : deepObserve(value, hook, {operationPrefix, diff})
             : value;
         },
@@ -215,7 +244,7 @@ export default function watch (...args: Array<string | Function | {
             const hook = () => bind(handler, this)(newVal, oldVal);
             if(deep && (isObject(value) || isArray(value))) {
               if(proxy) {
-                proxyValue = deepProxy(value, hook, {diff});
+                proxyValue = deepProxy(value, hook, {diff, operationPrefix});
                 oldVal = proxyValue;
                 newVal = proxyValue;
                 return proxyValue;

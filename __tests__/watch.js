@@ -24,6 +24,12 @@ describe('watch', () => {
       a = 1;
     }).toThrow('If you want us to trigger function on the other instance, you must pass in a legal instance');
   });
+  test('operationPrefix must be string', () => {
+    expect(() => class {
+      @watch(function () {}, {operationPrefix: 123})
+      a = 1;
+    }).toThrow('operationPrefix must be an string');
+  });
   test('You can pass in the function on some instance by string, but please make sure the function exist', () => {
     class Foo {
       @watch('b')
@@ -50,6 +56,25 @@ describe('watch', () => {
     expect(() => {foo.a = 3;}).not.toThrow();
     expect(fn).toHaveBeenCalledTimes(1);
     expect(fn).lastCalledWith(3, 1);
+  });
+  test('proxy fall back', () => {
+    const fn = jest.fn();
+    const originProxy = global.Proxy;
+    global.Proxy = false;
+    const {warn: originWarn} = global.console;
+    const fn1 = jest.fn();
+    global.console.warn = fn1;
+    class Foo {
+      @watch(fn, {deep: true, proxy: true})
+      a = {
+        b: 2
+      }
+    }
+    expect(() => new Foo()).not.toThrow();
+    expect(fn1).toHaveBeenCalledTimes(1);
+    expect(fn1).lastCalledWith('You browser do not support Proxy, we will change back into observe mode.');
+    global.console.warn = originWarn;
+    global.Proxy = originProxy;
   });
   test('we can watch a single property', () => {
     const fn = jest.fn();
@@ -553,6 +578,46 @@ describe('watch', () => {
         delete foo.bar.b.c;
         expect(fn).toHaveBeenCalledTimes(1);
         expect(fn).lastCalledWith(foo.bar, foo.bar);
+      });
+    });
+    describe('we can intercept new add property with __set', () => {
+      test('deep add', () => {
+        foo.bar.b.__set('d', 3);
+        expect(fn).toHaveBeenCalledTimes(1);
+        expect(fn).lastCalledWith(foo.bar, foo.bar);
+      });
+      test('normal add', () => {
+        foo.bar.__set('baz', {a: 1, b: 2});
+        expect(fn).toHaveBeenCalledTimes(1);
+        expect(fn).lastCalledWith(foo.bar, foo.bar);
+      });
+      test('already set', () => {
+        foo.bar.b.__set('c', 7);
+        expect(fn).toHaveBeenCalledTimes(1);
+        expect(fn).lastCalledWith(foo.bar, foo.bar);
+      });
+    });
+    describe('we can intercept delete property with __del', () => {
+      test('normal delete', () => {
+        foo.bar.__del('a');
+        expect(fn).toHaveBeenCalledTimes(1);
+        expect(fn).lastCalledWith(foo.bar, foo.bar);
+        expect(foo.bar.a).toBe();
+      });
+      test('deep delete', () => {
+        foo.bar.b.__del('c');
+        expect(fn).toHaveBeenCalledTimes(1);
+        expect(fn).lastCalledWith(foo.bar, foo.bar);
+      });
+      test('set after delete', () => {
+        foo.bar.__del('a');
+        expect(fn).toHaveBeenCalledTimes(1);
+        expect(fn).lastCalledWith(foo.bar, foo.bar);
+        expect(foo.bar.a).toBe();
+        foo.bar.__set('a', 3);
+        expect(fn).toHaveBeenCalledTimes(2);
+        expect(fn).lastCalledWith(foo.bar, foo.bar);
+        expect(foo.bar.a).toBe(3);
       });
     });
     test('we can watch the array too', () => {
@@ -1239,6 +1304,18 @@ describe('watch', () => {
       });
       test('deep delete with proxy', () => {
         delete foo.bar.a;
+        expect(fn).toHaveBeenCalledTimes(2);
+        expect(fn).lastCalledWith(foo.bar, foo.bar);
+        expect(result).toEqual([1, 2]);
+      });
+      test('deep new set with proxy by __set', () => {
+        foo.bar.__set('b', 2);
+        expect(fn).toHaveBeenCalledTimes(2);
+        expect(fn).lastCalledWith(foo.bar, foo.bar);
+        expect(result).toEqual([1, 2]);
+      });
+      test('deep delete with proxy by __del', () => {
+        foo.bar.__del('a');
         expect(fn).toHaveBeenCalledTimes(2);
         expect(fn).lastCalledWith(foo.bar, foo.bar);
         expect(result).toEqual([1, 2]);
