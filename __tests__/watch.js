@@ -184,6 +184,30 @@ describe('watch', () => {
       expect(fn).lastCalledWith(foo.d, foo.d);
       expect(foo.d.baz.bar).toBe(2);
     });
+    test('deep observe with the same object', () => {
+      const obj = {a: 1};
+      const fn = jest.fn();
+      class Foo {
+        @watch(fn, {deep: true})
+        bar = obj;
+      };
+      const foo = new Foo();
+      foo.bar = obj;
+      expect(fn).toHaveBeenCalledTimes(0);
+    });
+    test('deep proxy with the same object', () => {
+      const obj = {a: 1};
+      const fn = jest.fn();
+      class Foo {
+        @watch(fn, {deep: true, proxy: true})
+        bar = obj;
+      };
+      const foo = new Foo();
+      const proxyObj = foo.bar;
+      foo.bar = obj;
+      expect(fn).toHaveBeenCalledTimes(1);
+      expect(fn).lastCalledWith(foo.bar, proxyObj);
+    });
   });
   test('we can watch a single property on the function indicate by string', () => {
     const fn = jest.fn();
