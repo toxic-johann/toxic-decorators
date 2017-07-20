@@ -1160,3 +1160,11 @@ foo.b();
 > We have mostly the same idea with core-decorators. So I just quote this from it's README.
 
 toxic-decorators aims to provide decorators that are fundamental to JavaScript itself--mostly things you could do with normal `Object.defineProperty` but not as easily when using ES2015 classes. Things like debouncing, throttling, and other more opinionated decorators are being phased out in favor of [lodash-decorators](https://www.npmjs.com/package/lodash-decorators) which wraps applicable lodash utilities as decorators. We don't want to duplicate the effort of lodash, which has years and years of robust testing and bugfixes.
+
+## Changelog
+
+Please read the [realase notes](https://github.com/Chimeejs/chimee/releases).
+
+## License
+
+[GPL-3.0](https://opensource.org/licenses/GPL-3.0)
