@@ -76,6 +76,7 @@ You can get the compiled code in the `lib` file
 * [@alwaysBoolean](#alwaysboolean)
 * [@lazyInit](#lazyinit)
 * [@nonextendable](#nonextendable)
+* [@watch](#watch)
 
 **For Methods**
 
@@ -531,6 +532,118 @@ class Foo {
 const foo = new Foo();
 foo.bar.b = 2; // error!!
 ```
+
+### @watch
+
+Watch a property. We will call the function you provide once we detect change on the value.
+
+**arguments**
+
+- **keyOrFn1** `string |Function` the string points to a function or just a function, it will be called once property is changed
+- **keyOrFn2** `string |Function` the string points to a function or just a function, it will be called once property is changed
+- … and so on
+- **option** `Object` optional
+  - **deep** `boolean`
+    - `true` we will call you method if we get change on content of object or array
+    - `false` we would not care about the change on content of object or array
+    - default is `false`
+  - **diff** `boolean`
+    - `true` we will only call your method if the new value is different from the old value
+    - `false` we will call the method once you set the property
+    - default is `true`
+  - **omit** `boolean`
+    - `true` we will omit some error in watch decorator
+    - `false` we will throw out the error
+    - default is `false`
+  - **proxy** `boolean`
+    - `true` we will use `Proxy` (if browser support) to spy on object and array. In this way,  you can set and delete property as you want. But you should be care about the proxy value, we will talk about that later. And proxy mode also support `__set` and `__del`.
+    - `false` we will use `Object.defineProperty` to spy on object and array. In this way, you should use `__set` or `__del` to set and delete property.
+    - default is `false`
+  - **other** non-primitive
+    - if you offer this, and you function is pass as string. We use the string to look up function on this instance
+  - **operationPrefix** `string`
+    - if you don't want to use `__set` and `__del` as method, you can change their prefix by using this property.
+
+Now we will show how to use `@watch`
+
+```javascript
+function fn (newVal, oldVal) {console.log(newVal, oldVal)}
+class Foo {
+  @watch(fn)
+  bar = 1;
+}
+const foo = new Foo();
+foo.bar = 2;// 2, 1
+```
+
+`@watch` can detect change on the content of object and array, if you set deep true
+
+```javascript
+function fn (newVal, oldVal) {console.log(newVal, oldVal)}
+class Foo {
+  @watch(fn, {deep: true})
+  bar = [1, 2, 3];
+  @watch(fn, {deep: true})
+  baz = {
+    a: 1
+  }
+}
+const foo = new Foo();
+foo.bar.push(4); // [1, 2, 3, 4], [1, 2, 3, 4]
+foo.baz.a = 2; // {a: 2}, {a: 2}
+```
+
+If you're sure your environment support `Proxy`,  you can use proxy mode
+
+```javascript
+function fn (newVal, oldVal) {console.log(newVal, oldVal)}
+class Foo {
+  @watch(fn, {deep: true, proxy: true})
+  baz = {
+    a: 1
+  }
+}
+const foo = new Foo();
+foo.baz.b = 2; // {a: 1, b: 2}, {a: 1, b: 2}
+delete foo.baz.b; // {a: 1}, {a: 1}
+```
+
+If you're not sure you support `Proxy`, or you don't want to use proxy mode. You can change content with  `__set` and `__del`, which will also trigger the change method.
+
+```javascript
+function fn (newVal, oldVal) {console.log(newVal, oldVal)}
+class Foo {
+  @watch(fn, {deep: true, proxy: false})
+  baz = {
+    a: 1
+  }
+}
+const foo = new Foo();
+foo.baz.__set('b', 2); // {a: 1, b: 2}, {a: 1, b: 2}
+foo.baz.__del('b'); // {a: 1}, {a: 1}
+```
+
+> If you use proxy mode, you should pay attention on proxy value. As we know
+>
+> ```javascript
+> const obj = {a: 1};
+> console.log(obj === new Proxy(obj, {})); // false
+> ```
+>
+> Once you set an object on the property watch by proxy, it is bind with proxy object. So if you set original object on it again, it will trigger the method.
+>
+> ```javascript
+> const obj = {a: 1};
+> function fn (newVal, oldVal) {console.log('changed')}
+> class Foo {
+>   @watch(fn, {deep: true})
+>   bar = obj;
+>   @watch(fn, {deep: true, proxy: true})
+>   baz = obj;
+> }
+> foo.bar = obj;
+> foo.baz = obj; // changed
+> ```
 
 ### @autobind
 
