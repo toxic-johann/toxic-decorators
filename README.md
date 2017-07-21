@@ -190,6 +190,25 @@ console.log(dog.old); // 1
 >
 > It means that you must get access to your origin property before you get access to your alias property, otherwise the alias one will be undefined.
 
+### @configurable
+
+Set a property's configurable to be `true`. 
+
+>  You can know more why I bump into this problem by [here](https://stackoverflow.com/questions/45231081/why-propertydescriptors-configurable-is-set-to-be-false-in-definefileds)
+
+**arguments** none.
+
+```javascript
+import {configurable, initString} from 'toxic-decorators';
+
+class Foo {
+  @configurable
+  @initString()
+  bar = '123';
+}
+delete foo.bar;
+```
+
 ### @nonconfigurable
 
 Makes a porperty or method so that they cannot be deleted. Also accroding to the specification, it can prevent them from editing via `Object.defineProperty`. But it doesn't work quiet well. In that situation,  [@readonly](#readonly) may be a better choice.
