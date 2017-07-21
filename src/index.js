@@ -15,6 +15,7 @@ export {default as runnable} from 'runnable';
 
 export {default as enumerable} from 'enumerable';
 export {default as nonenumerable} from 'nonenumerable';
+export {default as configurable} from 'configurable';
 export {default as nonconfigurable} from 'nonconfigurable';
 
 export {default as initString} from 'init/string';
