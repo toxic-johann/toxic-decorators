@@ -145,7 +145,7 @@ foo.bar = 3;
 console.log(foo.bar); // 5
 ```
 
-> The example may be werid. You may wonder [why we can not use @accessor on InitializeInstanceFields directy?](why-we-can-not-use-@accessor-on-InitializeInstanceFields-directy)
+> The example may be werid. You may wonder [why we can not use @accessor on InitializeInstanceFields directy?](#why-we-can-not-use-accessor-on-initializeinstancefields-directy)
 
 ### @alias
 
@@ -199,13 +199,13 @@ console.log(dog.old); // 1
 >
 > It means that you must get access to your origin property before you get access to your alias property, otherwise the alias one will be undefined.
 >
-> You may wonder [why we can not use @accessor on InitializeInstanceFields directy?](why-we-can-not-use-@accessor-on-InitializeInstanceFields-directy)
+> You may wonder [why we can not use @accessor on InitializeInstanceFields directy?](#why-we-can-not-use-accessor-on-initializeinstancefields-directy)
 
 ### @configurable
 
 Set a property's configurable to be `true`. 
 
->  You can know more why I bump into this problem by [why configurable of InitializeInstanceFields is false when I use decorators on it?](#why-configurable-of-InitializeInstanceFields-is-false-when-I-use-decorators-on-it)
+>  You can know more why I bump into this problem by [why configurable of InitializeInstanceFields is false when I use decorators on it?](#why-configurable-of-initializeinstancefields-is-false-when-i-use-decorators-on-it)
 
 **arguments** none.
 
@@ -507,7 +507,7 @@ intro.name = 'JONES';
 console.log(intro.name); // jones
 ```
 
-> You may wonder [why we can not use @accessor on InitializeInstanceFields directy?](why-we-can-not-use-@accessor-on-InitializeInstanceFields-directy)
+> You may wonder [why we can not use @accessor on InitializeInstanceFields directy?](#why-we-can-not-use-accessor-on-initializeinstancefields-directy)
 
 ### @alwaysNumber
 
@@ -705,7 +705,7 @@ foo.baz.__del('b'); // {a: 1}, {a: 1}
 > foo.bar = obj;
 > foo.baz = obj; // changed
 > ```
-> You may wonder [why we can not use @accessor on InitializeInstanceFields directy?](why-we-can-not-use-@accessor-on-InitializeInstanceFields-directy)
+> You may wonder [why we can not use @accessor on InitializeInstanceFields directy?](#why-we-can-not-use-accessor-on-initializeinstancefields-directy)
 >
 
 ### @autobind
