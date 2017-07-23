@@ -104,3 +104,46 @@ describe('getDeepProperty', () =>{
    expect(utils.getDeepProperty(obj, 'a.b.c')).toBe(1);
  });
 });
+
+test('getOwnPropertyDescriptors', () => {
+  const originFn = global.Object.getOwnPropertyDescriptors;
+  global.Object.getOwnPropertyDescriptors = false;
+  class Foo {
+    a = 1;
+    static b = 2;
+    c () {}
+    static d () {}
+    e = '123';
+    static f = '123';
+  }
+  const foo = new Foo();
+  expect(originFn(foo)).toEqual(utils.getOwnPropertyDescriptorsFn()(foo));
+});
+
+describe('compressMultipleDecorators', () => {
+  test("array can't be empty", () => {
+    expect(() => utils.compressMultipleDecorators([])).toThrow();
+  });
+  test('array can only contain function', () => {
+    expect(() => utils.compressMultipleDecorators([function () {}, function () {}, 2])()).toThrow('compressMultipleDecorators only accept function');
+    expect(() => utils.compressMultipleDecorators([1])).toThrow('compressMultipleDecorators only accept function');
+  });
+});
+
+describe('getOwnKeys', () => {
+  test('no getOwnPropertySymbols', () => {
+    class Foo {
+      a = 1;
+      static b = 2;
+      c () {}
+      static d () {}
+      e = '123';
+      static f = '123';
+    }
+    const foo = new Foo();
+    const {getOwnPropertyNames, getOwnPropertySymbols} = Object;
+    global.Object.getOwnPropertySymbols = false;
+    expect(utils.getOwnKeysFn()(foo)).toEqual(getOwnPropertyNames(foo));
+    global.Object.getOwnPropertySymbols = getOwnPropertySymbols;
+  });
+});

@@ -2,7 +2,7 @@
 export * from 'toxic-predicate-functions';
 import {isFunction, isArray, isBoolean, isString, isVoid} from 'toxic-predicate-functions';
 import {bind} from 'toxic-utils';
-const {getOwnPropertyNames, getOwnPropertySymbols, getOwnPropertyDescriptor} = Object;
+const {getOwnPropertyDescriptor} = Object;
 // **********************  对象操作  ************************
 /**
  * sort Object attributes by function
@@ -148,33 +148,39 @@ export function getDeepProperty (obj: any, keys: string | Array<string>, {
   return target;
 }
 
-export const getOwnKeys = isFunction(getOwnPropertySymbols)
-  ? function (obj: any) {
-    // $FlowFixMe: do not support symwbol yet
-    return Array.from(getOwnPropertyNames(obj).concat(getOwnPropertySymbols(obj)));
-  }
-  : getOwnPropertyNames;
+export function getOwnKeysFn () {
+  const {getOwnPropertyNames, getOwnPropertySymbols} = Object;
+  return isFunction(getOwnPropertySymbols)
+    ? function (obj: any) {
+      // $FlowFixMe: do not support symwbol yet
+      return Array.from(getOwnPropertyNames(obj).concat(getOwnPropertySymbols(obj)));
+    }
+    : getOwnPropertyNames;
+}
 
-// $FlowFixMe: In some environment, Object.getOwnPropertyDescriptors has been implemented;
-export const getOwnPropertyDescriptors = isFunction(Object.getOwnPropertyDescriptors)
-  ? Object.getOwnPropertyDescriptors
-  : function (obj: any) {
-      return getOwnKeys(obj).reduce((descs, key) => {
-        descs[key] = getOwnPropertyDescriptor(obj, key);
-        return descs;
-      }, {});
-    };
+export const getOwnKeys = getOwnKeysFn();
+
+export function getOwnPropertyDescriptorsFn (): Function {
+  // $FlowFixMe: In some environment, Object.getOwnPropertyDescriptors has been implemented;
+  return isFunction(Object.getOwnPropertyDescriptors)
+    ? Object.getOwnPropertyDescriptors
+    : function (obj: any) {
+        return getOwnKeys(obj).reduce((descs, key) => {
+          descs[key] = getOwnPropertyDescriptor(obj, key);
+          return descs;
+        }, {});
+      };
+}
+
+export const getOwnPropertyDescriptors = getOwnPropertyDescriptorsFn();
 
 export function compressMultipleDecorators (...fns: Array<Function>): Function {
   const fnOnlyErrorMsg = 'compressMultipleDecorators only accept function';
-  if(fns.length === 1) {
-    if(!isFunction(fns[0])) throw new TypeError(fnOnlyErrorMsg);
-    return fns[0];
-  }
+  fns.forEach(fn => {if(!isFunction(fns[0])) throw new TypeError(fnOnlyErrorMsg);});
+  if(fns.length === 1) return fns[0];
   return function (obj: any, prop: string, descirptor: Descriptor | void): Descriptor {
     // $FlowFixMe: the reduce will return a descriptor
     return fns.reduce((descirptor, fn) => {
-      if(!isFunction(fn)) throw new TypeError(fnOnlyErrorMsg);
       return fn(obj, prop, descirptor);
     }, descirptor);
   };
