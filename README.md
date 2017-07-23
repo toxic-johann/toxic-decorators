@@ -121,25 +121,31 @@ Set getter/setter hook on any properties or methods. In fact, it will change all
   * preGet: `boolean`
 
 ```javascript
-import {accessor} from 'toxic-decorators';
+import {accessor, applyDecorators} from 'toxic-decorators';
 
 class Foo {
-  @accessor({
-    get (value) {
-      // must return value here
-      return ++value;
-    },
-    set (value) {
-      return ++value
-    }
-  })
   bar = 1;
+  constructor () {
+    applyDecorators(this, {
+      bar: accessor({
+        get (value) {
+          // must return value here
+          return ++value;
+        },
+        set (value) {
+          return ++value
+        }
+      })
+    }, {self: true});
+  }
 }
 
 console.log(foo.bar); // 2
 foo.bar = 3;
 console.log(foo.bar); // 5
 ```
+
+> The example may be werid. You may wonder [why we can not use @accessor on InitializeInstanceFields directy?](why-we-can-not-use-@accessor-on-InitializeInstanceFields-directy)
 
 ### @alias
 
@@ -157,7 +163,7 @@ Help you to set alias for properties  on any instance or for methods on any clas
     * when it's true, we will just skip the existing property.
 
 ```javascript
-import {alias} from 'toxic-decorators';
+import {alias, applyDecorators} from 'toxic-decorators';
 
 class Cat {};
 const cat = new Cat();
@@ -168,9 +174,12 @@ class Dog {
   move() {
     console.log('it moved');
   }
-  @alias('old')
-  @alias('age', cat)
   age = 1;
+  construcotr () {
+    applyDecorators(this, {
+      age: [alias('old'), alias('age', cat)]
+    }, {self: true})
+  }
 }
 const dog = new Dog();
 const antoherCat = new Cat();
@@ -189,12 +198,14 @@ console.log(dog.old); // 1
 > But there's one problem is we will set the alias until the origin one has been initialized.
 >
 > It means that you must get access to your origin property before you get access to your alias property, otherwise the alias one will be undefined.
+>
+> You may wonder [why we can not use @accessor on InitializeInstanceFields directy?](why-we-can-not-use-@accessor-on-InitializeInstanceFields-directy)
 
 ### @configurable
 
 Set a property's configurable to be `true`. 
 
->  You can know more why I bump into this problem by [here](https://stackoverflow.com/questions/45231081/why-propertydescriptors-configurable-is-set-to-be-false-in-definefileds)
+>  You can know more why I bump into this problem by [why configurable of InitializeInstanceFields is false when I use decorators on it?](#why-configurable-of-InitializeInstanceFields-is-false-when-I-use-decorators-on-it)
 
 **arguments** none.
 
@@ -480,17 +491,23 @@ Ensure the property's value always be string. We change the property into getter
 * … and so on
 
 ```Javascript
-import {initString} from 'toxic-decorators';
+import {alwaysString, applyDecorators} from 'toxic-decorators';
 
 class Intro {
-  @initString(value => value.toLowerCase())
-  name = 'BEN'
+  name = 'BEN';
+  constructor () {
+    applyDecorators(this, {
+      name: initString(value => value.toLowerCase())
+    }, {self: true});
+  }
 }
 const intro = new Intro();
 console.log(intro.name); // ben
 intro.name = 'JONES';
 console.log(intro.name); // jones
 ```
+
+> You may wonder [why we can not use @accessor on InitializeInstanceFields directy?](why-we-can-not-use-@accessor-on-InitializeInstanceFields-directy)
 
 ### @alwaysNumber
 
@@ -586,10 +603,15 @@ Watch a property. We will call the function you provide once we detect change on
 Now we will show how to use `@watch`
 
 ```javascript
+import {watch, applyDecorators} from 'toxic-decorators';
 function fn (newVal, oldVal) {console.log(newVal, oldVal)}
 class Foo {
-  @watch(fn)
   bar = 1;
+  constructor () {
+    applyDecorators(this, {
+      bar: watch(fn)
+    }, {self: true});
+  }
 }
 const foo = new Foo();
 foo.bar = 2;// 2, 1
@@ -598,13 +620,18 @@ foo.bar = 2;// 2, 1
 `@watch` can detect change on the content of object and array, if you set deep true
 
 ```javascript
+import {watch, applyDecorators} from 'toxic-decorators';
 function fn (newVal, oldVal) {console.log(newVal, oldVal)}
 class Foo {
-  @watch(fn, {deep: true})
   bar = [1, 2, 3];
-  @watch(fn, {deep: true})
   baz = {
     a: 1
+  };
+  constructor () {
+    applyDecorators(this, {
+      bar: watch(fn, {deep: true}),
+      baz: watch(fn, {deep: true})
+    }, {self: true});
   }
 }
 const foo = new Foo();
@@ -615,11 +642,16 @@ foo.baz.a = 2; // {a: 2}, {a: 2}
 If you're sure your environment support `Proxy`,  you can use proxy mode
 
 ```javascript
+import {watch, applyDecorators} from 'toxic-decorators';
 function fn (newVal, oldVal) {console.log(newVal, oldVal)}
 class Foo {
-  @watch(fn, {deep: true, proxy: true})
   baz = {
     a: 1
+  };
+  constructor () {
+    applyDecorators(this, {
+      baz: watch(fn, {deep: true, proxy: true})
+    }, {self: true});
   }
 }
 const foo = new Foo();
@@ -630,11 +662,16 @@ delete foo.baz.b; // {a: 1}, {a: 1}
 If you're not sure you support `Proxy`, or you don't want to use proxy mode. You can change content with  `__set` and `__del`, which will also trigger the change method.
 
 ```javascript
+import {watch, applyDecorators} from 'toxic-decorators';
 function fn (newVal, oldVal) {console.log(newVal, oldVal)}
 class Foo {
-  @watch(fn, {deep: true, proxy: false})
   baz = {
     a: 1
+  };
+  constructor () {
+    applyDecorators(this, {
+      baz: watch(fn, {deep: true, proxy: false})
+    }, {self: true});
   }
 }
 const foo = new Foo();
@@ -652,17 +689,24 @@ foo.baz.__del('b'); // {a: 1}, {a: 1}
 > Once you set an object on the property watch by proxy, it is bind with proxy object. So if you set original object on it again, it will trigger the method.
 >
 > ```javascript
+> import {watch, applyDecorators} from 'toxic-decorators';
 > const obj = {a: 1};
 > function fn (newVal, oldVal) {console.log('changed')}
 > class Foo {
->   @watch(fn, {deep: true})
 >   bar = obj;
->   @watch(fn, {deep: true, proxy: true})
 >   baz = obj;
+>   constructor () {
+>     applyDecorators(this, {
+>       bar: watch(fn, {deep: true}),
+>       baz: watch(fn, {deep: true, proxy: true})
+>     }, {self: true});
+>   }
 > }
 > foo.bar = obj;
 > foo.baz = obj; // changed
 > ```
+> You may wonder [why we can not use @accessor on InitializeInstanceFields directy?](why-we-can-not-use-@accessor-on-InitializeInstanceFields-directy)
+>
 
 ### @autobind
 
@@ -1179,6 +1223,36 @@ foo.b();
 > We have mostly the same idea with core-decorators. So I just quote this from it's README.
 
 toxic-decorators aims to provide decorators that are fundamental to JavaScript itself--mostly things you could do with normal `Object.defineProperty` but not as easily when using ES2015 classes. Things like debouncing, throttling, and other more opinionated decorators are being phased out in favor of [lodash-decorators](https://www.npmjs.com/package/lodash-decorators) which wraps applicable lodash utilities as decorators. We don't want to duplicate the effort of lodash, which has years and years of robust testing and bugfixes.
+
+## Precautions
+
+### why configurable of InitializeInstanceFields is false when I use decorators on it?
+
+We all knows that, JavaScript class will support public fields later. But it bring use some problem.You can see in [this case](https://codepen.io/toxic-johann/pen/XgvGMy):
+
+```javascript
+function detect (obj, prop, descriptor) {
+  console.log(obj, prop, descriptor);
+  return descriptor;
+}
+class Foo {
+  a = 1;
+  @detect
+  b = 2;
+}
+const foo = new Foo(); // {configurable: false, enumerable: true, initializer: function initializer(), writable: true}
+console.log(Object.getOwnPropertyDescriptor(foo, 'a'), Object.getOwnPropertyDescriptor(foo, 'b'));
+// {configurable: true, enumerable: true, value: 1, writable: true}, {configurable: false, enumerable: true, value: 2, writable: true}
+
+```
+
+Well, according to the [specification](https://tc39.github.io/proposal-class-fields/#sec-define-field). The configurable of public field shoud be `false`. But this will make us could not use configure it later.
+
+In this situation, you should use [@configurable](#configuralbe).
+
+### why we can not use @accessor on InitializeInstanceFields directy?
+
+Decorators like accessor will turn initialze descirptor into accessor descriptor. According to [babel-plugin-transform-decorators-legacy](https://github.com/loganfsmyth/babel-plugin-transform-decorators-legacy/blob/master/src/index.js#L67-L72), it will bind accessor descriptor to class's prototype. it's actually singleton. Which may bother us.
 
 ## Changelog
 
