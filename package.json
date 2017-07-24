@@ -1,6 +1,6 @@
 {
   "name": "toxic-decorators",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "decorators",
   "main": "lib/toxic-decorators.js",
   "module": "lib/toxic-decorators.mjs",
