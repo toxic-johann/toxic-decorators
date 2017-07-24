@@ -1,6 +1,6 @@
 {
   "name": "toxic-decorators",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "decorators",
   "main": "lib/toxic-decorators.js",
   "module": "lib/toxic-decorators.mjs",
@@ -73,6 +73,6 @@
   "dependencies": {
     "babel-runtime": "^6.23.0",
     "toxic-predicate-functions": "^0.1.2",
-    "toxic-utils": "^0.1.1"
+    "toxic-utils": "^0.1.5"
   }
 }
