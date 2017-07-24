@@ -1,5 +1,6 @@
 // @flow
-import {isString, isAccessorDescriptor, isInitializerDescriptor, getDeepProperty, isPrimitive, isObject} from 'helper/utils';
+import {isString, isAccessorDescriptor, isInitializerDescriptor, isPrimitive, isObject} from 'helper/utils';
+import {getDeepProperty} from 'toxic-utils';
 import accessor from 'accessor';
 import initialize from 'initialize';
 const {getOwnPropertyDescriptor, defineProperty} = Object;

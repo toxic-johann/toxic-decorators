@@ -1,6 +1,6 @@
 // @flow
-import {getOwnKeys, isFunction, isString, isPrimitive, getDeepProperty, compressMultipleDecorators, isObject, isArray, warn} from 'helper/utils';
-import {bind} from 'toxic-utils';
+import {getOwnKeys, isFunction, isString, isPrimitive, compressMultipleDecorators, isObject, isArray, warn} from 'helper/utils';
+import {bind, getDeepProperty} from 'toxic-utils';
 import accessor from 'accessor';
 import nonenumerable from 'nonenumerable';
 import initialize from 'initialize';

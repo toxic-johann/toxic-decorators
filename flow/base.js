@@ -20,3 +20,4 @@ declare type InitialDescriptor = {|
 |};
 
 declare type Descriptor = DataDescriptor | AccessorDescriptor | InitialDescriptor;
+

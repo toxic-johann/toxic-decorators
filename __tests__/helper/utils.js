@@ -77,34 +77,6 @@ describe('warn', () => {
   });
 });
 
-describe('getDeepProperty', () =>{
- const obj = {
-   a: {
-     b: {
-       c: 1
-     }
-   }
- };
- test('key is not an array', () => {
-   expect(() => utils.getDeepProperty()).toThrow('keys of getDeepProperty must be string or Array<string>');
- });
- test('obj is empty and throw Error', () => {
-   expect(() => utils.getDeepProperty(null, 'hello', {throwError: true})).toThrow('obj itself is null');
- });
- test('obj is empty but do not throw error', () => {
-   expect(utils.getDeepProperty(undefined, 'nothing')).toBe();
- });
- test('obj is not empty but property do not exist, and i want it to throw error', () => {
-   expect(() => utils.getDeepProperty(obj, 'a.c.d', {throwError: true})).toThrow('obj.a.c is undefined');
- });
- test('key can be an array', () => {
-   expect(utils.getDeepProperty(obj, ['a', 'b', 'c'])).toBe(1);
- });
- test('key can be string', () => {
-   expect(utils.getDeepProperty(obj, 'a.b.c')).toBe(1);
- });
-});
-
 test('getOwnPropertyDescriptors', () => {
   const originFn = global.Object.getOwnPropertyDescriptors;
   global.Object.getOwnPropertyDescriptors = false;

@@ -1,6 +1,6 @@
 // @flow
 export * from 'toxic-predicate-functions';
-import {isFunction, isArray, isBoolean, isString, isVoid} from 'toxic-predicate-functions';
+import {isFunction, isArray, isBoolean} from 'toxic-predicate-functions';
 import {bind} from 'toxic-utils';
 const {getOwnPropertyDescriptor} = Object;
 // **********************  对象操作  ************************
@@ -116,36 +116,6 @@ export function warn (...args: any): void {
   const {warn} = console;
   if(isFunction(warn)) return console.warn(...args);
   console.log(...args);
-}
-
-export function getDeepProperty (obj: any, keys: string | Array<string>, {
-  throwError = false,
-  backup,
-}: {
-  throwError?: boolean,
-  backup?: any
-} = {}) {
-  if(isString(keys)) {
-    keys = keys.split('.');
-  }
-  if(!isArray(keys)) {
-    throw new TypeError('keys of getDeepProperty must be string or Array<string>');
-  }
-  const read = [];
-  let target = obj;
-  for(let i = 0, len = keys.length; i < len; i++) {
-    const key = keys[i];
-    if(isVoid(target)) {
-      if(throwError) {
-        throw new Error(`obj${read.length > 0 ? ('.' + read.join('.')) : ' itself'} is ${target}`);
-      } else {
-        return backup;
-      }
-    }
-    target = target[key];
-    read.push(key);
-  }
-  return target;
 }
 
 export function getOwnKeysFn () {
