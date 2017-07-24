@@ -1252,7 +1252,72 @@ In this situation, you should use [@configurable](#configuralbe).
 
 ### why we can not use @accessor on InitializeInstanceFields directy?
 
-Decorators like accessor will turn initialze descirptor into accessor descriptor. According to [babel-plugin-transform-decorators-legacy](https://github.com/loganfsmyth/babel-plugin-transform-decorators-legacy/blob/master/src/index.js#L67-L72), it will bind accessor descriptor to class's prototype. it's actually singleton. Which may bother us.
+Decorators like accessor will turn initialze descirptor into accessor descriptor. According to [babel-plugin-transform-decorators-legacy](https://github.com/loganfsmyth/babel-plugin-transform-decorators-legacy/blob/master/src/index.js#L67-L72), it will bind accessor descriptor to class's prototype. In other words, it's singleton.
+
+That may bring us problem, for example:
+
+```javascript
+class Foo {
+  @accessor({
+    get (value) {
+      return value;
+    },
+    set (value) {
+      return value;
+    }
+  })
+  bar = 1;
+  baz = 2;
+}
+const foo1 = new Foo();
+const foo2 = new Foo();
+foo2.bar = 3;
+console.log(foo1.bar, foo2.bar); // 3， 3
+```
+
+As value are all set on the `Foo.prototype`, once you set the value. It will change both instance.
+
+However, if you do not rely on the value binding on the `Class.prototype`, that still work.
+
+```javascript
+class Foo {
+  @accessor({
+    get (value) {
+      return this.baz;
+    },
+    set (value) {
+      this.baz = value;
+    }
+  })
+  bar = 1;
+  baz = 2;
+}
+const foo1 = new Foo();
+const foo2 = new Foo();
+foo2.bar = 3;
+console.log(foo1.bar, foo2.bar);
+```
+
+But it still have a problem. As it was bind on `prototype`, it can't be enumerable.
+
+```javascript
+class Foo {
+  @accessor({
+    get (value) {
+      return this.baz;
+    },
+    set (value) {
+      this.baz = value;
+    }
+  })
+  bar = 1;
+  baz = 2;
+}
+const foo = new Foo();
+console.log(Object.keys(foo)); // ['baz']
+```
+
+So, I encourage you to use applyDecorators on InitializeInstanceFields with decorators like [@accessor](#accessor), [@alias](#alias).
 
 ## Changelog
 
