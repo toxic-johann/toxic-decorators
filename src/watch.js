@@ -157,10 +157,6 @@ function deepObserve (value: Object | Array<*>, hook: Function, {operationPrefix
     [operationPrefix + 'del']: [
       initialize(method => {
         return (property) => {
-          if(getOwnKeys(value).indexOf(property) === -1) {
-            const props = getPropertyDecorators([property]);
-            applyDecorators(value, props, {self: true, omit: true});
-          }
           if(isFunction(method)) {
             bind(method, this)(property);
           } else {
