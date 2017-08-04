@@ -189,7 +189,8 @@ export default function watch (...args: Array<string | Function | {
   let {proxy} = option;
   if(typeof Proxy !== 'function') {
     proxy = false;
-    warn('You browser do not support Proxy, we will change back into observe mode.');
+    /* istanbul ignore else  */
+    if(process.env.NODE_ENV !== 'production') warn('You browser do not support Proxy, we will fall back into observe mode.');
   }
   if(!args.length) throw new TypeError('You must pass a function or a string to find the hanlder function.');
   if(other !== undefined && isPrimitive(other)) throw new TypeError('If you want us to trigger function on the other instance, you must pass in a legal instance');

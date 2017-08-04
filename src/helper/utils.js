@@ -113,8 +113,7 @@ export function compressOneArgFnArray (fns: Array<Function>, errmsg: string = 'Y
  * @param {anything} args
  */
 export function warn (...args: any): void {
-  const {warn} = console;
-  if(isFunction(warn)) return console.warn(...args);
+  if(isFunction(console.warn)) return console.warn(...args);
   console.log(...args);
 }
 
@@ -145,8 +144,8 @@ export function getOwnPropertyDescriptorsFn (): Function {
 export const getOwnPropertyDescriptors = getOwnPropertyDescriptorsFn();
 
 export function compressMultipleDecorators (...fns: Array<Function>): Function {
-  const fnOnlyErrorMsg = 'compressMultipleDecorators only accept function';
-  fns.forEach(fn => {if(!isFunction(fns[0])) throw new TypeError(fnOnlyErrorMsg);});
+  if(!fns.length) throw new TypeError('You must pass in decorators in compressMultipleDecorators');
+  fns.forEach(fn => {if(!isFunction(fn)) throw new TypeError(`Decorators must be a function, but not "${fn}" in ${typeof fn}`);});
   if(fns.length === 1) return fns[0];
   return function (obj: any, prop: string, descirptor: Descriptor | void): Descriptor {
     // $FlowFixMe: the reduce will return a descriptor

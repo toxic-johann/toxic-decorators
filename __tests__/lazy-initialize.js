@@ -14,7 +14,7 @@ describe('lazyInit', () => {
     }
     const foo = new Foo();
     expect(foo).not.toBe();
-    expect(console.warn).toBeCalledWith('@lazyInit can only be used on property, but not methods and getter/setter.');
+    expect(console.warn).toBeCalledWith('@lazyInit can only be used on property, but not propery "b" which may be methods or getter/setter.');
     expect(console.warn).toHaveBeenCalledTimes(2);
     global.console = originConsole;
   });

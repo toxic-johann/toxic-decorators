@@ -72,7 +72,7 @@ describe('watch', () => {
     }
     expect(() => new Foo()).not.toThrow();
     expect(fn1).toHaveBeenCalledTimes(1);
-    expect(fn1).lastCalledWith('You browser do not support Proxy, we will change back into observe mode.');
+    expect(fn1).lastCalledWith('You browser do not support Proxy, we will fall back into observe mode.');
     global.console.warn = originWarn;
     global.Proxy = originProxy;
   });

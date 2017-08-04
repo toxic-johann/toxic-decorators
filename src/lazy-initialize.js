@@ -5,7 +5,8 @@ const {defineProperty} = Object;
 export default function lazyInit (obj: any, prop: string, descriptor: InitialDescriptor): AccessorDescriptor {
   if(descriptor === undefined) throw new TypeError('@lazyInit cannot be apply on undefined property.');
   if(!isFunction(descriptor.initializer)) {
-    warn('@lazyInit can only be used on property, but not methods and getter/setter.');
+    /* istanbul ignore else  */
+    if(process.env.NODE_ENV !== 'production') warn(`@lazyInit can only be used on property, but not propery "${prop}" which may be methods or getter/setter.`);
     // $FlowFixMe: disjoint union ****
     return descriptor;
   }

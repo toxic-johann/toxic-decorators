@@ -94,11 +94,11 @@ test('getOwnPropertyDescriptors', () => {
 
 describe('compressMultipleDecorators', () => {
   test("array can't be empty", () => {
-    expect(() => utils.compressMultipleDecorators([])).toThrow();
+    expect(() => utils.compressMultipleDecorators()).toThrow();
   });
   test('array can only contain function', () => {
-    expect(() => utils.compressMultipleDecorators([function () {}, function () {}, 2])()).toThrow('compressMultipleDecorators only accept function');
-    expect(() => utils.compressMultipleDecorators([1])).toThrow('compressMultipleDecorators only accept function');
+    expect(() => utils.compressMultipleDecorators(function () {}, function () {}, 2)()).toThrow('Decorators must be a function, but not "2" in number');
+    expect(() => utils.compressMultipleDecorators(1)).toThrow('Decorators must be a function, but not "1" in number');
   });
 });
 

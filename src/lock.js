@@ -11,7 +11,8 @@ const {defineProperty} = Object;
  */
 export default function lock (obj: Object, prop: string, descriptor: Descriptor): Descriptor | void {
   if(descriptor === undefined) {
-    warn('You are using @lock on an undefined property. This property will become a lock undefined forever, which is meaningless');
+    /* istanbul ignore else  */
+    if(process.env.NODE_ENV !== 'production') warn('You are using @lock on an undefined property. This property will become a lock undefined forever, which is meaningless');
     return {
       value: undefined,
       writable: false,

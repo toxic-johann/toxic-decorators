@@ -11,7 +11,8 @@ const {defineProperty} = Object;
  */
 export default function frozen (obj: Object, prop: string, descriptor: Descriptor): Descriptor | void {
   if(descriptor === undefined) {
-    warn('You are using @frozen on an undefined property. This property will become a frozen undefined forever, which is meaningless');
+    /* istanbul ignore else  */
+    if (process.env.NODE_ENV !== 'production') warn('You are using @frozen on an undefined property. This property will become a frozen undefined forever, which is meaningless');
     return {
       value: undefined,
       writable: false,
@@ -25,7 +26,8 @@ export default function frozen (obj: Object, prop: string, descriptor: Descripto
     const {get} = descriptor;
     descriptor.set = undefined;
     if(!isFunction(get)) {
-      warn('You are using @frozen on one accessor descriptor without getter. This property will become a frozen undefined finally.Which maybe meaningless.');
+      /* istanbul ignore else  */
+    if (process.env.NODE_ENV !== 'production') warn('You are using @frozen on one accessor descriptor without getter. This property will become a frozen undefined finally.Which maybe meaningless.');
       return;
     }
     return {

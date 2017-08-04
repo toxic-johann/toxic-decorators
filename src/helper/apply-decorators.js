@@ -38,7 +38,8 @@ export default function applyDecorators (Class: any, props: {[string]: Array<Fun
     try {
       handler = compressMultipleDecorators(...decorators);
     } catch (err) {
-      warn(err && err.message);
+      /* istanbul ignore else  */
+      if(process.env.NODE_ENV !== 'production') warn(err && err.message);
       throw new Error('The decorators set on props must be Function or Array of Function');
     }
     const descriptor = getOwnPropertyDescriptor(prototype, key);

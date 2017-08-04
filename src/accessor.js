@@ -36,10 +36,10 @@ export default function accessor ({get, set}: {get?: Function | Array<Function>,
       const {get: originGet, set: originSet} = descriptor;
       const hasOriginGet = isFunction(originGet);
       const hasOriginSet = isFunction(originSet);
-      if(!hasOriginGet && hasGet) {
+      if(process.env.NODE_ENV !== 'production' && !hasOriginGet && hasGet) {
         warn(`You are trying to set getter via @accessor on ${prop} without getter. That's not a good idea.`);
       }
-      if(!hasOriginSet && hasSet) {
+      if(process.env.NODE_ENV !== 'production' && !hasOriginSet && hasSet) {
         warn(`You are trying to set setter via @accessor on  ${prop} without setter. That's not a good idea.`);
       }
       const getter = (hasOriginGet || hasGet)
