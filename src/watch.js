@@ -187,7 +187,7 @@ export default function watch (...args: Array<string | Function | {
   const {deep, omit, other, operationPrefix = '__', diff = true} = option;
   // $FlowFixMe: we have check if it's an object
   let {proxy} = option;
-  if(!Proxy) {
+  if(typeof Proxy !== 'function') {
     proxy = false;
     warn('You browser do not support Proxy, we will change back into observe mode.');
   }
