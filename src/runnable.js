@@ -10,11 +10,8 @@ export default function runnable (key: Function | string, {
 } = {}): Function {
   if(!isFunction(key) && !isString(key)) throw new TypeError('@runnable only accept Function or String');
   return function (obj: Object, prop: string, descriptor: DataDescriptor): DataDescriptor {
-    if(descriptor === undefined) {
-      throw new Error('@runnable must used on descriptor, are you using it on undefined property?');
-    }
-    const {value, configurable} = descriptor;
-    if(!isFunction(value)) throw new TypeError(`@runnable can only be used on method, but not ${value} on ${prop}`);
+    const {value, configurable} = descriptor || {};
+    if(!isFunction(value)) throw new TypeError(`@runnable can only be used on method, but not ${value} on property "${prop}".`);
     const canIRun = isFunction(key)
       ? key
       : function () {

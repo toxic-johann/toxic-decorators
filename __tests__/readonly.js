@@ -33,7 +33,7 @@ describe('@readonly', () => {
     applyDecorators(Foo, {
       a: readonly
     });
-    expect(console.warn).lastCalledWith('You are using @readonly on an undefined property. This property will become a readonly undefined forever, which is meaningless');
+    expect(console.warn).lastCalledWith('You are using @readonly on an undefined property "a". This property will become a readonly undefined forever, which is meaningless.');
     expect(Foo.prototype.a).toBe();
     expect(() => {Foo.prototype.a = 3;}).toThrow();
     global.console = originConsole;

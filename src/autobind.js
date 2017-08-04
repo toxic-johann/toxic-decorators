@@ -1,5 +1,5 @@
 // @flow
-import {isFunction, createDefaultSetter, isDescriptor} from 'helper/utils';
+import {isFunction, createDefaultSetter} from 'helper/utils';
 import {bind} from 'toxic-utils';
 import autobindClass from 'class/autobind';
 let mapStore;
@@ -36,12 +36,9 @@ function getBoundSuper (obj: Object, fn: Function): Function {
  */
 export default function autobind (obj: Object, prop: string, descriptor: DataDescriptor): AccessorDescriptor {
   if(arguments.length === 1) return autobindClass()(obj);
-  if(!isDescriptor(descriptor)) {
-    throw new Error('@autobind must used on descriptor, are you using it on undefined property?');
-  }
-  const {value: fn, configurable} = descriptor;
+  const {value: fn, configurable} = descriptor || {};
   if(!isFunction(fn)) {
-    throw new TypeError(`@autobind can only be used on functions, not: ${fn})`);
+    throw new TypeError(`@autobind can only be used on functions, not "${fn}" in ${typeof fn} on property "${prop}"`);
   }
   const {constructor} = obj;
   return {

@@ -93,7 +93,7 @@ describe('runnable', () => {
         @runnable(function () {})
         a = 2;
       };
-    }).toThrow('@runnable can only be used on method, but not undefined on a');
+    }).toThrow('@runnable can only be used on method, but not undefined on property "a".');
   });
   test('run until the getter/setter flag on instance to be true', () => {
     const bar = new Bar();
@@ -217,7 +217,7 @@ describe('runnable', () => {
     class Foo {};
     expect(() => applyDecorators(Foo, {
       a: runnable('b')
-    })).toThrow('@runnable must used on descriptor, are you using it on undefined property?');
+    })).toThrow('@runnable can only be used on method, but not undefined on property "a".');
   });
   test('you can pass in a backup function', () => {
     const fn = jest.fn();

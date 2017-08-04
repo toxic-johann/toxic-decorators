@@ -90,7 +90,7 @@ describe('@lock', () => {
     applyDecorators(Foo, {
       a: lock
     });
-    expect(console.warn).lastCalledWith('You are using @lock on an undefined property. This property will become a lock undefined forever, which is meaningless');
+    expect(console.warn).lastCalledWith('You are using @lock on an undefined property "a". This property will become a lock undefined forever, which is meaningless.');
     expect(Foo.prototype.a).toBe();
     expect(() => {Foo.prototype.a = 3;}).toThrow();
     expect(() => {delete Foo.prototype.a;}).toThrow();

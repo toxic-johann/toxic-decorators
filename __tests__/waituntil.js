@@ -272,6 +272,6 @@ describe('waituntil', () => {
     class Foo {};
     expect(() => applyDecorators(Foo, {
       a: waituntil('b')
-    })).toThrow('@waituntil must used on descriptor, are you using it on undefined property?');
+    })).toThrow('@waituntil can only be used on function, but not undefined on property "a"');
   });
 });

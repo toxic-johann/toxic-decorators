@@ -4,7 +4,7 @@ describe('after', () => {
     class Foo {};
     expect(() => applyDecorators(Foo, {
       a: after(function () {})
-    })).toThrow('@after must used on descriptor, are you using it on undefined property?');
+    })).toThrow('@after can only be used on function, please checkout your property "a" is a method or not.');
   });
   test('@after only accept function parameter', () => {
     expect(() => {
@@ -26,7 +26,7 @@ describe('after', () => {
     expect(() => class {
       @after
       foo () {}
-    }).toThrow('You may use @after straightly, @after return decorators, you need to call it');
+    }).toThrow('You may have used @after straightly. @after return decorators. You should call it before you use it as decorators');
   });
   test('test context and arguments in after function and final function', () => {
     const fn = jest.fn();

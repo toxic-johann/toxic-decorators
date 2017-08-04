@@ -8,9 +8,10 @@ function setAlias (root: Object, prop: string, {configurable, enumerable}: Descr
   const originDesc = getOwnPropertyDescriptor(obj, key);
   if(originDesc !== undefined) {
     if(omit) return;
-    if(!force) throw new Error("@alias can't set alias on an existing attribute");
+    // TODO: we should add an github link here
+    if(!force) throw new Error(`"${prop}" is an existing property, if you want to override it, please set "force" true in @alias option.`);
     if(!originDesc.configurable) {
-      throw new Error("You are tring to set alias on an existing attribute which its configurable is false. That's impossible. Please check if you have set @frozen on it.");
+      throw new Error(`property "${prop}" is unconfigurable.`);
     }
   }
   defineProperty(obj, key, {

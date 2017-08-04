@@ -4,7 +4,7 @@ describe('before', () => {
     class Foo {};
     expect(() => applyDecorators(Foo, {
       a: before(function () {})
-    })).toThrow('@before must used on descriptor, are you using it on undefined property?');
+    })).toThrow('@before can only be used on function, please check the property "a" is a method or not.');
   });
   test('@before only accept function parameter', () => {
     expect(() => {
@@ -26,7 +26,7 @@ describe('before', () => {
     expect(() => class {
       @before
       foo () {}
-    }).toThrow('You may use @before straightly, @before return decorators, you need to call it');
+    }).toThrow('You may use @before straightly, @before return decorators, you should call it before you set it as decorator.');
   });
   test('test context and arguments in before function and final function', () => {
     const fn = jest.fn();

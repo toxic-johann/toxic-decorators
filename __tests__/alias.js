@@ -11,7 +11,7 @@ describe('alias', () => {
       @alias('bar')
       foo () {}
       bar () {}
-    }).toThrow("@alias can't set alias on an existing attribute");
+    }).toThrow('"foo" is an existing property, if you want to override it, please set "force" true in @alias option.');
   });
   test('You must pass in a non-primitive value if you want to set alias on other instance', () => {
     expect(() => class {
@@ -36,7 +36,7 @@ describe('alias', () => {
       @alias('bar', {force: true})
       car = 2;
     };
-    expect(() => new Foo()).toThrow("You are tring to set alias on an existing attribute which its configurable is false. That's impossible. Please check if you have set @frozen on it.");
+    expect(() => new Foo()).toThrow('property "car" is unconfigurable.');
   });
   test('if you want to omit the error throw when you try to set alias on existing value, please set option.omit to be true', () => {
     class Foo {

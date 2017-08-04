@@ -176,7 +176,7 @@ describe('autobind', () => {
         @autobind
         a = 2;
       };
-    }).toThrow('@autobind can only be used on functions, not: undefined');
+    }).toThrow('@autobind can only be used on functions, not "undefined" in undefined on property "a"');
   });
 
   test('lookup on the prototype', () => {
@@ -187,7 +187,7 @@ describe('autobind', () => {
     class Foo {};
     expect(() => applyDecorators(Foo, {
       a: autobind
-    })).toThrow('@autobind must used on descriptor, are you using it on undefined property?');
+    })).toThrow('@autobind can only be used on functions, not "undefined" in undefined on property "a"');
   });
 
   test('@autobind can alse be used on class, but you cannot pass it option', () => {

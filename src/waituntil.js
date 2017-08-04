@@ -6,11 +6,8 @@ const {getOwnPropertyDescriptor, defineProperty} = Object;
 export default function waituntil (key: Function | Promise<*> | string, {other}: {other?: any} = {}): Function {
   if(!isFunction(key) && !isPromise(key) && !isString(key)) throw new TypeError('@waitUntil only accept Function, Promise or String');
   return function (obj: Object, prop: string, descriptor: DataDescriptor): DataDescriptor {
-    if(descriptor === undefined) {
-      throw new Error('@waituntil must used on descriptor, are you using it on undefined property?');
-    }
-    const {value, configurable} = descriptor;
-    if(!isFunction(value)) throw new TypeError(`@waituntil can only be used on function, but not ${value}`);
+    const {value, configurable} = descriptor || {};
+    if(!isFunction(value)) throw new TypeError(`@waituntil can only be used on function, but not ${value} on property "${prop}"`);
     let binded = false;
     const waitingQueue = [];
     const canIRun = isPromise(key)

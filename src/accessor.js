@@ -19,9 +19,6 @@ export default function accessor ({get, set}: {get?: Function | Array<Function>,
       configurable = true,
       enumerable = true
     } = descriptor || {};
-    // const configurable = descriptor ? descriptor.configurable : true;
-    // const enumerable = descriptor ? descriptor.enumerable : true;
-    // const writable = descriptor ? descriptor.w : true;
     const hasGet = isFunction(get);
     const hasSet = isFunction(set);
     const handleGet = function (value) {
