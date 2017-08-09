@@ -112,9 +112,9 @@ export function compressOneArgFnArray (fns: Array<Function>, errmsg: string = 'Y
  * just a method to call console.warn, maybe i will add some handler on it someday
  * @param {anything} args
  */
-export function warn (...args: any): void {
-  if(isFunction(console.warn)) return console.warn(...args);
-  console.log(...args);
+export function warn (message: string): void {
+  if(isFunction(console.warn)) return console.warn(message);
+  console.log(message);
 }
 
 export function getOwnKeysFn () {
