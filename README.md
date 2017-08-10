@@ -1342,7 +1342,7 @@ CommonJS and ES Module builds are intended for bundlers, therefore we don’t pr
 
 CommonJS and ES Module builds also preserve raw checks for `process.env.NODE_ENV` to determine the mode they should run in. You should use appropriate bundler configurations to replace these environment variables in order to control which mode Vue will run in. Replacing `process.env.NODE_ENV` with string literals also allows minifiers like UglifyJS to completely drop the development-only code blocks, reducing final file size.
 
-#### Webpack
+### Webpack
 
 Use Webpack’s [DefinePlugin](https://webpack.js.org/plugins/define-plugin/):
 
@@ -1362,7 +1362,7 @@ module.exports = {
 }
 ```
 
-#### Rollup
+### Rollup
 
 Use [rollup-plugin-replace](https://github.com/rollup/rollup-plugin-replace):
 
