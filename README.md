@@ -1323,6 +1323,62 @@ So, I encourage you to use applyDecorators on InitializeInstanceFields with deco
 
 Please read the [realase notes](https://github.com/Chimeejs/chimee/releases).
 
+## Explanation of Different Build
+
+You will find four differnet build in the lib.
+
+| Name                        | Kind     | Meaning                                  | Need to define environment |
+| --------------------------- | -------- | ---------------------------------------- | -------------------------- |
+| toxic-decorators.js         | commonjs | Common js, mostly used in Webpack 1.     | Yes                        |
+| toxic-decorators.mjs        | esmodule | in es module, mostly used in webpack 2 and rollup | Yes                        |
+| toxic-decorators.browser.js | umd      | Can be used in browser directly          | No(It's in development)    |
+| toxic-decorators.min.js     | umd      | Can be used in browser directly          | No(It's in production)     |
+
+## Development vs. Production
+
+Development/production modes are hard-coded for the UMD builds: the un-minified files are for development, and the minified files are for production.
+
+CommonJS and ES Module builds are intended for bundlers, therefore we don’t provide minified versions for them. You will be responsible for minifying the final bundle yourself.
+
+CommonJS and ES Module builds also preserve raw checks for `process.env.NODE_ENV` to determine the mode they should run in. You should use appropriate bundler configurations to replace these environment variables in order to control which mode Vue will run in. Replacing `process.env.NODE_ENV` with string literals also allows minifiers like UglifyJS to completely drop the development-only code blocks, reducing final file size.
+
+#### Webpack
+
+Use Webpack’s [DefinePlugin](https://webpack.js.org/plugins/define-plugin/):
+
+```
+var webpack = require('webpack')
+
+module.exports = {
+  // ...
+  plugins: [
+    // ...
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify('production')
+      }
+    })
+  ]
+}
+```
+
+#### Rollup
+
+Use [rollup-plugin-replace](https://github.com/rollup/rollup-plugin-replace):
+
+```
+const replace = require('rollup-plugin-replace')
+
+rollup({
+  // ...
+  plugins: [
+    replace({
+      'process.env.NODE_ENV': JSON.stringify('production')
+    })
+  ]
+}).then(...)
+```
+
 ## License
 
 [GPL-3.0](https://opensource.org/licenses/GPL-3.0)
