@@ -1321,7 +1321,7 @@ So, I encourage you to use applyDecorators on InitializeInstanceFields with deco
 
 ## Changelog
 
-Please read the [realase notes](https://github.com/Chimeejs/chimee/releases).
+Please read the [realase notes](https://github.com/toxic-johann/toxic-decorators/releases).
 
 ## Explanation of Different Build
 
