@@ -5,7 +5,9 @@ config.plugins.unshift(replace({
   'process.env.NODE_ENV': '"development"'
 }));
 export default Object.assign(config, {
-  format: 'umd',
-  dest: 'lib/toxic-decorators.browser.js',
-  moduleName: 'toxicDecorators'
+  output: {
+    format: 'umd',
+    file: 'lib/toxic-decorators.browser.js'
+  },
+  name: 'toxicDecorators'
 });

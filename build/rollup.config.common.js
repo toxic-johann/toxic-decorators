@@ -1,5 +1,7 @@
 import base from './rollup.config.base';
 export default Object.assign(base('common'), {
-  format: 'cjs',
-  dest: 'lib/toxic-decorators.js',
+  output: {
+    file: 'lib/toxic-decorators.js',
+    format: 'cjs',
+  }
 });
