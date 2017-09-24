@@ -115,7 +115,8 @@ describe('getOwnKeys', () => {
     const foo = new Foo();
     const {getOwnPropertyNames, getOwnPropertySymbols} = Object;
     global.Object.getOwnPropertySymbols = false;
-    expect(utils.getOwnKeysFn()(foo)).toEqual(getOwnPropertyNames(foo));
+    const keys = utils.getOwnKeysFn()(foo);
     global.Object.getOwnPropertySymbols = getOwnPropertySymbols;
+    expect(keys).toEqual(getOwnPropertyNames(foo));
   });
 });
