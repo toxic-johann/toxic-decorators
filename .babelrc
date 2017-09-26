@@ -1,7 +1,7 @@
 {
  "presets": [
     "flow",
-    "latest",
+    "env",
     "stage-0"
   ],
   "plugins": [
