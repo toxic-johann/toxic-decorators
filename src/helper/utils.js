@@ -1,7 +1,6 @@
 // @flow
 export * from 'toxic-predicate-functions';
-import { isFunction, isArray, isBoolean } from 'lodash';
-import { bind } from 'toxic-utils';
+import { isFunction, isArray, isBoolean, bind } from 'lodash';
 const { getOwnPropertyDescriptor } = Object;
 // **********************  对象操作  ************************
 /**

@@ -1,8 +1,8 @@
 // @flow
-import { isPromise, isDescriptor, isPrimitive } from 'helper/utils';
+import { isPromise, isDescriptor } from 'helper/utils';
 import accessor from 'accessor';
 import { getDeepProperty } from 'toxic-utils';
-import { bind, isNil, isFunction, isString } from 'lodash';
+import { bind, isNil, isFunction, isString, isObject } from 'lodash';
 const { getOwnPropertyDescriptor, defineProperty } = Object;
 export default function waituntil(key: Function | Promise<*> | string, { other }: {other?: any} = {}): Function {
   if (!isFunction(key) && !isPromise(key) && !isString(key)) throw new TypeError('@waitUntil only accept Function, Promise or String');
@@ -19,7 +19,7 @@ export default function waituntil(key: Function | Promise<*> | string, { other }
           // $FlowFixMe: We have use isPromise to exclude
           const keys = key.split('.');
           const prop = keys.slice(-1);
-          const originTarget = isPrimitive(other) ? this : other;
+          const originTarget = !isObject(other) ? this : other;
           if (!binded) {
             const target = getDeepProperty(originTarget, keys.slice(0, -1));
             if (isNil(target)) return target;

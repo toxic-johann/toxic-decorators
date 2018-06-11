@@ -1,6 +1,6 @@
 // @flow
-import { isAccessorDescriptor, isInitializerDescriptor, isPrimitive } from 'helper/utils';
-import { isString, isPlainObject } from 'lodash';
+import { isAccessorDescriptor, isInitializerDescriptor } from 'helper/utils';
+import { isString, isPlainObject, isObject } from 'lodash';
 import { getDeepProperty } from 'toxic-utils';
 import accessor from 'accessor';
 import initialize from 'initialize';
@@ -44,7 +44,7 @@ export default function alias(other?: any, key: string, option?: {force: boolean
   // argument validate
   if (!isString(key)) throw new TypeError('@alias need a string as a key to find the porperty to set alias on');
   const illegalObjErrorMsg = 'If you want to use @alias to set alias on other instance, you must pass in a legal instance';
-  if (other !== undefined && isPrimitive(other)) throw new TypeError(illegalObjErrorMsg);
+  if (other !== undefined && !isObject(other)) throw new TypeError(illegalObjErrorMsg);
   const { force, omit } = isPlainObject(option) ? option : { force: false, omit: false };
   return function(obj: Object, prop: string, descriptor: Descriptor): Descriptor {
     descriptor = descriptor || {
@@ -54,11 +54,11 @@ export default function alias(other?: any, key: string, option?: {force: boolean
       enumerable: true,
     };
     function getTargetAndName(other: any, obj: any, key: string): {target: any, name: string} {
-      let target = isPrimitive(other) ? obj : other;
+      let target = !isObject(other) ? obj : other;
       const keys = key.split('.');
       const [ name ] = keys.slice(-1);
       target = getDeepProperty(target, keys.slice(0, -1), { throwError: true });
-      if (isPrimitive(target)) {
+      if (!isObject(target)) {
         throw new TypeError(illegalObjErrorMsg);
       }
       return {

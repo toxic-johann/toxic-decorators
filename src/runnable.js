@@ -1,7 +1,6 @@
 // @flow
-import { isPrimitive } from 'helper/utils';
 import { getDeepProperty } from 'toxic-utils';
-import { bind, isString, isFunction } from 'lodash';
+import { bind, isString, isFunction, isObject } from 'lodash';
 export default function runnable(key: Function | string, {
   other,
   backup,
@@ -17,7 +16,7 @@ export default function runnable(key: Function | string, {
       ? key
       : function() {
         const keys = key.split('.');
-        const originTarget = isPrimitive(other) ? this : other;
+        const originTarget = !isObject(other) ? this : other;
         return getDeepProperty(originTarget, keys);
       };
     backup = isFunction(backup) ? backup : function() {};

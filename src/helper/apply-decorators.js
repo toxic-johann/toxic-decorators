@@ -1,6 +1,6 @@
 // @flow
-import { isPrimitive, compressMultipleDecorators, warn } from 'helper/utils';
-import { isNil, isPlainObject, isFunction, isArray } from 'lodash';
+import { compressMultipleDecorators, warn } from 'helper/utils';
+import { isObject, isNil, isPlainObject, isFunction, isArray } from 'lodash';
 const { defineProperty, getOwnPropertyDescriptor } = Object;
 
 export default function applyDecorators(Class: any, props: {[string]: Array<Function> | Function} | Function | Array<Function>, {
@@ -28,7 +28,7 @@ export default function applyDecorators(Class: any, props: {[string]: Array<Func
     return Class;
   }
   if (!self && !isFunction(Class)) throw new TypeError('applyDecorators only accept class as first arguments. If you want to modify instance, you should set options.self true.');
-  if (self && isPrimitive(Class)) throw new TypeError("We can't apply docorators on a primitive value, even in self mode");
+  if (self && !isObject(Class)) throw new TypeError("We can't apply docorators on a primitive value, even in self mode");
   if (!isPlainObject(props)) throw new TypeError('applyDecorators only accept object as second arguments');
   const prototype = self ? Class : Class.prototype;
   if (isNil(prototype)) throw new Error('The class muse have a prototype, please take a check');

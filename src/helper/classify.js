@@ -1,6 +1,6 @@
 // @flow
-import { getOwnKeys, getOwnPropertyDescriptors, isPrimitive } from 'helper/utils';
-import { isNil, isFunction, isArray } from 'lodash';
+import { getOwnKeys, getOwnPropertyDescriptors } from 'helper/utils';
+import { isNil, isFunction, isArray, isObject } from 'lodash';
 const { defineProperty } = Object;
 export default function classify(decorator: Function, {
   requirement,
@@ -25,7 +25,7 @@ export default function classify(decorator: Function, {
     return function(Klass: Function): void {
       const isClass = isFunction(Klass);
       if (!self && !isClass) throw new TypeError(`@${decorator.name}Class can only be used on class`);
-      if (self && isPrimitive(Klass)) throw new TypeError(`@${decorator.name}Class must be used on non-primitive type value in 'self' mode`);
+      if (self && !isObject(Klass)) throw new TypeError(`@${decorator.name}Class must be used on non-primitive type value in 'self' mode`);
       const prototype = self ? Klass : Klass.prototype;
       if (isNil(prototype)) throw new Error(`The prototype of the ${Klass.name} is empty, please check it`);
       const descs = getOwnPropertyDescriptors(prototype);

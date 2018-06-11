@@ -1,7 +1,7 @@
 // @flow
-import { getOwnKeys, isPrimitive, compressMultipleDecorators, warn } from 'helper/utils';
+import { getOwnKeys, compressMultipleDecorators, warn } from 'helper/utils';
 import { getDeepProperty } from 'toxic-utils';
-import { bind, isFunction, isString, isPlainObject, isArray } from 'lodash';
+import { isObject, bind, isFunction, isString, isPlainObject, isArray } from 'lodash';
 import accessor from 'accessor';
 import nonenumerable from 'nonenumerable';
 import initialize from 'initialize';
@@ -194,7 +194,7 @@ export default function watch(...args: Array<string | Function | {
     if (process.env.NODE_ENV !== 'production') warn('You browser do not support Proxy, we will fall back into observe mode.');
   }
   if (!args.length) throw new TypeError('You must pass a function or a string to find the hanlder function.');
-  if (other !== undefined && isPrimitive(other)) throw new TypeError('If you want us to trigger function on the other instance, you must pass in a legal instance');
+  if (other !== undefined && !isObject(other)) throw new TypeError('If you want us to trigger function on the other instance, you must pass in a legal instance');
   if (!isString(operationPrefix)) throw new TypeError('operationPrefix must be an string');
   return function(obj: any, prop: string, descriptor: void | Descriptor): AccessorDescriptor {
     const fns = args.reduce((fns, keyOrFn, index) => {
