@@ -1,6 +1,6 @@
 // @flow
 import initialize from 'initialize';
-import { isArray } from 'helper/utils';
+import { isArray } from 'lodash';
 export default function array(...args: Array<Function>): Function {
   const defaultValue = isArray(args[0])
     ? args.shift()

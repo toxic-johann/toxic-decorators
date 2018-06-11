@@ -1,5 +1,6 @@
 // @flow
-import { isFunction, isArray, isAccessorDescriptor, isInitializerDescriptor, compressOneArgFnArray, warn } from 'helper/utils';
+import { isAccessorDescriptor, isInitializerDescriptor, compressOneArgFnArray, warn } from 'helper/utils';
+import { isFunction, isArray } from 'lodash';
 import { bind } from 'toxic-utils';
 export default function accessor({ get, set }: {get?: Function | Array<Function>, set?: Function | Array<Function>} = {}, { preGet = false, preSet = true }: {preGet?: boolean, preSet?: boolean} = {}): Function {
   if (!isFunction(get) &&

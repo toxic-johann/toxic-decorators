@@ -1,5 +1,6 @@
 // @flow
-import { isString, isAccessorDescriptor, isInitializerDescriptor, isPrimitive, isObject } from 'helper/utils';
+import { isAccessorDescriptor, isInitializerDescriptor, isPrimitive } from 'helper/utils';
+import { isString, isPlainObject } from 'lodash';
 import { getDeepProperty } from 'toxic-utils';
 import accessor from 'accessor';
 import initialize from 'initialize';
@@ -44,7 +45,7 @@ export default function alias(other?: any, key: string, option?: {force: boolean
   if (!isString(key)) throw new TypeError('@alias need a string as a key to find the porperty to set alias on');
   const illegalObjErrorMsg = 'If you want to use @alias to set alias on other instance, you must pass in a legal instance';
   if (other !== undefined && isPrimitive(other)) throw new TypeError(illegalObjErrorMsg);
-  const { force, omit } = isObject(option) ? option : { force: false, omit: false };
+  const { force, omit } = isPlainObject(option) ? option : { force: false, omit: false };
   return function(obj: Object, prop: string, descriptor: Descriptor): Descriptor {
     descriptor = descriptor || {
       value: undefined,

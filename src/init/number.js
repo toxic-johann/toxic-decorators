@@ -1,6 +1,6 @@
 // @flow
 import initialize from 'initialize';
-import { isNumber } from 'helper/utils';
+import { isNumber } from 'lodash';
 export default function number(...args: Array<Function>): Function {
   const defaultValue = isNumber(args[0])
     ? args.shift()

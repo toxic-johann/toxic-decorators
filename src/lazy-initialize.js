@@ -1,6 +1,6 @@
 // @flow
-import { isFunction, warn, createDefaultSetter } from 'helper/utils';
-import { bind } from 'toxic-utils';
+import { warn, createDefaultSetter } from 'helper/utils';
+import { isFunction, bind } from 'lodash';
 const { defineProperty } = Object;
 export default function lazyInit(obj: any, prop: string, descriptor: InitialDescriptor): AccessorDescriptor {
   if (descriptor === undefined) throw new TypeError('@lazyInit cannot be apply on undefined property.');

@@ -1,6 +1,6 @@
 // @flow
 import accessor from 'accessor';
-import { isBoolean } from 'helper/utils';
+import { isBoolean } from 'lodash';
 export default function boolean(...args: Array<Function>): Function {
   const defaultValue = isBoolean(args[0])
     ? args.shift()

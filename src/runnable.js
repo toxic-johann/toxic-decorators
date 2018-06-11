@@ -1,6 +1,7 @@
 // @flow
-import { isFunction, isString, isPrimitive } from 'helper/utils';
-import { bind, getDeepProperty } from 'toxic-utils';
+import { isPrimitive } from 'helper/utils';
+import { getDeepProperty } from 'toxic-utils';
+import { bind, isString, isFunction } from 'lodash';
 export default function runnable(key: Function | string, {
   other,
   backup,

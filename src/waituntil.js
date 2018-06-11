@@ -1,7 +1,8 @@
 // @flow
-import { isFunction, isPromise, isString, isDescriptor, isPrimitive, isVoid } from 'helper/utils';
+import { isPromise, isDescriptor, isPrimitive } from 'helper/utils';
 import accessor from 'accessor';
-import { bind, getDeepProperty } from 'toxic-utils';
+import { getDeepProperty } from 'toxic-utils';
+import { bind, isNil, isFunction, isString } from 'lodash';
 const { getOwnPropertyDescriptor, defineProperty } = Object;
 export default function waituntil(key: Function | Promise<*> | string, { other }: {other?: any} = {}): Function {
   if (!isFunction(key) && !isPromise(key) && !isString(key)) throw new TypeError('@waitUntil only accept Function, Promise or String');
@@ -21,7 +22,7 @@ export default function waituntil(key: Function | Promise<*> | string, { other }
           const originTarget = isPrimitive(other) ? this : other;
           if (!binded) {
             const target = getDeepProperty(originTarget, keys.slice(0, -1));
-            if (isVoid(target)) return target;
+            if (isNil(target)) return target;
             const descriptor = getOwnPropertyDescriptor(target, prop);
             /**
                * create a setter hook here

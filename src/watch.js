@@ -1,6 +1,7 @@
 // @flow
-import { getOwnKeys, isFunction, isString, isPrimitive, compressMultipleDecorators, isObject, isArray, warn } from 'helper/utils';
-import { bind, getDeepProperty } from 'toxic-utils';
+import { getOwnKeys, isPrimitive, compressMultipleDecorators, warn } from 'helper/utils';
+import { getDeepProperty } from 'toxic-utils';
+import { bind, isFunction, isString, isPlainObject, isArray } from 'lodash';
 import accessor from 'accessor';
 import nonenumerable from 'nonenumerable';
 import initialize from 'initialize';
@@ -22,7 +23,7 @@ function deepProxy(value: Object | Array<*>, hook: Function, { diff, operationPr
         };
       }
       if (mapStore[property] === true) return value;
-      if (isObject(value) || isArray(value)) {
+      if (isPlainObject(value) || isArray(value)) {
         const proxyValue = mapStore[property] || deepProxy(value, hook, { diff, operationPrefix });
         mapStore[property] = proxyValue;
         return proxyValue;
@@ -32,7 +33,7 @@ function deepProxy(value: Object | Array<*>, hook: Function, { diff, operationPr
     },
     set(target: any, property: string, value: any) {
       const oldVal = target[property];
-      const newVal = (isObject(value) || isArray(value))
+      const newVal = (isPlainObject(value) || isArray(value))
         ? deepProxy(value, hook, { diff, operationPrefix })
         : value;
       target[property] = newVal;
@@ -89,14 +90,14 @@ function deepObserve(value: Object | Array<*>, hook: Function, { operationPrefix
         accessor({
           get(val) {
             if (mapStore[key]) return val;
-            if (isObject(val) || isArray(val)) {
+            if (isPlainObject(val) || isArray(val)) {
               deepObserve(val, hook, { operationPrefix, diff });
             }
             mapStore[key] = true;
             return val;
           },
           set(val) {
-            if (isObject(val) || isArray(val)) deepObserve(val, hook, { operationPrefix, diff });
+            if (isPlainObject(val) || isArray(val)) deepObserve(val, hook, { operationPrefix, diff });
             mapStore[key] = true;
             if (!arrayChanging && (!diff || oldVal !== val)) hook();
             return val;
@@ -180,7 +181,7 @@ export default function watch(...args: Array<string | Function | {
   other?: any,
   operationPrefix?: string
 }>): Function {
-  const option = isObject(args[args.length - 1])
+  const option = isPlainObject(args[args.length - 1])
     ? args[args.length - 1]
     : {};
   // $FlowFixMe: we have check if it's an object
@@ -228,7 +229,7 @@ export default function watch(...args: Array<string | Function | {
           oldVal = this[prop];
           proxyValue = undefined;
           const hook = () => bind(handler, this)(newVal, oldVal);
-          return (deep && (isObject(value) || isArray(value)))
+          return (deep && (isPlainObject(value) || isArray(value)))
             ? proxy
               ? deepProxy(value, hook, { diff, operationPrefix })
               : deepObserve(value, hook, { operationPrefix, diff })
@@ -239,7 +240,7 @@ export default function watch(...args: Array<string | Function | {
           if (!inited) {
             inited = true;
             const hook = () => bind(handler, this)(newVal, oldVal);
-            if (deep && (isObject(value) || isArray(value))) {
+            if (deep && (isPlainObject(value) || isArray(value))) {
               if (proxy) {
                 proxyValue = deepProxy(value, hook, { diff, operationPrefix });
                 oldVal = proxyValue;

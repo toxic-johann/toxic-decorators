@@ -1,6 +1,6 @@
 // @flow
-import { isFunction, isDescriptor, compressOneArgFnArray } from 'helper/utils';
-import { bind } from 'toxic-utils';
+import { isDescriptor, compressOneArgFnArray } from 'helper/utils';
+import { isFunction, bind } from 'lodash';
 export default function after(...fns: Array<Function>): Function {
   if (fns.length === 0) throw new Error("@after accept at least one parameter. If you don't need to preprocess after your function, do not add @after decorators");
   if (fns.length > 2 && isDescriptor(fns[2])) {

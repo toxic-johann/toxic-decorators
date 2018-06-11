@@ -1,6 +1,6 @@
 // @flow
 import accessor from 'accessor';
-import { isString } from 'helper/utils';
+import { isString } from 'lodash';
 export default function string(...args: Array<Function>): Function {
   const defaultValue = isString(args[0])
     ? args.shift()

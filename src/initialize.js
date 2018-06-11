@@ -1,7 +1,7 @@
 // @flow
 import { isDescriptor, isAccessorDescriptor, isInitializerDescriptor, compressOneArgFnArray } from 'helper/utils';
 import accessor from 'accessor';
-import { bind } from 'toxic-utils';
+import { bind } from 'lodash';
 export default function initialize(...fns: Array<Function>): Function {
   if (fns.length === 0) throw new Error("@initialize accept at least one parameter. If you don't need to initialize your value, do not add @initialize.");
   if (fns.length > 2 && isDescriptor(fns[2])) {
