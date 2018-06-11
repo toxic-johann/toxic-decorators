@@ -1,4 +1,4 @@
-const {version, name, author, license} = require('../package.json');
+const { version, name, author, license } = require('../package.json');
 const banner = `
 /**
  * ${name} v${version}
@@ -14,49 +14,49 @@ const babelConfig = {
   common: {
     presets: [
       'flow',
-      ['env', {modules: false}],
-      'stage-0'
+      [ 'env', { modules: false }],
+      'stage-0',
     ],
-    plugins: ['transform-runtime'],
+    plugins: [ 'transform-runtime' ],
     runtimeHelpers: true,
     exclude: 'node_modules/**',
-    babelrc: false
+    babelrc: false,
   },
   es: {
     presets: [
       'flow',
-      ['env', {modules: false}],
-      'stage-0'
+      [ 'env', { modules: false }],
+      'stage-0',
     ],
-    plugins: ['transform-runtime'],
+    plugins: [ 'transform-runtime' ],
     exclude: 'node_modules/**',
     runtimeHelpers: true,
-    babelrc: false
+    babelrc: false,
   },
   umd: {
-    presets: ['flow', 'es2015-rollup', 'stage-0'],
+    presets: [ 'flow', 'es2015-rollup', 'stage-0' ],
     plugins: [],
     exclude: 'node_modules/**',
-    babelrc: false
+    babelrc: false,
   },
   iife: {
-    presets: ['flow', 'es2015-rollup', 'stage-0'],
+    presets: [ 'flow', 'es2015-rollup', 'stage-0' ],
     plugins: [],
     exclude: 'node_modules/**',
-    babelrc: false
+    babelrc: false,
   },
   min: {
-    presets: ['flow', 'es2015-rollup', 'stage-0'],
+    presets: [ 'flow', 'es2015-rollup', 'stage-0' ],
     plugins: [],
     exclude: 'node_modules/**',
-    babelrc: false
-  }
+    babelrc: false,
+  },
 };
-export default function (mode) {
+export default function(mode) {
   return {
     input: 'src/index.js',
     banner,
-    external (id) {
+    external(id) {
       return !/min|umd|iife/.test(mode) && /babel-runtime|toxic-predicate-functions|toxic-utils/.test(id);
     },
     plugins: [
@@ -64,10 +64,10 @@ export default function (mode) {
       flow(),
       resolve({
         customResolveOptions: {
-          moduleDirectory: ['src', 'node_modules']
-        }
+          moduleDirectory: [ 'src', 'node_modules' ],
+        },
       }),
-      commonjs()
-    ]
+      commonjs(),
+    ],
   };
-};
+}

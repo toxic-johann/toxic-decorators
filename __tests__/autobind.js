@@ -1,23 +1,23 @@
-import {autobind, applyDecorators} from 'index';
+import { autobind, applyDecorators } from 'index';
 describe('autobind', () => {
   let Foo;
   let Bar;
   let Car;
   let barCount;
 
-  beforeEach(function () {
+  beforeEach(function() {
     Foo = class Foo {
       @autobind
-      getFoo () {
+      getFoo() {
         return this;
       }
 
-      getFooAgain () {
+      getFooAgain() {
         return this;
       }
 
       @autobind
-      onlyOnFoo () {
+      onlyOnFoo() {
         return this;
       }
     };
@@ -26,35 +26,35 @@ describe('autobind', () => {
 
     Bar = class Bar extends Foo {
       @autobind
-      getFoo () {
+      getFoo() {
         const foo = super.getFoo();
         barCount++;
         return foo;
       }
 
-      getSuperMethod_getFoo () {
+      getSuperMethod_getFoo() {
         return super.getFoo;
       }
 
-      getSuperMethod_onlyOnFoo () {
+      getSuperMethod_onlyOnFoo() {
         return super.onlyOnFoo;
       }
 
       @autobind
-      onlyOnBar () {
+      onlyOnBar() {
         return this;
       }
     };
 
     Car = class Car extends Foo {
       @autobind
-      getCarFromFoo () {
+      getCarFromFoo() {
         return super.onlyOnFoo();
       }
     };
   });
 
-  afterEach(function () {
+  afterEach(function() {
     Foo = null;
     Bar = null;
     barCount = null;
@@ -67,7 +67,7 @@ describe('autobind', () => {
 
   test('sets the correct instance descriptor options when bound', () => {
     const foo = new Foo();
-    const {getFoo} = foo;
+    const { getFoo } = foo;
     const desc = Object.getOwnPropertyDescriptor(foo, 'getFoo');
     expect(desc.configurable).toBe(true);
     expect(desc.enumerable).toBe(false);
@@ -76,7 +76,7 @@ describe('autobind', () => {
   });
 
   test('sets the correct instance descriptor options when reassigned outside', () => {
-    const noop = function () {};
+    const noop = function() {};
     const foo = new Foo();
     const ret = foo.getFoo = noop;
     const desc = Object.getOwnPropertyDescriptor(foo, 'getFoo');
@@ -184,19 +184,19 @@ describe('autobind', () => {
   });
 
   test('throw error if descirptor is undefined', () => {
-    class Foo {};
+    class Foo {}
     expect(() => applyDecorators(Foo, {
-      a: autobind
+      a: autobind,
     })).toThrow('@autobind can only be used on functions, not "undefined" in undefined on property "a"');
   });
 
   test('@autobind can alse be used on class, but you cannot pass it option', () => {
     @autobind
     class Foo {
-      a () {
+      a() {
         return this;
       }
-      static b () {
+      static b() {
         return this;
       }
     }
@@ -205,8 +205,8 @@ describe('autobind', () => {
     expect(foo.a()).toBe(foo);
     expect(Foo.b()).toBe(Foo);
 
-    const {a} = foo;
-    const {b} = Foo;
+    const { a } = foo;
+    const { b } = Foo;
     expect(a()).toBe(foo);
     expect(b()).toBe();
   });

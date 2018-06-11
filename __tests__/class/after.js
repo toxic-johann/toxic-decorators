@@ -1,4 +1,4 @@
-import {afterClass} from 'index';
+import { afterClass } from 'index';
 describe('afterClass', () => {
   let fn;
   let result;
@@ -6,15 +6,15 @@ describe('afterClass', () => {
   beforeEach(() => {
     fn = jest.fn();
     result = [];
-    Foo = @afterClass({}, function () {
+    Foo = @afterClass({}, function() {
       fn();
       result.push('fn');
     })
-    class Foo {
-      a () {
+      class Foo {
+      a() {
         result.push('a');
       }
-      b () {
+      b() {
         result.push('b');
       }
     };
@@ -23,23 +23,23 @@ describe('afterClass', () => {
     const foo = new Foo();
     foo.a();
     expect(fn).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(['a', 'fn']);
+    expect(result).toEqual([ 'a', 'fn' ]);
     foo.b();
     expect(fn).toHaveBeenCalledTimes(2);
-    expect(result).toEqual(['a', 'fn', 'b', 'fn']);
+    expect(result).toEqual([ 'a', 'fn', 'b', 'fn' ]);
   });
   test('self class run', () => {
     class Foo {
       c = 1;
       d = () => result.push('d');
-    };
+    }
     const foo = new Foo();
-    afterClass({self: true}, function () {
+    afterClass({ self: true }, function() {
       fn();
       result.push('fn');
     })(foo);
     foo.d();
     expect(fn).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(['d', 'fn']);
+    expect(result).toEqual([ 'd', 'fn' ]);
   });
 });

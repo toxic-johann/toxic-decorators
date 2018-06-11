@@ -1,4 +1,4 @@
-import {waituntilClass} from 'index';
+import { waituntilClass } from 'index';
 describe('waituntilClass', () => {
   let fn;
   let Foo;
@@ -6,14 +6,14 @@ describe('waituntilClass', () => {
   beforeEach(() => {
     flag = false;
     fn = jest.fn();
-    Foo = @waituntilClass({}, function () {
+    Foo = @waituntilClass({}, function() {
       return flag;
     })
-    class Foo {
-      a () {
+      class Foo {
+      a() {
         fn();
       }
-      b () {
+      b() {
         fn();
       }
     };
@@ -34,9 +34,9 @@ describe('waituntilClass', () => {
     class Foo {
       c = 1;
       d = () => fn();
-    };
+    }
     const foo = new Foo();
-    waituntilClass({self: true}, function () {
+    waituntilClass({ self: true }, function() {
       return flag;
     })(foo);
     foo.d();

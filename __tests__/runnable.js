@@ -1,4 +1,4 @@
-import {runnable, applyDecorators} from 'index';
+import { runnable, applyDecorators } from 'index';
 describe('runnable', () => {
   let fn;
   let Foo;
@@ -9,17 +9,17 @@ describe('runnable', () => {
     Foo = class Foo {
       waiter = waiter;
       flag = false;
-      @runnable(function () {return waiter;})
-      runByFunction (...args) {
+      @runnable(function() { return waiter; })
+      runByFunction(...args) {
         fn(...args);
       }
-      @runnable(function () {return this.waiter;})
-      runByLocalFunction (...args) {
+      @runnable(function() { return this.waiter; })
+      runByLocalFunction(...args) {
         fn(...args);
         expect(this).toBe(args[0]);
       }
-      @runnable(function () {return this.flag;})
-      runByFlag (...args) {
+      @runnable(function() { return this.flag; })
+      runByFlag(...args) {
         fn(...args);
         expect(this).toBe(args[0]);
       }
@@ -27,45 +27,45 @@ describe('runnable', () => {
     Bar = class Bar {
       static flag = false;
       @runnable('flag')
-      static useStaticFlag (...args) {
+      static useStaticFlag(...args) {
         fn(...args);
         expect(this).toBe(args[0]);
       }
       @runnable('flag')
-      useFlag (...args) {
+      useFlag(...args) {
         fn(...args);
         expect(this).toBe(args[0]);
       }
       flag = false;
       _flag = false;
-      get fnFlag () {
+      get fnFlag() {
         return this._flag;
       }
-      set fnFlag (value) {
+      set fnFlag(value) {
         this._flag = value;
         return value;
       }
       @runnable('fnFlag')
-      useFnFlag (...args) {
+      useFnFlag(...args) {
         fn(...args);
         expect(this).toBe(args[0]);
       }
       static _fnFlag = false;
-      static get fnFlag () {
+      static get fnFlag() {
         return this._fnFlag;
       }
-      static set fnFlag (value) {
+      static set fnFlag(value) {
         this._fnFlag = value;
         return value;
       }
       @runnable('fnFlag')
-      static useStaticFnFlag (...args) {
+      static useStaticFnFlag(...args) {
         fn(...args);
         expect(this).toBe(args[0]);
       }
     };
   });
-  afterEach(()=> {
+  afterEach(() => {
     fn = null;
     Foo = null;
   });
@@ -73,7 +73,7 @@ describe('runnable', () => {
     expect(() => {
       return class {
         @runnable()
-        foo () {}
+        foo() {}
       };
     }).toThrow('@runnable only accept Function or String');
   });
@@ -90,7 +90,7 @@ describe('runnable', () => {
   test('@runnable can only be used on function', () => {
     expect(() => {
       return class {
-        @runnable(function () {})
+        @runnable(function() {})
         a = 2;
       };
     }).toThrow('@runnable can only be used on method, but not undefined on property "a".');
@@ -155,9 +155,11 @@ describe('runnable', () => {
     }
     const foo = new Foo();
     class Bar {
-      @runnable('flag', {other: foo})
-      run (...args) {
+      @runnable('flag', { other: foo })
+      run(...args) {
+        /* eslint-disable no-use-before-define */
         expect(this).toBe(bar);
+        /* eslint-enable no-use-before-define */
         fn(...args);
       }
     }
@@ -176,13 +178,15 @@ describe('runnable', () => {
       deepFlag = {
         you: {
           can: {
-            run: false
-          }
-        }
+            run: false,
+          },
+        },
       };
       @runnable('deepFlag.you.can.run')
-      run (...args) {
+      run(...args) {
+        /* eslint-disable no-use-before-define */
         expect(this).toBe(bar);
+        /* eslint-enable no-use-before-define */
         fn(...args);
       }
     }
@@ -199,7 +203,7 @@ describe('runnable', () => {
     const fn = jest.fn();
     class Bar {
       @runnable('a.flag')
-      run () {
+      run() {
         fn();
       }
     }
@@ -214,17 +218,17 @@ describe('runnable', () => {
     expect(fn).toHaveBeenCalledTimes(1);
   });
   test('throw error if descirptor is undefined', () => {
-    class Foo {};
+    class Foo {}
     expect(() => applyDecorators(Foo, {
-      a: runnable('b')
+      a: runnable('b'),
     })).toThrow('@runnable can only be used on method, but not undefined on property "a".');
   });
   test('you can pass in a backup function', () => {
     const fn = jest.fn();
     const fn1 = jest.fn();
     class Bar {
-      @runnable(() => false, {backup: fn})
-      a () {
+      @runnable(() => false, { backup: fn })
+      a() {
         fn1();
       }
     }

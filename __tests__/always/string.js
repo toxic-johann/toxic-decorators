@@ -1,14 +1,14 @@
-import {alwaysString} from 'index';
+import { alwaysString } from 'index';
 describe('always/string', () => {
   class Foo {
     @alwaysString('hello')
     bar = 1;
     _car = 1;
     @alwaysString()
-    get car () {
+    get car() {
       return this._car;
     }
-    set car (value) {
+    set car(value) {
       this._car = value;
       return this._car;
     }

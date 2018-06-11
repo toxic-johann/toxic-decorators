@@ -1,4 +1,4 @@
-import {watch, applyDecorators} from 'index';
+import { watch, applyDecorators } from 'index';
 describe('watch', () => {
   test('key or function as first parameter', () => {
     expect(() => class {
@@ -20,13 +20,13 @@ describe('watch', () => {
   });
   test('other must be an legal instance', () => {
     expect(() => class {
-      @watch('123', {other: 123})
+      @watch('123', { other: 123 })
       a = 1;
     }).toThrow('If you want us to trigger function on the other instance, you must pass in a legal instance');
   });
   test('operationPrefix must be string', () => {
     expect(() => class {
-      @watch(function () {}, {operationPrefix: 123})
+      @watch(function() {}, { operationPrefix: 123 })
       a = 1;
     }).toThrow('operationPrefix must be an string');
   });
@@ -36,24 +36,24 @@ describe('watch', () => {
       a = 1
     }
     const foo = new Foo();
-    expect(() => {foo.a = 3;}).toThrow('You pass in a function for us to trigger, please ensure the property to be a function or set omit flag true');
+    expect(() => { foo.a = 3; }).toThrow('You pass in a function for us to trigger, please ensure the property to be a function or set omit flag true');
   });
   test('you can omit the illegal other instance error', () => {
     class Foo {
-      @watch('b', {omit: true})
+      @watch('b', { omit: true })
       a = 1
     }
     const foo = new Foo();
-    expect(() => {foo.a = 3;}).not.toThrow();
+    expect(() => { foo.a = 3; }).not.toThrow();
   });
   test('deep on non-object property', () => {
     const fn = jest.fn();
     class Foo {
-      @watch(fn, {deep: true})
+      @watch(fn, { deep: true })
       a = 1
     }
     const foo = new Foo();
-    expect(() => {foo.a = 3;}).not.toThrow();
+    expect(() => { foo.a = 3; }).not.toThrow();
     expect(fn).toHaveBeenCalledTimes(1);
     expect(fn).lastCalledWith(3, 1);
   });
@@ -61,13 +61,13 @@ describe('watch', () => {
     const fn = jest.fn();
     const originProxy = global.Proxy;
     global.Proxy = false;
-    const {warn: originWarn} = global.console;
+    const { warn: originWarn } = global.console;
     const fn1 = jest.fn();
     global.console.warn = fn1;
     class Foo {
-      @watch(fn, {deep: true, proxy: true})
+      @watch(fn, { deep: true, proxy: true })
       a = {
-        b: 2
+        b: 2,
       }
     }
     expect(() => new Foo()).not.toThrow();
@@ -79,8 +79,10 @@ describe('watch', () => {
   test('we can watch a single property', () => {
     const fn = jest.fn();
     class Foo {
-      @watch(function (...args) {
+      @watch(function(...args) {
+        /* eslint-disable no-use-before-define */
         expect(this).toBe(foo);
+        /* eslint-enable no-use-before-define */
         fn(...args);
       })
       a = 1;
@@ -99,8 +101,10 @@ describe('watch', () => {
   test("we won't trigger the function when the oldval is the same as new value", () => {
     const fn = jest.fn();
     class Foo {
-      @watch(function (...args) {
+      @watch(function(...args) {
+        /* eslint-disable no-use-before-define */
         expect(this).toBe(foo);
+        /* eslint-enable no-use-before-define */
         fn(...args);
       })
       a = 1;
@@ -118,10 +122,12 @@ describe('watch', () => {
   test('we willt trigger the function when the oldval is the same as new value if you set diff false', () => {
     const fn = jest.fn();
     class Foo {
-      @watch(function (...args) {
+      @watch(function(...args) {
+        /* eslint-disable no-use-before-define */
         expect(this).toBe(foo);
+        /* eslint-enable no-use-before-define */
         fn(...args);
-      }, {diff: false})
+      }, { diff: false })
       a = 1;
     }
     const foo = new Foo();
@@ -142,29 +148,29 @@ describe('watch', () => {
     beforeEach(() => {
       fn = jest.fn();
       Foo = class Foo {
-        @watch(fn, {deep: true})
+        @watch(fn, { deep: true })
         a = {
           baz: {
-            bar: 1
-          }
+            bar: 1,
+          },
         }
-        @watch(fn, {deep: true, diff: false})
+        @watch(fn, { deep: true, diff: false })
         b = {
           baz: {
-            bar: 1
-          }
+            bar: 1,
+          },
         }
-        @watch(fn, {deep: true, proxy: true})
+        @watch(fn, { deep: true, proxy: true })
         c = {
           baz: {
-            bar: 1
-          }
+            bar: 1,
+          },
         }
-        @watch(fn, {deep: true, diff: false, proxy: true})
+        @watch(fn, { deep: true, diff: false, proxy: true })
         d = {
           baz: {
-            bar: 1
-          }
+            bar: 1,
+          },
         }
       };
       foo = new Foo();
@@ -210,23 +216,23 @@ describe('watch', () => {
       expect(foo.d.baz.bar).toBe(2);
     });
     test('deep observe with the same object', () => {
-      const obj = {a: 1};
+      const obj = { a: 1 };
       const fn = jest.fn();
       class Foo {
-        @watch(fn, {deep: true})
+        @watch(fn, { deep: true })
         bar = obj;
-      };
+      }
       const foo = new Foo();
       foo.bar = obj;
       expect(fn).toHaveBeenCalledTimes(0);
     });
     test('deep proxy with the same object', () => {
-      const obj = {a: 1};
+      const obj = { a: 1 };
       const fn = jest.fn();
       class Foo {
-        @watch(fn, {deep: true, proxy: true})
+        @watch(fn, { deep: true, proxy: true })
         bar = obj;
-      };
+      }
       const foo = new Foo();
       const proxyObj = foo.bar;
       foo.bar = obj;
@@ -239,8 +245,10 @@ describe('watch', () => {
     class Foo {
       @watch('b')
       a = 1;
-      b (...args) {
+      b(...args) {
+        /* eslint-disable no-use-before-define */
         expect(this).toBe(foo);
+        /* eslint-enable no-use-before-define */
         fn(...args);
       }
     }
@@ -259,12 +267,14 @@ describe('watch', () => {
     let value = 1;
     const fn = jest.fn();
     class Foo {
-      @watch(function (...args) {
+      @watch(function(...args) {
+        /* eslint-disable no-use-before-define */
         expect(this).toBe(foo);
+        /* eslint-enable no-use-before-define */
         fn(...args);
       })
-      get a () {return value;}
-      set a (val) {
+      get a() { return value; }
+      set a(val) {
         value = val;
         return value;
       }
@@ -286,30 +296,30 @@ describe('watch', () => {
     const g = {};
     Object.defineProperty(g, 'h', {
       value: 1,
-      writable: false
+      writable: false,
     });
     Object.defineProperty(g, 'i', {
       value: 1,
-      configurable: false
+      configurable: false,
     });
     beforeEach(() => {
       fn = jest.fn();
       class Foo {
-        @watch(fn, {deep: true})
+        @watch(fn, { deep: true })
         bar = {
           a: 1,
           b: {
-            c: 2
+            c: 2,
           },
           d: {
             e: {
-              f: 3
-            }
+              f: 3,
+            },
           },
           g,
-          l: [1, 2, 3, 4]
+          l: [ 1, 2, 3, 4 ],
         }
-      };
+      }
       foo = new Foo();
     });
     test('we can watch the object before you reset it', () => {
@@ -331,13 +341,13 @@ describe('watch', () => {
       foo.bar = {
         a: 1,
         b: {
-          c: 2
+          c: 2,
         },
         d: {
           e: {
-            f: 3
-          }
-        }
+            f: 3,
+          },
+        },
       };
       expect(fn).toHaveBeenCalledTimes(1);
       expect(fn).lastCalledWith(foo.bar, oldFooBar);
@@ -365,7 +375,7 @@ describe('watch', () => {
         expect(fn).lastCalledWith(foo.bar, foo.bar);
       });
       test('normal add', () => {
-        foo.bar.__set('baz', {a: 1, b: 2});
+        foo.bar.__set('baz', { a: 1, b: 2 });
         expect(fn).toHaveBeenCalledTimes(1);
         expect(fn).lastCalledWith(foo.bar, foo.bar);
       });
@@ -454,21 +464,21 @@ describe('watch', () => {
       foo.bar.l.splice(2, 2, 5, 6);
       expect(fn).toHaveBeenCalledTimes(1);
       expect(fn).lastCalledWith(foo.bar, foo.bar);
-      expect(foo.bar.l).toEqual([1, 2, 5, 6]);
+      expect(foo.bar.l).toEqual([ 1, 2, 5, 6 ]);
     });
     test('array reverse should trigger method', () => {
       foo.bar.l.reverse();
       expect(fn).toHaveBeenCalledTimes(1);
       expect(fn).lastCalledWith(foo.bar, foo.bar);
-      expect(foo.bar.l).toEqual([4, 3, 2, 1]);
+      expect(foo.bar.l).toEqual([ 4, 3, 2, 1 ]);
     });
     test('array sort should trigger method', () => {
-      foo.bar.l = [1, 3, 4, 2];
+      foo.bar.l = [ 1, 3, 4, 2 ];
       expect(fn).toHaveBeenCalledTimes(1);
       foo.bar.l.sort((a, b) => b - a);
       expect(fn).toHaveBeenCalledTimes(2);
       expect(fn).lastCalledWith(foo.bar, foo.bar);
-      expect(foo.bar.l).toEqual([4, 3, 2, 1]);
+      expect(foo.bar.l).toEqual([ 4, 3, 2, 1 ]);
     });
     test('modify new push value, it still trigger method', () => {
       foo.bar.l.push(3);
@@ -484,30 +494,30 @@ describe('watch', () => {
     const g = {};
     Object.defineProperty(g, 'h', {
       value: 1,
-      writable: false
+      writable: false,
     });
     Object.defineProperty(g, 'i', {
       value: 1,
-      configurable: false
+      configurable: false,
     });
     beforeEach(() => {
       fn = jest.fn();
       class Foo {
-        @watch(fn, {deep: true, proxy: true})
+        @watch(fn, { deep: true, proxy: true })
         bar = {
           a: 1,
           b: {
-            c: 2
+            c: 2,
           },
           d: {
             e: {
-              f: 3
-            }
+              f: 3,
+            },
           },
           g,
-          l: [1, 2, 3, 4]
+          l: [ 1, 2, 3, 4 ],
         }
-      };
+      }
       foo = new Foo();
     });
     test('we can watch the object before you reset it', () => {
@@ -529,13 +539,13 @@ describe('watch', () => {
       foo.bar = {
         a: 1,
         b: {
-          c: 2
+          c: 2,
         },
         d: {
           e: {
-            f: 3
-          }
-        }
+            f: 3,
+          },
+        },
       };
       expect(fn).toHaveBeenCalledTimes(1);
       expect(fn).lastCalledWith(foo.bar, oldFooBar);
@@ -563,7 +573,7 @@ describe('watch', () => {
         expect(fn).lastCalledWith(foo.bar, foo.bar);
       });
       test('normal add', () => {
-        foo.bar.baz = {a: 1, b: 2};
+        foo.bar.baz = { a: 1, b: 2 };
         expect(fn).toHaveBeenCalledTimes(1);
         expect(fn).lastCalledWith(foo.bar, foo.bar);
       });
@@ -587,7 +597,7 @@ describe('watch', () => {
         expect(fn).lastCalledWith(foo.bar, foo.bar);
       });
       test('normal add', () => {
-        foo.bar.__set('baz', {a: 1, b: 2});
+        foo.bar.__set('baz', { a: 1, b: 2 });
         expect(fn).toHaveBeenCalledTimes(1);
         expect(fn).lastCalledWith(foo.bar, foo.bar);
       });
@@ -666,21 +676,21 @@ describe('watch', () => {
       foo.bar.l.splice(2, 2, 5, 6);
       expect(fn).toHaveBeenCalledTimes(1);
       expect(fn).lastCalledWith(foo.bar, foo.bar);
-      expect(foo.bar.l).toEqual([1, 2, 5, 6]);
+      expect(foo.bar.l).toEqual([ 1, 2, 5, 6 ]);
     });
     test('array reverse should trigger method', () => {
       foo.bar.l.reverse();
       expect(fn).toHaveBeenCalledTimes(1);
       expect(fn).lastCalledWith(foo.bar, foo.bar);
-      expect(foo.bar.l).toEqual([4, 3, 2, 1]);
+      expect(foo.bar.l).toEqual([ 4, 3, 2, 1 ]);
     });
     test('array sort should trigger method', () => {
-      foo.bar.l = [1, 3, 4, 2];
+      foo.bar.l = [ 1, 3, 4, 2 ];
       expect(fn).toHaveBeenCalledTimes(1);
       foo.bar.l.sort((a, b) => b - a);
       expect(fn).toHaveBeenCalledTimes(2);
       expect(fn).lastCalledWith(foo.bar, foo.bar);
-      expect(foo.bar.l).toEqual([4, 3, 2, 1]);
+      expect(foo.bar.l).toEqual([ 4, 3, 2, 1 ]);
     });
     test('modify new push value, it still trigger method', () => {
       foo.bar.l.push(3);
@@ -695,18 +705,18 @@ describe('watch', () => {
       const obj = {
         a: {
           b: {
-            c: 1
-          }
-        }
+            c: 1,
+          },
+        },
       };
       const fn1 = jest.fn();
       const fn2 = jest.fn();
       applyDecorators(obj, {
-        a: watch(fn1, {deep: true})
-      }, {self: true});
+        a: watch(fn1, { deep: true }),
+      }, { self: true });
       applyDecorators(obj.a, {
-        b: watch(fn2, {deep: true})
-      }, {self: true});
+        b: watch(fn2, { deep: true }),
+      }, { self: true });
       obj.a.b.c = 2;
       expect(fn1).toHaveBeenCalledTimes(1);
       expect(fn1).lastCalledWith(obj.a, obj.a);
@@ -717,18 +727,18 @@ describe('watch', () => {
       const obj = {
         a: {
           b: {
-            c: 1
-          }
-        }
+            c: 1,
+          },
+        },
       };
       const fn1 = jest.fn();
       const fn2 = jest.fn();
       applyDecorators(obj, {
-        a: watch(fn1, {deep: true, proxy: true})
-      }, {self: true});
+        a: watch(fn1, { deep: true, proxy: true }),
+      }, { self: true });
       applyDecorators(obj.a, {
-        b: watch(fn2, {deep: true, proxy: true})
-      }, {self: true});
+        b: watch(fn2, { deep: true, proxy: true }),
+      }, { self: true });
       obj.a.b.c = 2;
       expect(fn1).toHaveBeenCalledTimes(1);
       expect(fn1).lastCalledWith(obj.a, obj.a);
@@ -743,32 +753,32 @@ describe('watch', () => {
     const g = {};
     Object.defineProperty(g, 'h', {
       value: 1,
-      writable: false
+      writable: false,
     });
     Object.defineProperty(g, 'i', {
       value: 1,
-      configurable: false
+      configurable: false,
     });
     beforeEach(() => {
       fn = jest.fn();
       fn1 = jest.fn();
       class Foo {
-        @watch(fn, {deep: true})
-        @watch(fn1, {deep: true})
+        @watch(fn, { deep: true })
+        @watch(fn1, { deep: true })
         bar = {
           a: 1,
           b: {
-            c: 2
+            c: 2,
           },
           d: {
             e: {
-              f: 3
-            }
+              f: 3,
+            },
           },
           g,
-          l: [1, 2, 3, 4]
+          l: [ 1, 2, 3, 4 ],
         }
-      };
+      }
       foo = new Foo();
     });
     test('we can watch the object before you reset it', () => {
@@ -796,13 +806,13 @@ describe('watch', () => {
       foo.bar = {
         a: 1,
         b: {
-          c: 2
+          c: 2,
         },
         d: {
           e: {
-            f: 3
-          }
-        }
+            f: 3,
+          },
+        },
       };
       expect(fn).toHaveBeenCalledTimes(1);
       expect(fn1).lastCalledWith(foo.bar, oldFooBar);
@@ -840,7 +850,7 @@ describe('watch', () => {
         expect(fn1).lastCalledWith(foo.bar, foo.bar);
       });
       test('normal add', () => {
-        foo.bar.__set('baz', {a: 1, b: 2});
+        foo.bar.__set('baz', { a: 1, b: 2 });
         expect(fn).toHaveBeenCalledTimes(1);
         expect(fn1).toHaveBeenCalledTimes(1);
         expect(fn).lastCalledWith(foo.bar, foo.bar);
@@ -954,7 +964,7 @@ describe('watch', () => {
       expect(fn1).toHaveBeenCalledTimes(1);
       expect(fn).lastCalledWith(foo.bar, foo.bar);
       expect(fn1).lastCalledWith(foo.bar, foo.bar);
-      expect(foo.bar.l).toEqual([1, 2, 5, 6]);
+      expect(foo.bar.l).toEqual([ 1, 2, 5, 6 ]);
     });
     test('array reverse should trigger method', () => {
       foo.bar.l.reverse();
@@ -962,10 +972,10 @@ describe('watch', () => {
       expect(fn1).toHaveBeenCalledTimes(1);
       expect(fn).lastCalledWith(foo.bar, foo.bar);
       expect(fn1).lastCalledWith(foo.bar, foo.bar);
-      expect(foo.bar.l).toEqual([4, 3, 2, 1]);
+      expect(foo.bar.l).toEqual([ 4, 3, 2, 1 ]);
     });
     test('array sort should trigger method', () => {
-      foo.bar.l = [1, 3, 4, 2];
+      foo.bar.l = [ 1, 3, 4, 2 ];
       expect(fn).toHaveBeenCalledTimes(1);
       expect(fn1).toHaveBeenCalledTimes(1);
       foo.bar.l.sort((a, b) => b - a);
@@ -973,7 +983,7 @@ describe('watch', () => {
       expect(fn1).toHaveBeenCalledTimes(2);
       expect(fn).lastCalledWith(foo.bar, foo.bar);
       expect(fn1).lastCalledWith(foo.bar, foo.bar);
-      expect(foo.bar.l).toEqual([4, 3, 2, 1]);
+      expect(foo.bar.l).toEqual([ 4, 3, 2, 1 ]);
     });
     test('modify new push value, it still trigger method', () => {
       foo.bar.l.push(3);
@@ -992,32 +1002,32 @@ describe('watch', () => {
     const g = {};
     Object.defineProperty(g, 'h', {
       value: 1,
-      writable: false
+      writable: false,
     });
     Object.defineProperty(g, 'i', {
       value: 1,
-      configurable: false
+      configurable: false,
     });
     beforeEach(() => {
       fn = jest.fn();
       fn1 = jest.fn();
       class Foo {
-        @watch(fn1, {deep: true, proxy: true})
-        @watch(fn, {deep: true, proxy: true})
+        @watch(fn1, { deep: true, proxy: true })
+        @watch(fn, { deep: true, proxy: true })
         bar = {
           a: 1,
           b: {
-            c: 2
+            c: 2,
           },
           d: {
             e: {
-              f: 3
-            }
+              f: 3,
+            },
           },
           g,
-          l: [1, 2, 3, 4]
+          l: [ 1, 2, 3, 4 ],
         }
-      };
+      }
       foo = new Foo();
     });
     test('we can watch the object before you reset it', () => {
@@ -1045,13 +1055,13 @@ describe('watch', () => {
       foo.bar = {
         a: 1,
         b: {
-          c: 2
+          c: 2,
         },
         d: {
           e: {
-            f: 3
-          }
-        }
+            f: 3,
+          },
+        },
       };
       expect(fn).toHaveBeenCalledTimes(1);
       expect(fn1).toHaveBeenCalledTimes(1);
@@ -1089,7 +1099,7 @@ describe('watch', () => {
         expect(fn1).lastCalledWith(foo.bar, foo.bar);
       });
       test('normal add', () => {
-        foo.bar.baz = {a: 1, b: 2};
+        foo.bar.baz = { a: 1, b: 2 };
         expect(fn).toHaveBeenCalledTimes(1);
         expect(fn1).toHaveBeenCalledTimes(1);
         expect(fn).lastCalledWith(foo.bar, foo.bar);
@@ -1174,7 +1184,7 @@ describe('watch', () => {
       expect(fn1).toHaveBeenCalledTimes(1);
       expect(fn).lastCalledWith(foo.bar, foo.bar);
       expect(fn1).lastCalledWith(foo.bar, foo.bar);
-      expect(foo.bar.l).toEqual([1, 2, 5, 6]);
+      expect(foo.bar.l).toEqual([ 1, 2, 5, 6 ]);
     });
     test('array reverse should trigger method', () => {
       foo.bar.l.reverse();
@@ -1182,10 +1192,10 @@ describe('watch', () => {
       expect(fn1).toHaveBeenCalledTimes(1);
       expect(fn).lastCalledWith(foo.bar, foo.bar);
       expect(fn1).lastCalledWith(foo.bar, foo.bar);
-      expect(foo.bar.l).toEqual([4, 3, 2, 1]);
+      expect(foo.bar.l).toEqual([ 4, 3, 2, 1 ]);
     });
     test('array sort should trigger method', () => {
-      foo.bar.l = [1, 3, 4, 2];
+      foo.bar.l = [ 1, 3, 4, 2 ];
       expect(fn).toHaveBeenCalledTimes(1);
       expect(fn1).toHaveBeenCalledTimes(1);
       foo.bar.l.sort((a, b) => b - a);
@@ -1193,7 +1203,7 @@ describe('watch', () => {
       expect(fn1).toHaveBeenCalledTimes(2);
       expect(fn).lastCalledWith(foo.bar, foo.bar);
       expect(fn1).lastCalledWith(foo.bar, foo.bar);
-      expect(foo.bar.l).toEqual([4, 3, 2, 1]);
+      expect(foo.bar.l).toEqual([ 4, 3, 2, 1 ]);
     });
     test('modify new push value, it still trigger method', () => {
       foo.bar.l.push(3);
@@ -1207,7 +1217,9 @@ describe('watch', () => {
   });
   describe('mutlpe watch order', () => {
     let result;
-    let fn, fn1, fn2;
+    let fn,
+      fn1,
+      fn2;
     beforeEach(() => {
       result = [];
       fn = jest.fn();
@@ -1230,7 +1242,7 @@ describe('watch', () => {
       foo.bar = 2;
       expect(fn).toHaveBeenCalledTimes(2);
       expect(fn).lastCalledWith(2, 1);
-      expect(result).toEqual([1, 2]);
+      expect(result).toEqual([ 1, 2 ]);
       expect(foo.bar).toBe(2);
     });
     describe('deep with observe', () => {
@@ -1238,14 +1250,14 @@ describe('watch', () => {
       let foo;
       beforeEach(() => {
         Foo = class Foo {
-          @watch(fn2, {deep: true})
-          @watch(fn1, {deep: true})
+          @watch(fn2, { deep: true })
+          @watch(fn1, { deep: true })
           bar = {
-            a: 1
+            a: 1,
           };
-          @watch(fn2, {deep: true})
-          @watch(fn1, {deep: true})
-          baz = [1, 2, 3];
+          @watch(fn2, { deep: true })
+          @watch(fn1, { deep: true })
+          baz = [ 1, 2, 3 ];
         };
         foo = new Foo();
       });
@@ -1253,25 +1265,25 @@ describe('watch', () => {
         foo.bar.a = 2;
         expect(fn).toHaveBeenCalledTimes(2);
         expect(fn).lastCalledWith(foo.bar, foo.bar);
-        expect(result).toEqual([1, 2]);
+        expect(result).toEqual([ 1, 2 ]);
       });
       test('deep new set', () => {
         foo.bar.__set('b', 2);
         expect(fn).toHaveBeenCalledTimes(2);
         expect(fn).lastCalledWith(foo.bar, foo.bar);
-        expect(result).toEqual([1, 2]);
+        expect(result).toEqual([ 1, 2 ]);
       });
       test('deep delete', () => {
         foo.bar.__del('a');
         expect(fn).toHaveBeenCalledTimes(2);
         expect(fn).lastCalledWith(foo.bar, foo.bar);
-        expect(result).toEqual([1, 2]);
+        expect(result).toEqual([ 1, 2 ]);
       });
       test('deep array change', () => {
         foo.baz.push(4);
         expect(fn).toHaveBeenCalledTimes(2);
         expect(fn).lastCalledWith(foo.baz, foo.baz);
-        expect(result).toEqual([1, 2]);
+        expect(result).toEqual([ 1, 2 ]);
       });
     });
     describe('deep with proxy', () => {
@@ -1279,14 +1291,14 @@ describe('watch', () => {
       let foo;
       beforeEach(() => {
         Foo = class Foo {
-          @watch(fn2, {deep: true, proxy: true})
-          @watch(fn1, {deep: true, proxy: true})
+          @watch(fn2, { deep: true, proxy: true })
+          @watch(fn1, { deep: true, proxy: true })
           bar = {
-            a: 1
+            a: 1,
           };
-          @watch(fn2, {deep: true, proxy: true})
-          @watch(fn1, {deep: true, proxy: true})
-          baz = [1, 2, 3];
+          @watch(fn2, { deep: true, proxy: true })
+          @watch(fn1, { deep: true, proxy: true })
+          baz = [ 1, 2, 3 ];
         };
         foo = new Foo();
       });
@@ -1294,37 +1306,37 @@ describe('watch', () => {
         foo.bar.a = 2;
         expect(fn).toHaveBeenCalledTimes(2);
         expect(fn).lastCalledWith(foo.bar, foo.bar);
-        expect(result).toEqual([1, 2]);
+        expect(result).toEqual([ 1, 2 ]);
       });
       test('deep new set with proxy', () => {
         foo.bar.b = 2;
         expect(fn).toHaveBeenCalledTimes(2);
         expect(fn).lastCalledWith(foo.bar, foo.bar);
-        expect(result).toEqual([1, 2]);
+        expect(result).toEqual([ 1, 2 ]);
       });
       test('deep delete with proxy', () => {
         delete foo.bar.a;
         expect(fn).toHaveBeenCalledTimes(2);
         expect(fn).lastCalledWith(foo.bar, foo.bar);
-        expect(result).toEqual([1, 2]);
+        expect(result).toEqual([ 1, 2 ]);
       });
       test('deep new set with proxy by __set', () => {
         foo.bar.__set('b', 2);
         expect(fn).toHaveBeenCalledTimes(2);
         expect(fn).lastCalledWith(foo.bar, foo.bar);
-        expect(result).toEqual([1, 2]);
+        expect(result).toEqual([ 1, 2 ]);
       });
       test('deep delete with proxy by __del', () => {
         foo.bar.__del('a');
         expect(fn).toHaveBeenCalledTimes(2);
         expect(fn).lastCalledWith(foo.bar, foo.bar);
-        expect(result).toEqual([1, 2]);
+        expect(result).toEqual([ 1, 2 ]);
       });
       test('deep array change', () => {
         foo.baz.push(4);
         expect(fn).toHaveBeenCalledTimes(2);
         expect(fn).lastCalledWith(foo.baz, foo.baz);
-        expect(result).toEqual([1, 2]);
+        expect(result).toEqual([ 1, 2 ]);
       });
     });
   });

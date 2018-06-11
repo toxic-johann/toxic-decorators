@@ -3,5 +3,5 @@ export default Object.assign(base('common'), {
   output: {
     file: 'lib/toxic-decorators.js',
     format: 'cjs',
-  }
+  },
 });

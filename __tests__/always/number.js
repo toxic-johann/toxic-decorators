@@ -1,14 +1,14 @@
-import {alwaysNumber} from 'index';
+import { alwaysNumber } from 'index';
 describe('always/number', () => {
   class Foo {
     @alwaysNumber(3)
     bar = '1';
     _car = '1';
     @alwaysNumber()
-    get car () {
+    get car() {
       return this._car;
     }
-    set car (value) {
+    set car(value) {
       this._car = value;
       return this._car;
     }

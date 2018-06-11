@@ -1,4 +1,4 @@
-import {runnableClass} from 'index';
+import { runnableClass } from 'index';
 describe('runnableClass', () => {
   let fn;
   let Foo;
@@ -6,14 +6,14 @@ describe('runnableClass', () => {
   beforeEach(() => {
     flag = false;
     fn = jest.fn();
-    Foo = @runnableClass({}, function () {
+    Foo = @runnableClass({}, function() {
       return flag;
     })
-    class Foo {
-      a () {
+      class Foo {
+      a() {
         fn();
       }
-      b () {
+      b() {
         fn();
       }
     };
@@ -34,9 +34,9 @@ describe('runnableClass', () => {
     class Foo {
       c = 1;
       d = () => fn();
-    };
+    }
     const foo = new Foo();
-    runnableClass({self: true}, function () {
+    runnableClass({ self: true }, function() {
       return flag;
     })(foo);
     foo.d();

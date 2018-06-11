@@ -1,8 +1,8 @@
-import {autobindClass, applyDecorators} from 'index';
+import { autobindClass, applyDecorators } from 'index';
 describe('autobindClass', () => {
   test('exclude must be an array', () => {
     expect(() => {
-      @autobindClass({exclude: 1})
+      @autobindClass({ exclude: 1 })
       class Foo {}
       return Foo;
     }).toThrow('options.exclude must be an array');
@@ -10,21 +10,21 @@ describe('autobindClass', () => {
   test('only can be used on class', () => {
     expect(() => class {
       @autobindClass()
-      a () {}
+      a() {}
     }).toThrow('@autobindClass can only be used on class');
   });
   test('prototype can be void', () => {
-    function Foo () {}
+    function Foo() {}
     Foo.prototype = null;
     expect(() => applyDecorators(Foo, autobindClass())).toThrow('The prototype of the Foo is empty, please check it');
   });
   test('You can use @autobindClass on class', () => {
     @autobindClass()
     class Foo {
-      a () {
+      a() {
         return this;
       }
-      static b () {
+      static b() {
         return this;
       }
     }
@@ -33,18 +33,18 @@ describe('autobindClass', () => {
     expect(foo.a()).toBe(foo);
     expect(Foo.b()).toBe(Foo);
 
-    const {a} = foo;
-    const {b} = Foo;
+    const { a } = foo;
+    const { b } = Foo;
     expect(a()).toBe(foo);
     expect(b()).toBe();
   });
   test('@autobindClass support exclude', () => {
-    @autobindClass({exclude: ['b']})
+    @autobindClass({ exclude: [ 'b' ] })
     class Foo {
-      a () {
+      a() {
         return this;
       }
-      b () {
+      b() {
         return this;
       }
     }
@@ -53,19 +53,19 @@ describe('autobindClass', () => {
     expect(foo.a()).toBe(foo);
     expect(foo.b()).toBe(foo);
 
-    const {a, b} = foo;
+    const { a, b } = foo;
     expect(a()).toBe(foo);
     expect(b()).toBe();
   });
   test('@autobindClass should not affect static method', () => {
     @autobindClass()
     class Foo {
-      static b () {
+      static b() {
         return this;
       }
     }
     expect(Foo.b()).toBe(Foo);
-    const {b: c} = Foo;
+    const { b: c } = Foo;
     expect(c()).toBe();
   });
 });

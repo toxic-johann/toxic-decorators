@@ -1,14 +1,14 @@
-import {alwaysBoolean} from 'index';
+import { alwaysBoolean } from 'index';
 describe('always/boolean', () => {
   class Foo {
     @alwaysBoolean(true)
     bar = 1;
     _car = 1;
     @alwaysBoolean()
-    get car () {
+    get car() {
       return this._car;
     }
-    set car (value) {
+    set car(value) {
       this._car = value;
       return this._car;
     }

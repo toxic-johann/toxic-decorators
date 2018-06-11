@@ -1,16 +1,16 @@
-import {lazyInit, applyDecorators} from 'index';
+import { lazyInit, applyDecorators } from 'index';
 describe('lazyInit', () => {
   test('descriptor cannot be undefined', () => {
-    expect(() => applyDecorators(function () {}, {a: lazyInit})).toThrow('@lazyInit cannot be apply on undefined property.');
+    expect(() => applyDecorators(function() {}, { a: lazyInit })).toThrow('@lazyInit cannot be apply on undefined property.');
   });
   test('only accept datadescriptor', () => {
     const originConsole = console;
-    global.console = Object.assign({}, originConsole, {warn: jest.fn()});
+    global.console = Object.assign({}, originConsole, { warn: jest.fn() });
     class Foo {
       @lazyInit
-      a () {}
+      a() {}
       @lazyInit
-      get b () {return 1;}
+      get b() { return 1; }
     }
     const foo = new Foo();
     expect(foo).not.toBe();

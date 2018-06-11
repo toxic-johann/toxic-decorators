@@ -1,4 +1,4 @@
-import {initNumber} from 'index';
+import { initNumber } from 'index';
 describe('init/number', () => {
   test('@initNumber can set property initialize to be number', () => {
     class Foo {

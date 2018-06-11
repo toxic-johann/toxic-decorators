@@ -1,4 +1,4 @@
-import {waituntil, applyDecorators} from 'index';
+import { waituntil, applyDecorators } from 'index';
 describe('waituntil', () => {
   let run;
   let fn;
@@ -7,27 +7,27 @@ describe('waituntil', () => {
   let waiter;
   beforeEach(() => {
     fn = jest.fn();
-    waiter = new Promise(resolve => {run = resolve;});
+    waiter = new Promise(resolve => { run = resolve; });
     Foo = class Foo {
       waiter = waiter;
       flag = false;
-      @waituntil(function () {return waiter;})
-      runByFunction (...args) {
+      @waituntil(function() { return waiter; })
+      runByFunction(...args) {
         fn(...args);
         // expect(this).toBe(args[0]);
       }
-      @waituntil(function () {return this.waiter;})
-      runByLocalFunction (...args) {
+      @waituntil(function() { return this.waiter; })
+      runByLocalFunction(...args) {
         fn(...args);
         expect(this).toBe(args[0]);
       }
       @waituntil(waiter)
-      runByPromise (...args) {
+      runByPromise(...args) {
         fn(...args);
         expect(this).toBe(args[0]);
       }
-      @waituntil(function () {return this.flag;})
-      runByFlag (...args) {
+      @waituntil(function() { return this.flag; })
+      runByFlag(...args) {
         fn(...args);
         expect(this).toBe(args[0]);
       }
@@ -35,45 +35,45 @@ describe('waituntil', () => {
     Bar = class Bar {
       static flag = false;
       @waituntil('flag')
-      static useStaticFlag (...args) {
+      static useStaticFlag(...args) {
         fn(...args);
         expect(this).toBe(args[0]);
       }
       @waituntil('flag')
-      useFlag (...args) {
+      useFlag(...args) {
         fn(...args);
         expect(this).toBe(args[0]);
       }
       flag = false;
       _flag = false;
-      get fnFlag () {
+      get fnFlag() {
         return this._flag;
       }
-      set fnFlag (value) {
+      set fnFlag(value) {
         this._flag = value;
         return value;
       }
       @waituntil('fnFlag')
-      useFnFlag (...args) {
+      useFnFlag(...args) {
         fn(...args);
         expect(this).toBe(args[0]);
       }
       static _fnFlag = false;
-      static get fnFlag () {
+      static get fnFlag() {
         return this._fnFlag;
       }
-      static set fnFlag (value) {
+      static set fnFlag(value) {
         this._fnFlag = value;
         return value;
       }
       @waituntil('fnFlag')
-      static useStaticFnFlag (...args) {
+      static useStaticFnFlag(...args) {
         fn(...args);
         expect(this).toBe(args[0]);
       }
     };
   });
-  afterEach(()=> {
+  afterEach(() => {
     run = null;
     fn = null;
     Foo = null;
@@ -82,7 +82,7 @@ describe('waituntil', () => {
     expect(() => {
       return class {
         @waituntil()
-        foo () {}
+        foo() {}
       };
     }).toThrow('@waitUntil only accept Function, Promise or String');
   });
@@ -138,7 +138,7 @@ describe('waituntil', () => {
   test('@waituntil can only be used on function', () => {
     expect(() => {
       return class {
-        @waituntil(function () {})
+        @waituntil(function() {})
         a = 2;
       };
     }).toThrow('@waituntil can only be used on function, but not undefined');
@@ -209,9 +209,11 @@ describe('waituntil', () => {
     }
     const foo = new Foo();
     class Bar {
-      @waituntil('flag', {other: foo})
-      run (...args) {
+      @waituntil('flag', { other: foo })
+      run(...args) {
+        /* eslint-disable no-use-before-define */
         expect(this).toBe(bar);
+        /* eslint-enable no-use-before-define */
         fn(...args);
       }
     }
@@ -231,13 +233,15 @@ describe('waituntil', () => {
       deepFlag = {
         you: {
           can: {
-            run: false
-          }
-        }
+            run: false,
+          },
+        },
       };
       @waituntil('deepFlag.you.can.run')
-      run (...args) {
+      run(...args) {
+        /* eslint-disable no-use-before-define */
         expect(this).toBe(bar);
+        /* eslint-enable no-use-before-define */
         fn(...args);
       }
     }
@@ -255,7 +259,7 @@ describe('waituntil', () => {
     const fn = jest.fn();
     class Bar {
       @waituntil('a.flag')
-      run () {
+      run() {
         fn();
       }
     }
@@ -269,9 +273,9 @@ describe('waituntil', () => {
     expect(fn).toHaveBeenCalledTimes(2);
   });
   test('throw error if descirptor is undefined', () => {
-    class Foo {};
+    class Foo {}
     expect(() => applyDecorators(Foo, {
-      a: waituntil('b')
+      a: waituntil('b'),
     })).toThrow('@waituntil can only be used on function, but not undefined on property "a"');
   });
 });

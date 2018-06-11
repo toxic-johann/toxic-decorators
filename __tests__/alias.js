@@ -1,30 +1,30 @@
-import {alias, applyDecorators, frozen} from 'index';
+import { alias, applyDecorators, frozen } from 'index';
 describe('alias', () => {
   test('@alias need a string as key', () => {
     expect(() => class {
       @alias()
-      foo () {}
+      foo() {}
     }).toThrow('@alias need a string as a key to find the porperty to set alias on');
   });
   test("@alias can't set alias on an existing attribute", () => {
     expect(() => class {
       @alias('bar')
-      foo () {}
-      bar () {}
+      foo() {}
+      bar() {}
     }).toThrow('"foo" is an existing property, if you want to override it, please set "force" true in @alias option.');
   });
   test('You must pass in a non-primitive value if you want to set alias on other instance', () => {
     expect(() => class {
       @alias(1, 'key')
-      foo () {}
+      foo() {}
     }).toThrow('If you want to use @alias to set alias on other instance, you must pass in a legal instance');
   });
   test('if you really want to set alias on an existing attribute, pleast set option.force true', () => {
     class Foo {
       bar = 1;
-      @alias('bar', {force: true})
+      @alias('bar', { force: true })
       car = 2;
-    };
+    }
     const foo = new Foo();
     expect(foo.bar).toBe(foo.car);
     expect(foo.bar).toBe(2);
@@ -33,17 +33,17 @@ describe('alias', () => {
     class Foo {
       @frozen
       bar = 1;
-      @alias('bar', {force: true})
+      @alias('bar', { force: true })
       car = 2;
-    };
+    }
     expect(() => new Foo()).toThrow('property "car" is unconfigurable.');
   });
   test('if you want to omit the error throw when you try to set alias on existing value, please set option.omit to be true', () => {
     class Foo {
       bar = 1;
-      @alias('bar', {omit: true})
+      @alias('bar', { omit: true })
       car = 2;
-    };
+    }
     const foo = new Foo();
     expect(foo.bar).toBe(1);
     expect(foo.car).toBe(2);
@@ -52,7 +52,7 @@ describe('alias', () => {
     class Foo {
       @alias('baz')
       bar = 1;
-    };
+    }
     const foo = new Foo();
     expect(foo.bar).toBe(foo.baz);
     foo.baz = 2;
@@ -66,7 +66,7 @@ describe('alias', () => {
     class Foo {
       @alias('baz')
       static bar = 1;
-    };
+    }
     expect(Foo.bar).toBe(Foo.baz);
     Foo.baz = 2;
     expect(Foo.bar).toBe(2);
@@ -79,10 +79,10 @@ describe('alias', () => {
     const fn = jest.fn();
     class Foo {
       @alias('baz')
-      bar (...args) {
+      bar(...args) {
         fn(...args);
       }
-    };
+    }
     const foo = new Foo();
     expect(foo.bar).toBe(foo.baz);
     foo.baz(2);
@@ -93,10 +93,10 @@ describe('alias', () => {
     class Foo {
       _bar = 1;
       @alias('baz')
-      get bar () {
+      get bar() {
         return this._bar;
       }
-      set bar (value) {
+      set bar(value) {
         this._bar = value;
         return this._bar;
       }
@@ -110,12 +110,12 @@ describe('alias', () => {
     expect(foo.baz).toBe(foo.bar);
   });
   test('@alias can also let you to set alias on other object for property', () => {
-    class Car {};
+    class Car {}
     const car = new Car();
     class Foo {
       @alias(car, 'baz')
       bar = 1;
-    };
+    }
     const foo = new Foo();
     expect(foo.bar).toBe(car.baz);
     car.baz = 2;
@@ -127,15 +127,15 @@ describe('alias', () => {
     expect(foo.baz).toBe();
   });
   test('@alias can also let you to set alias on other object for function', () => {
-    class Car {};
+    class Car {}
     const car = new Car();
     const fn = jest.fn();
     class Foo {
       @alias(car, 'baz')
-      bar (...args) {
+      bar(...args) {
         fn(...args);
       }
-    };
+    }
     const foo = new Foo();
     expect(foo.bar).toBe(car.baz);
     car.baz(2);
@@ -145,15 +145,15 @@ describe('alias', () => {
   });
   test('@alias can also let you to set alias on other class for function', () => {
     class Car {
-    };
+    }
     const car = new Car();
     const fn = jest.fn();
     class Foo {
       @alias(Car.prototype, 'baz')
-      bar (...args) {
+      bar(...args) {
         fn(...args);
       }
-    };
+    }
     const foo = new Foo();
     expect(foo.bar).toBe(car.baz);
     car.baz(2);
@@ -162,15 +162,15 @@ describe('alias', () => {
     expect(foo.baz).toBe();
   });
   test('@alias can also let you to set alias on other object for getter/setter', () => {
-    class Car {};
+    class Car {}
     const car = new Car();
     class Foo {
       _bar = 1;
       @alias(car, 'baz')
-      get bar () {
+      get bar() {
         return this._bar;
       }
-      set bar (value) {
+      set bar(value) {
         this._bar = value;
         return this._bar;
       }
@@ -188,8 +188,8 @@ describe('alias', () => {
     class Foo {}
     const foo = new Foo();
     applyDecorators(foo, {
-      a: alias('b')
-    }, {self: true});
+      a: alias('b'),
+    }, { self: true });
     expect(foo.a).toBe(Foo.b);
     expect(foo.a).toBe();
     foo.a = 1;
@@ -201,8 +201,8 @@ describe('alias', () => {
       deepFlag = {
         you: {
           can: {
-          }
-        }
+          },
+        },
       };
       @alias('deepFlag.you.can.run')
       run = 1;
@@ -221,7 +221,7 @@ describe('alias', () => {
     class Bar {
       deepFlag = {
         can: {
-          }
+        },
       };
       @alias('deepFlag.you.can.run')
       run = 1;
@@ -232,8 +232,8 @@ describe('alias', () => {
     class Bar {
       deepFlag = {
         you: {
-          can: 1
-        }
+          can: 1,
+        },
       };
       @alias('deepFlag.you.can.run')
       run = 1;

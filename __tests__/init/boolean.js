@@ -1,4 +1,4 @@
-import {initBoolean} from 'index';
+import { initBoolean } from 'index';
 describe('init/boolean', () => {
   test('@initBoolean can set property initialize to be boolean', () => {
     class Foo {

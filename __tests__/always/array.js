@@ -1,21 +1,21 @@
-import {alwaysArray} from 'index';
+import { alwaysArray } from 'index';
 describe('always/array', () => {
   class Foo {
-    @alwaysArray([1, 2, 3])
+    @alwaysArray([ 1, 2, 3 ])
     bar = 1;
     _car = 1;
     @alwaysArray()
-    get car () {
+    get car() {
       return this._car;
     }
-    set car (value) {
+    set car(value) {
       this._car = value;
       return this._car;
     }
   }
   test('@alwaysArray support custome value', () => {
     const foo = new Foo();
-    expect(foo.bar).toEqual([1, 2, 3]);
+    expect(foo.bar).toEqual([ 1, 2, 3 ]);
   });
   test('@alwaysArray can may property always be array', () => {
     const foo = new Foo();

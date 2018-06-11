@@ -2,8 +2,8 @@ import * as utils from 'helper/utils';
 
 test('transObjectAttrIntoArray', () => {
   expect(utils.transObjectAttrIntoArray({})).toEqual([]);
-  expect(utils.transObjectAttrIntoArray({1: 'a', 2: 'b'})).toEqual(['a', 'b']);
-  expect(utils.transObjectAttrIntoArray({1: 'a', 2: 'b'}, (b, a) => +a - +b)).toEqual(['b', 'a']);
+  expect(utils.transObjectAttrIntoArray({ 1: 'a', 2: 'b' })).toEqual([ 'a', 'b' ]);
+  expect(utils.transObjectAttrIntoArray({ 1: 'a', 2: 'b' }, (b, a) => +a - +b)).toEqual([ 'b', 'a' ]);
 });
 
 describe('compressOneArgFnArray', () => {
@@ -14,8 +14,8 @@ describe('compressOneArgFnArray', () => {
     expect(() => utils.compressOneArgFnArray([])).toThrow();
   });
   test('array can only contain function', () => {
-    expect(() => utils.compressOneArgFnArray([function () {}, 1])).toThrow();
-    expect(() => utils.compressOneArgFnArray([1])).toThrow();
+    expect(() => utils.compressOneArgFnArray([ function() {}, 1 ])).toThrow();
+    expect(() => utils.compressOneArgFnArray([ 1 ])).toThrow();
   });
 });
 
@@ -28,23 +28,23 @@ describe('isDescriptor', () => {
 describe('isAccessorDescriptor', () => {
   test('with getter/setter', () => {
     expect(utils.isAccessorDescriptor({
-      get () {},
-      set () {},
+      get() {},
+      set() {},
       configurable: true,
-      enumerable: true
+      enumerable: true,
     })).toBe(true);
   });
   test('with only setter', () => {
     expect(utils.isAccessorDescriptor({
-      set () {},
+      set() {},
       configurable: true,
-      enumerable: true
+      enumerable: true,
     })).toBe(true);
   });
   test('without getter/setter', () => {
     expect(utils.isAccessorDescriptor({
       configurable: true,
-      enumerable: true
+      enumerable: true,
     })).toBe(false);
   });
 });
@@ -54,14 +54,14 @@ describe('isDataDescriptor', () => {
     expect(utils.isDataDescriptor({})).toBe(false);
   });
   test('object with value', () => {
-    expect(utils.isDataDescriptor({value: 1})).toBe(false);
+    expect(utils.isDataDescriptor({ value: 1 })).toBe(false);
   });
 });
 
 describe('warn', () => {
   test('normal mode', () => {
     const originConsole = console;
-    global.console = {warn: jest.fn()};
+    global.console = { warn: jest.fn() };
     utils.warn('123');
     expect(console.warn).toHaveBeenCalledTimes(1);
     expect(console.warn).lastCalledWith('123');
@@ -69,7 +69,7 @@ describe('warn', () => {
   });
   test('log mode', () => {
     const originConsole = console;
-    global.console = {log: jest.fn()};
+    global.console = { log: jest.fn() };
     utils.warn('123');
     expect(console.log).toHaveBeenCalledTimes(1);
     expect(console.log).lastCalledWith('123');
@@ -83,8 +83,8 @@ test('getOwnPropertyDescriptors', () => {
   class Foo {
     a = 1;
     static b = 2;
-    c () {}
-    static d () {}
+    c() {}
+    static d() {}
     e = '123';
     static f = '123';
   }
@@ -97,7 +97,7 @@ describe('compressMultipleDecorators', () => {
     expect(() => utils.compressMultipleDecorators()).toThrow();
   });
   test('array can only contain function', () => {
-    expect(() => utils.compressMultipleDecorators(function () {}, function () {}, 2)()).toThrow('Decorators must be a function, but not "2" in number');
+    expect(() => utils.compressMultipleDecorators(function() {}, function() {}, 2)()).toThrow('Decorators must be a function, but not "2" in number');
     expect(() => utils.compressMultipleDecorators(1)).toThrow('Decorators must be a function, but not "1" in number');
   });
 });
@@ -107,13 +107,13 @@ describe('getOwnKeys', () => {
     class Foo {
       a = 1;
       static b = 2;
-      c () {}
-      static d () {}
+      c() {}
+      static d() {}
       e = '123';
       static f = '123';
     }
     const foo = new Foo();
-    const {getOwnPropertyNames, getOwnPropertySymbols} = Object;
+    const { getOwnPropertyNames, getOwnPropertySymbols } = Object;
     global.Object.getOwnPropertySymbols = false;
     const keys = utils.getOwnKeysFn()(foo);
     global.Object.getOwnPropertySymbols = getOwnPropertySymbols;

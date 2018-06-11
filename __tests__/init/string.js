@@ -1,4 +1,4 @@
-import {initString} from 'index';
+import { initString } from 'index';
 describe('init/string', () => {
   test('@initString can set property initialize to be string', () => {
     class Foo {

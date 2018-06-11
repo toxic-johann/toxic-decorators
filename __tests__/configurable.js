@@ -1,14 +1,14 @@
-import {configurable, applyDecorators, initNumber} from 'index';
-const {getOwnPropertyDescriptor} = Object;
+import { configurable, applyDecorators, initNumber } from 'index';
+const { getOwnPropertyDescriptor } = Object;
 describe('configurable', () => {
   test('facing undefined descriptor', () => {
-    class Foo {};
+    class Foo {}
     applyDecorators(Foo, {
-      a: configurable
+      a: configurable,
     });
     expect(Foo.prototype.a).toBe(undefined);
     expect(getOwnPropertyDescriptor(Foo.prototype, 'a').configurable).toBe(true);
-    expect(() => {delete Foo.prototype.a;}).not.toThrow();
+    expect(() => { delete Foo.prototype.a; }).not.toThrow();
   });
   test('normal use', () => {
     class Foo {
@@ -21,7 +21,7 @@ describe('configurable', () => {
     const foo = new Foo();
     expect(getOwnPropertyDescriptor(foo, 'a').configurable).toBe(true);
     expect(getOwnPropertyDescriptor(foo, 'b').configurable).toBe(false);
-    expect(() => {delete foo.b;}).toThrow();
-    expect(() => {delete foo.a;}).not.toThrow();
+    expect(() => { delete foo.b; }).toThrow();
+    expect(() => { delete foo.a; }).not.toThrow();
   });
 });

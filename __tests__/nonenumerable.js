@@ -1,15 +1,15 @@
-import {nonenumerable, applyDecorators} from 'index';
-const {getOwnPropertyDescriptor} = Object;
+import { nonenumerable, applyDecorators } from 'index';
+const { getOwnPropertyDescriptor } = Object;
 describe('nonenumerable', () => {
   test('facing undefined descriptor', () => {
-    class Foo {};
+    class Foo {}
     applyDecorators(Foo, {
-      a: nonenumerable
+      a: nonenumerable,
     });
     expect(Foo.prototype.a).toBe(undefined);
     expect(getOwnPropertyDescriptor(Foo.prototype, 'a').enumerable).toBe(false);
     const result = [];
-    for(const key in Foo.prototype) result.push(key);
+    for (const key in Foo.prototype) result.push(key);
     expect(result).toEqual([]);
   });
   test('normal use', () => {
@@ -22,7 +22,7 @@ describe('nonenumerable', () => {
     expect(getOwnPropertyDescriptor(foo, 'a').enumerable).toBe(true);
     expect(getOwnPropertyDescriptor(foo, 'b').enumerable).toBe(false);
     const result = [];
-    for(const key in foo) result.push(key);
-    expect(result).toEqual(['a']);
+    for (const key in foo) result.push(key);
+    expect(result).toEqual([ 'a' ]);
   });
 });
