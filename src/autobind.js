@@ -1,10 +1,10 @@
 // @flow
-import {isFunction, createDefaultSetter} from 'helper/utils';
-import {bind} from 'toxic-utils';
+import { isFunction, createDefaultSetter } from 'helper/utils';
+import { bind } from 'toxic-utils';
 import autobindClass from 'class/autobind';
 let mapStore;
 // save bound function for super
-function getBoundSuper (obj: Object, fn: Function): Function {
+function getBoundSuper(obj: Object, fn: Function): Function {
   if (typeof WeakMap === 'undefined') {
     throw new Error(
       `Using @autobind on ${fn.name}() requires WeakMap support due to its use of super.${fn.name}()`
@@ -12,7 +12,7 @@ function getBoundSuper (obj: Object, fn: Function): Function {
   }
 
   if (!mapStore) {
-     mapStore = new WeakMap();
+    mapStore = new WeakMap();
   }
 
   if (mapStore.has(obj) === false) {
@@ -34,21 +34,21 @@ function getBoundSuper (obj: Object, fn: Function): Function {
  * @param {string} prop prop strong
  * @param {Object} descriptor
  */
-export default function autobind (obj: Object, prop: string, descriptor: DataDescriptor): AccessorDescriptor {
-  if(arguments.length === 1) return autobindClass()(obj);
-  const {value: fn, configurable} = descriptor || {};
-  if(!isFunction(fn)) {
+export default function autobind(obj: Object, prop: string, descriptor: DataDescriptor): AccessorDescriptor {
+  if (arguments.length === 1) return autobindClass()(obj);
+  const { value: fn, configurable } = descriptor || {};
+  if (!isFunction(fn)) {
     throw new TypeError(`@autobind can only be used on functions, not "${fn}" in ${typeof fn} on property "${prop}"`);
   }
-  const {constructor} = obj;
+  const { constructor } = obj;
   return {
     configurable,
     enumerable: false,
-    get () {
+    get() {
       const boundFn = (...args: any) => fn.call(this, ...args);
       // Someone accesses the property directly on the prototype on which it is
       // actually defined on, i.e. Class.prototype.hasOwnProperty(key)
-      if(this === obj) {
+      if (this === obj) {
         return fn;
       }
       // Someone accesses the property directly on a prototype,
@@ -67,11 +67,11 @@ export default function autobind (obj: Object, prop: string, descriptor: DataDes
         writable: true,
         // NOT enumerable when it's a bound method
         enumerable: false,
-        value: boundFn
+        value: boundFn,
       });
 
       return boundFn;
     },
-    set: createDefaultSetter(prop)
+    set: createDefaultSetter(prop),
   };
 }

@@ -1,8 +1,8 @@
 // @flow
-import {isFunction, isArray, isAccessorDescriptor, isInitializerDescriptor, compressOneArgFnArray, warn} from 'helper/utils';
-import {bind} from 'toxic-utils';
-export default function accessor ({get, set}: {get?: Function | Array<Function>, set?: Function | Array<Function>} = {}, {preGet = false, preSet = true}: {preGet?: boolean, preSet?: boolean} = {}): Function {
-  if(!isFunction(get) &&
+import { isFunction, isArray, isAccessorDescriptor, isInitializerDescriptor, compressOneArgFnArray, warn } from 'helper/utils';
+import { bind } from 'toxic-utils';
+export default function accessor({ get, set }: {get?: Function | Array<Function>, set?: Function | Array<Function>} = {}, { preGet = false, preSet = true }: {preGet?: boolean, preSet?: boolean} = {}): Function {
+  if (!isFunction(get) &&
     !isFunction(set) &&
     !(isArray(get) && get.length > 0) &&
     !(isArray(set) && set.length > 0)
@@ -14,33 +14,33 @@ export default function accessor ({get, set}: {get?: Function | Array<Function>,
   set = isArray(set)
     ? compressOneArgFnArray(set, errmsg)
     : set;
-  return function (obj: Object, prop: string, descriptor: Descriptor): AccessorDescriptor {
+  return function(obj: Object, prop: string, descriptor: Descriptor): AccessorDescriptor {
     const {
       configurable = true,
-      enumerable = true
+      enumerable = true,
     } = descriptor || {};
     const hasGet = isFunction(get);
     const hasSet = isFunction(set);
-    const handleGet = function (value) {
+    const handleGet = function(value) {
       // $FlowFixMe: it's really function here
       return hasGet ? bind(get, this)(value) : value;
     };
-    const handleSet = function (value) {
+    const handleSet = function(value) {
       // $FlowFixMe: it's really function here
       return hasSet ? bind(set, this)(value) : value;
     };
-    if(isAccessorDescriptor(descriptor)) {
-      const {get: originGet, set: originSet} = descriptor;
+    if (isAccessorDescriptor(descriptor)) {
+      const { get: originGet, set: originSet } = descriptor;
       const hasOriginGet = isFunction(originGet);
       const hasOriginSet = isFunction(originSet);
-      if(process.env.NODE_ENV !== 'production' && !hasOriginGet && hasGet) {
+      if (process.env.NODE_ENV !== 'production' && !hasOriginGet && hasGet) {
         warn(`You are trying to set getter via @accessor on ${prop} without getter. That's not a good idea.`);
       }
-      if(process.env.NODE_ENV !== 'production' && !hasOriginSet && hasSet) {
+      if (process.env.NODE_ENV !== 'production' && !hasOriginSet && hasSet) {
         warn(`You are trying to set setter via @accessor on  ${prop} without setter. That's not a good idea.`);
       }
       const getter = (hasOriginGet || hasGet)
-        ? function () {
+        ? function() {
           const boundGetter = bind(handleGet, this);
           const originBoundGetter = () => {
             return hasOriginGet
@@ -48,19 +48,19 @@ export default function accessor ({get, set}: {get?: Function | Array<Function>,
               ? bind(originGet, this)()
               : undefined;
           };
-          const order = preGet ? [boundGetter, originBoundGetter] : [originBoundGetter, boundGetter];
+          const order = preGet ? [ boundGetter, originBoundGetter ] : [ originBoundGetter, boundGetter ];
           // $FlowFixMe: it's all function here
           return order.reduce((value, fn) => fn(value), undefined);
         }
         : undefined;
       const setter = (hasOriginSet || hasSet)
-        ? function (val) {
+        ? function(val) {
           const boundSetter = bind(handleSet, this);
-          const originBoundSetter = value => hasOriginSet
+          const originBoundSetter = value => (hasOriginSet
             // $FlowFixMe: flow act like a retarded child on optional property
             ? bind(originSet, this)(value)
-            : value;
-          const order = preSet ? [boundSetter, originBoundSetter] : [originBoundSetter, boundSetter];
+            : value);
+          const order = preSet ? [ boundSetter, originBoundSetter ] : [ originBoundSetter, boundSetter ];
           return order.reduce((value, fn) => fn(value), val);
         }
         : undefined;
@@ -68,51 +68,51 @@ export default function accessor ({get, set}: {get?: Function | Array<Function>,
         get: getter,
         set: setter,
         configurable,
-        enumerable
+        enumerable,
       };
-    } else if(isInitializerDescriptor(descriptor)) {
+    } else if (isInitializerDescriptor(descriptor)) {
       // $FlowFixMe: disjoint union is horrible, descriptor is initializerDescriptor now
-      const {initializer} = descriptor;
+      const { initializer } = descriptor;
       let value;
       let inited = false;
       return {
-        get () {
+        get() {
           const boundFn = bind(handleGet, this);
-          if(inited) return boundFn(value);
+          if (inited) return boundFn(value);
           value = bind(initializer, this)();
           inited = true;
           return boundFn(value);
         },
-        set (val) {
+        set(val) {
           const boundFn = bind(handleSet, this);
           value = preSet ? boundFn(val) : val;
           inited = true;
-          if(!preSet) {
+          if (!preSet) {
             boundFn(value);
           }
           return value;
         },
         configurable,
-        enumerable
-      };
-    } else {
-      // $FlowFixMe: disjoint union is horrible, descriptor is DataDescriptor now
-      let {value} = descriptor || {};
-      return {
-        get () {
-          return bind(handleGet, this)(value);
-        },
-        set (val) {
-          const boundFn = bind(handleSet, this);
-          value = preSet ? boundFn(val) : val;
-          if(!preSet) {
-            boundFn(value);
-          }
-          return value;
-        },
-        configurable,
-        enumerable
+        enumerable,
       };
     }
+    // $FlowFixMe: disjoint union is horrible, descriptor is DataDescriptor now
+    let { value } = descriptor || {};
+    return {
+      get() {
+        return bind(handleGet, this)(value);
+      },
+      set(val) {
+        const boundFn = bind(handleSet, this);
+        value = preSet ? boundFn(val) : val;
+        if (!preSet) {
+          boundFn(value);
+        }
+        return value;
+      },
+      configurable,
+      enumerable,
+    };
+
   };
 }

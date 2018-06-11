@@ -1,10 +1,10 @@
 // @flow
 import autobind from 'autobind';
 import classify from 'helper/classify';
-import {isFunction, isDataDescriptor} from 'helper/utils';
+import { isFunction, isDataDescriptor } from 'helper/utils';
 export default classify(autobind, {
-  requirement (obj: any, prop: string, desc: Descriptor) {
+  requirement(obj: any, prop: string, desc: Descriptor) {
     // $FlowFixMe: it's data descriptor now
     return isDataDescriptor(desc) && isFunction(desc.value);
-  }
+  },
 });
