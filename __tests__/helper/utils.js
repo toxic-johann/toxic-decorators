@@ -1,11 +1,5 @@
 import * as utils from 'helper/utils';
 
-test('transObjectAttrIntoArray', () => {
-  expect(utils.transObjectAttrIntoArray({})).toEqual([]);
-  expect(utils.transObjectAttrIntoArray({ 1: 'a', 2: 'b' })).toEqual([ 'a', 'b' ]);
-  expect(utils.transObjectAttrIntoArray({ 1: 'a', 2: 'b' }, (b, a) => +a - +b)).toEqual([ 'b', 'a' ]);
-});
-
 describe('compressOneArgFnArray', () => {
   test('must pass an array', () => {
     expect(() => utils.compressOneArgFnArray()).toThrow();
