@@ -1,12 +1,38 @@
-// @flow
-import { isAccessorDescriptor, isInitializerDescriptor, compressOneArgFnArray, warn } from 'helper/utils';
-import { isFunction, isArray, bind } from 'lodash';
-export default function accessor({ get, set }: {get?: Function | Array<Function>, set?: Function | Array<Function>} = {}, { preGet = false, preSet = true }: {preGet?: boolean, preSet?: boolean} = {}): Function {
-  if (!isFunction(get) &&
-    !isFunction(set) &&
-    !(isArray(get) && get.length > 0) &&
-    !(isArray(set) && set.length > 0)
-  ) throw new TypeError("@accessor need a getter or setter. If you don't need to add setter/getter. You should remove @accessor");
+import {
+  AccessorDescriptor,
+  DecoratorFunction,
+} from 'helper/types';
+import {
+  compressOneArgFnArray,
+  isAccessorDescriptor,
+  isInitializerDescriptor,
+  warn,
+} from 'helper/utils';
+import { bind, isArray, isFunction } from 'lodash';
+
+export default function accessor(
+  {
+    get,
+    set,
+  }: {
+    get?: (v: any) => any | Array<(v: any) => any>,
+    set?: (v: any) => any | Array<(v: any) => any>,
+  } = {},
+  {
+    preGet = false,
+    preSet = true,
+  }: {
+    preGet?: boolean,
+    preSet?: boolean,
+  } = {}): DecoratorFunction {
+  if (!(isArray(get) && get.length > 0) &&
+    !(isArray(set) && set.length > 0) &&
+    !isFunction(get) &&
+    !isFunction(set)
+  ) {
+    // tslint:disable-next-line: max-line-length
+    throw new TypeError('@accessor need a getter or setter. If you don\'t need to add setter/getter. You should remove @accessor');
+  }
   const errmsg = '@accessor only accept function or array of function as getter/setter';
   get = isArray(get)
     ? compressOneArgFnArray(get, errmsg)
@@ -14,19 +40,17 @@ export default function accessor({ get, set }: {get?: Function | Array<Function>
   set = isArray(set)
     ? compressOneArgFnArray(set, errmsg)
     : set;
-  return function(obj: Object, prop: string, descriptor: Descriptor): AccessorDescriptor {
+  return function(obj: object, prop: string, descriptor: PropertyDescriptor): AccessorDescriptor {
     const {
       configurable = true,
       enumerable = true,
     } = descriptor || {};
     const hasGet = isFunction(get);
     const hasSet = isFunction(set);
-    const handleGet = function(value) {
-      // $FlowFixMe: it's really function here
+    const handleGet = function(value: any) {
       return hasGet ? bind(get, this)(value) : value;
     };
-    const handleSet = function(value) {
-      // $FlowFixMe: it's really function here
+    const handleSet = function(value: any) {
       return hasSet ? bind(set, this)(value) : value;
     };
     if (isAccessorDescriptor(descriptor)) {
@@ -44,20 +68,17 @@ export default function accessor({ get, set }: {get?: Function | Array<Function>
           const boundGetter = bind(handleGet, this);
           const originBoundGetter = () => {
             return hasOriginGet
-              // $FlowFixMe: we have do a check here
               ? bind(originGet, this)()
               : undefined;
           };
           const order = preGet ? [ boundGetter, originBoundGetter ] : [ originBoundGetter, boundGetter ];
-          // $FlowFixMe: it's all function here
           return order.reduce((value, fn) => fn(value), undefined);
         }
         : undefined;
       const setter = (hasOriginSet || hasSet)
-        ? function(val) {
+        ? function(val: any) {
           const boundSetter = bind(handleSet, this);
-          const originBoundSetter = value => (hasOriginSet
-            // $FlowFixMe: flow act like a retarded child on optional property
+          const originBoundSetter = (value: any) => (hasOriginSet
             ? bind(originSet, this)(value)
             : value);
           const order = preSet ? [ boundSetter, originBoundSetter ] : [ originBoundSetter, boundSetter ];
@@ -65,20 +86,19 @@ export default function accessor({ get, set }: {get?: Function | Array<Function>
         }
         : undefined;
       return {
-        get: getter,
-        set: setter,
         configurable,
         enumerable,
+        get: getter,
+        set: setter,
       };
     } else if (isInitializerDescriptor(descriptor)) {
-      // $FlowFixMe: disjoint union is horrible, descriptor is initializerDescriptor now
       const { initializer } = descriptor;
-      let value;
+      let value: any;
       let inited = false;
       return {
         get() {
           const boundFn = bind(handleGet, this);
-          if (inited) return boundFn(value);
+          if (inited) { return boundFn(value); }
           value = bind(initializer, this)();
           inited = true;
           return boundFn(value);
@@ -96,8 +116,7 @@ export default function accessor({ get, set }: {get?: Function | Array<Function>
         enumerable,
       };
     }
-    // $FlowFixMe: disjoint union is horrible, descriptor is DataDescriptor now
-    let { value } = descriptor || {};
+    let { value } = descriptor || { value: undefined };
     return {
       get() {
         return bind(handleGet, this)(value);

@@ -1,24 +1,7 @@
-export * from "toxic-predicate-functions";
-import { bind, isArray, isBoolean, isFunction } from "lodash";
+export * from 'toxic-predicate-functions';
+import { bind, isArray, isBoolean, isFunction } from 'lodash';
+import { AccessorDescriptor, DataDescriptor, DecoratorFunction, InitializerDescriptor } from './types';
 const { getOwnPropertyDescriptor } = Object;
-export interface AccessorDescriptor {
-  configurable: boolean;
-  enumerable: boolean;
-  get?(): any;
-  set?(v: any): void;
-}
-export interface DataDescriptor {
-  configurable: boolean;
-  enumerable: boolean;
-  writable: boolean;
-  value: any;
-}
-export interface InitializerDescriptor {
-  configurable: boolean;
-  enumerable: boolean;
-  writable: boolean;
-  initializer(): any;
-}
 /**
  * to check if an descriptor
  * @param {anything} desc
@@ -28,7 +11,7 @@ export function isDescriptor(desc: any): desc is PropertyDescriptor {
     return false;
   }
 
-  const keys = [ "value", "initializer", "get", "set" ];
+  const keys = [ 'value', 'initializer', 'get', 'set' ];
 
   for (let i = 0, l = keys.length; i < l; i++) {
     if (desc.hasOwnProperty(keys[i])) {
@@ -54,7 +37,7 @@ export function isAccessorDescriptor(desc: any): desc is AccessorDescriptor {
  */
 export function isDataDescriptor(desc: any): desc is DataDescriptor {
   return desc &&
-    desc.hasOwnProperty("value") &&
+    desc.hasOwnProperty('value') &&
     isBoolean(desc.configurable) &&
     isBoolean(desc.enumerable) &&
     isBoolean(desc.writable);
@@ -94,7 +77,7 @@ export function createDefaultSetter(key: string) {
  */
 export function compressOneArgFnArray<T>(
   fns: Array<(obj: T) => T>,
-  errmsg: string = "You must pass me an array of function",
+  errmsg: string = 'You must pass me an array of function',
 ): (obj: T) => T {
   if (!isArray(fns) || fns.length < 1) {
     throw new TypeError(errmsg);
@@ -149,10 +132,8 @@ export function getOwnPropertyDescriptorsFn<T>(): (o: T) => { [P in keyof T]: Ty
 
 export const getOwnPropertyDescriptors = getOwnPropertyDescriptorsFn();
 
-type DecoratorFunction = (obj: any, prop: string, descirptor: PropertyDescriptor | void) => PropertyDescriptor;
-
 export function compressMultipleDecorators(...fns: DecoratorFunction[]): DecoratorFunction {
-  if (!fns.length) { throw new TypeError("You must pass in decorators in compressMultipleDecorators"); }
+  if (!fns.length) { throw new TypeError('You must pass in decorators in compressMultipleDecorators'); }
   fns.forEach((fn) => {
     if (!isFunction(fn)) {
       throw new TypeError(`Decorators must be a function, but not "${fn}" in ${typeof fn}`);
