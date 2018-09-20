@@ -1,6 +1,5 @@
-// @flow
 import { isAccessorDescriptor, warn } from 'helper/utils';
-import { isFunction, bind } from 'lodash';
+import { bind, isFunction } from 'lodash';
 const { defineProperty } = Object;
 /**
  * make one attr only can be read, but could not be rewrited/ deleted
@@ -9,15 +8,18 @@ const { defineProperty } = Object;
  * @param {Object} descriptor
  * @return {descriptor}
  */
-export default function lock(obj: Object, prop: string, descriptor: Descriptor): Descriptor | void {
+export default function lock(obj: object, prop: string, descriptor: PropertyDescriptor): PropertyDescriptor | void {
   if (descriptor === undefined) {
     /* istanbul ignore else  */
-    if (process.env.NODE_ENV !== 'production') warn(`You are using @lock on an undefined property "${prop}". This property will become a lock undefined forever, which is meaningless.`);
+    if (process.env.NODE_ENV !== 'production') {
+      // tslint:disable-next-line: max-line-length
+      warn(`You are using @lock on an undefined property "${prop}". This property will become a lock undefined forever, which is meaningless.`);
+    }
     return {
+      configurable: false,
+      enumerable: true,
       value: undefined,
       writable: false,
-      enumerable: true,
-      configurable: false,
     };
   }
   descriptor.configurable = false;
@@ -25,24 +27,25 @@ export default function lock(obj: Object, prop: string, descriptor: Descriptor):
     const { get } = descriptor;
     descriptor.set = undefined;
     if (!isFunction(get)) {
+      // tslint:disable-next-line: max-line-length
       warn('You are using @lock on one accessor descriptor without getter. This property will become a lock undefined finally.Which maybe meaningless.');
       return;
     }
     return {
+      configurable: false,
+      enumerable: descriptor.enumerable,
       get() {
         // $FlowFixMe: get is a function now
         const value = bind(get, this)();
         defineProperty(this, prop, {
-          value,
-          writable: false,
           configurable: false,
           enumerable: descriptor.enumerable,
+          value,
+          writable: false,
         });
         return value;
       },
       set: undefined,
-      configurable: false,
-      enumerable: descriptor.enumerable,
     };
   }
   // $FlowFixMe: comeon, can disjoint union be reliable?
