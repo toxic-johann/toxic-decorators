@@ -1,14 +1,14 @@
 import {
-  AccessorDescriptor,
-  DecoratorFunction,
-} from 'helper/types';
-import {
   compressOneArgFnArray,
   isAccessorDescriptor,
   isInitializerDescriptor,
   warn,
 } from 'helper/utils';
 import { bind, isArray, isFunction } from 'lodash';
+import {
+  AccessorDescriptor,
+  DecoratorFunction,
+} from 'typings/base';
 
 export default function accessor(
   {

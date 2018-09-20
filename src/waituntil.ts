@@ -1,16 +1,27 @@
 // @flow
-import { isPromise, isDescriptor } from 'helper/utils';
 import accessor from 'accessor';
+import { isDescriptor, isPromise } from 'helper/utils';
+import { bind, isFunction, isNil, isObject, isString } from 'lodash';
 import { getDeepProperty } from 'toxic-utils';
-import { bind, isNil, isFunction, isString, isObject } from 'lodash';
+import { DataDescriptor, DecoratorFunction } from 'typings/base';
 const { getOwnPropertyDescriptor, defineProperty } = Object;
-export default function waituntil(key: Function | Promise<*> | string, { other }: {other?: any} = {}): Function {
-  if (!isFunction(key) && !isPromise(key) && !isString(key)) throw new TypeError('@waitUntil only accept Function, Promise or String');
-  return function(obj: Object, prop: string, descriptor: DataDescriptor): DataDescriptor {
-    const { value, configurable } = descriptor || {};
-    if (!isFunction(value)) throw new TypeError(`@waituntil can only be used on function, but not ${value} on property "${prop}"`);
+export default function waituntil(
+  key: ((...args: any[]) => (Promise<any> | boolean)) | Promise<any> | string,
+  { other }: {other?: any} = {},
+): DecoratorFunction {
+  if (!isFunction(key) && !isPromise(key) && !isString(key)) {
+    throw new TypeError('@waitUntil only accept Function, Promise or String');
+  }
+  return function(obj: object, prop: string, descriptor: DataDescriptor): DataDescriptor {
+    const { value, configurable } = descriptor || {
+      configurable: undefined,
+      value: undefined,
+    };
+    if (!isFunction(value)) {
+      throw new TypeError(`@waituntil can only be used on function, but not ${value} on property "${prop}"`);
+    }
     let binded = false;
-    const waitingQueue = [];
+    const waitingQueue: Array<(...args: any[]) => any> = [];
     const canIRun = isPromise(key)
       ? function() { return key; }
       : isFunction(key)
@@ -18,17 +29,17 @@ export default function waituntil(key: Function | Promise<*> | string, { other }
         : function() {
           // $FlowFixMe: We have use isPromise to exclude
           const keys = key.split('.');
-          const prop = keys.slice(-1);
+          const [ prop ] = keys.slice(-1);
           const originTarget = !isObject(other) ? this : other;
           if (!binded) {
             const target = getDeepProperty(originTarget, keys.slice(0, -1));
-            if (isNil(target)) return target;
+            if (isNil(target)) { return target; }
             const descriptor = getOwnPropertyDescriptor(target, prop);
             /**
-               * create a setter hook here
-               * when it get ture, it will run all function in waiting queue immediately
-               */
-            const set = function(value) {
+             * create a setter hook here
+             * when it get ture, it will run all function in waiting queue immediately
+             */
+            const set = function(value: any) {
               if (value === true) {
                 while (waitingQueue.length > 0) {
                   waitingQueue[0]();
@@ -40,9 +51,9 @@ export default function waituntil(key: Function | Promise<*> | string, { other }
             const desc = isDescriptor(descriptor)
               ? accessor({ set })(target, prop, descriptor)
               : accessor({ set })(target, prop, {
-                value: undefined,
                 configurable: true,
                 enumerable: true,
+                value: undefined,
                 writable: true,
               });
             defineProperty(target, prop, desc);
@@ -51,7 +62,10 @@ export default function waituntil(key: Function | Promise<*> | string, { other }
           return getDeepProperty(originTarget, keys);
         };
     return {
-      value(...args: Array<any>) {
+      configurable,
+      // function should not be enmuerable
+      enumerable: false,
+      value(...args: any[]) {
         const boundFn = bind(value, this);
         const runnable = bind(canIRun, this)(...args);
         if (isPromise(runnable)) {
@@ -61,7 +75,7 @@ export default function waituntil(key: Function | Promise<*> | string, { other }
         } else if (runnable === true) {
           return bind(value, this)(...args);
         }
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
           const cb = function() {
             boundFn(...args);
             resolve();
@@ -70,9 +84,6 @@ export default function waituntil(key: Function | Promise<*> | string, { other }
         });
 
       },
-      // function should not be enmuerable
-      enumerable: false,
-      configurable,
       // as we have delay this function
       // it's not a good idea to change it
       writable: false,

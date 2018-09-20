@@ -1,6 +1,6 @@
-import { DataDescriptor, DecoratorFunction } from 'helper/types';
 import { bind, isFunction, isObject, isString } from 'lodash';
 import { getDeepProperty } from 'toxic-utils';
+import { DataDescriptor, DecoratorFunction } from 'typings/base';
 export default function runnable(key: (...args: any[]) => any | string, {
   other,
   backup,

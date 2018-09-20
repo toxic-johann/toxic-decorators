@@ -1,6 +1,6 @@
-import { DataDescriptor } from 'helper/types';
 import { compressOneArgFnArray, isDescriptor } from 'helper/utils';
 import { bind, isFunction } from 'lodash';
+import { DataDescriptor } from 'typings/base';
 export default function after(...fns: Array<(...args: any[]) => any>): (...args: any[]) => any {
   if (fns.length === 0) {
     // tslint:disable-next-line: max-line-length
