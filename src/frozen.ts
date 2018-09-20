@@ -1,4 +1,3 @@
-// @flow
 import { isAccessorDescriptor, warn } from 'helper/utils';
 import { bind, isFunction } from 'lodash';
 const { defineProperty } = Object;
@@ -9,15 +8,18 @@ const { defineProperty } = Object;
  * @param {Object} descriptor
  * @return {descriptor}
  */
-export default function frozen(obj: Object, prop: string, descriptor: Descriptor): Descriptor | void {
+export default function frozen(obj: object, prop: string, descriptor: PropertyDescriptor): PropertyDescriptor | void {
   if (descriptor === undefined) {
     /* istanbul ignore else  */
-    if (process.env.NODE_ENV !== 'production') warn('You are using @frozen on an undefined property. This property will become a frozen undefined forever, which is meaningless');
+    if (process.env.NODE_ENV !== 'production') {
+      // tslint:disable-next-line: max-line-length
+      warn('You are using @frozen on an undefined property. This property will become a frozen undefined forever, which is meaningless');
+    }
     return {
+      configurable: false,
+      enumerable: false,
       value: undefined,
       writable: false,
-      enumerable: false,
-      configurable: false,
     };
   }
   descriptor.enumerable = false;
@@ -27,23 +29,26 @@ export default function frozen(obj: Object, prop: string, descriptor: Descriptor
     descriptor.set = undefined;
     if (!isFunction(get)) {
       /* istanbul ignore else  */
-      if (process.env.NODE_ENV !== 'production') warn('You are using @frozen on one accessor descriptor without getter. This property will become a frozen undefined finally.Which maybe meaningless.');
+      if (process.env.NODE_ENV !== 'production') {
+        // tslint:disable-next-line: max-line-length
+        warn('You are using @frozen on one accessor descriptor without getter. This property will become a frozen undefined finally.Which maybe meaningless.');
+      }
       return;
     }
     return {
+      configurable: false,
+      enumerable: false,
       get() {
         const value = bind(get, this)();
         defineProperty(this, prop, {
-          value,
-          writable: false,
           configurable: false,
           enumerable: false,
+          value,
+          writable: false,
         });
         return value;
       },
       set: undefined,
-      configurable: false,
-      enumerable: false,
     };
   }
   // $FlowFixMe: comeon, can disjoint union be reliable?
