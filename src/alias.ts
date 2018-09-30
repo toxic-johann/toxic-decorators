@@ -1,4 +1,3 @@
-// @flow
 import accessor from 'accessor';
 import { isAccessorDescriptor, isInitializerDescriptor } from 'helper/utils';
 import initialize from 'initialize';
