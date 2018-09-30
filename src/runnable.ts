@@ -1,13 +1,13 @@
 import { bind, isFunction, isObject, isString } from 'lodash';
 import { getDeepProperty } from 'toxic-utils';
-import { DataDescriptor, DecoratorFunction } from 'typings/base';
+import { DataDescriptor } from 'typings/base';
 export default function runnable(key: (...args: any[]) => any | string, {
   other,
   backup,
 }: {
   other?: any,
   backup?: (...args: any[]) => any,
-} = {}): DecoratorFunction {
+} = {}): MethodDecorator {
   if (!isFunction(key) && !isString(key)) { throw new TypeError('@runnable only accept Function or String'); }
   return function(obj: object, prop: string, descriptor: DataDescriptor): DataDescriptor {
     const { value, configurable } = descriptor || { configurable: undefined, value: undefined };

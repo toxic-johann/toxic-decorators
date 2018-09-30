@@ -1,6 +1,6 @@
 export * from 'toxic-predicate-functions';
 import { bind, isArray, isBoolean, isFunction } from 'lodash';
-import { AccessorDescriptor, DataDescriptor, DecoratorFunction, InitializerDescriptor } from 'typings/base';
+import { AccessorDescriptor, DataDescriptor, InitializerDescriptor } from 'typings/base';
 const { getOwnPropertyDescriptor } = Object;
 /**
  * to check if an descriptor
@@ -132,7 +132,8 @@ export function getOwnPropertyDescriptorsFn<T>(): (o: T) => { [P in keyof T]: Ty
 
 export const getOwnPropertyDescriptors = getOwnPropertyDescriptorsFn();
 
-export function compressMultipleDecorators(...fns: DecoratorFunction[]): DecoratorFunction {
+// tslint:disable-next-line: max-line-length
+export function compressMultipleDecorators(...fns: Array<MethodDecorator | PropertyDecorator>): MethodDecorator | PropertyDecorator {
   if (!fns.length) { throw new TypeError('You must pass in decorators in compressMultipleDecorators'); }
   fns.forEach((fn) => {
     if (!isFunction(fn)) {
@@ -143,6 +144,7 @@ export function compressMultipleDecorators(...fns: DecoratorFunction[]): Decorat
   return (obj: any, prop: string, descirptor: PropertyDescriptor | void): PropertyDescriptor => {
     // @ts-ignore: must return PropertyDescriptor as the number of function is bigger than zero
     return fns.reduce((aDescirptor: PropertyDescriptor | void, fn) => {
+      // @ts-ignore: decorator can call
       return fn(obj, prop, aDescirptor);
     }, descirptor);
   };

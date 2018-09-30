@@ -3,7 +3,6 @@ import { isAccessorDescriptor, isInitializerDescriptor } from 'helper/utils';
 import initialize from 'initialize';
 import { isObject, isPlainObject, isString } from 'lodash';
 import { getDeepProperty } from 'toxic-utils';
-import { DecoratorFunction } from 'typings/base';
 const { getOwnPropertyDescriptor, defineProperty } = Object;
 function setAlias(
   root: any,
@@ -38,9 +37,9 @@ function setAlias(
   });
 }
 type AliasOption = { force?: boolean, omit?: boolean };
-function alias(other: string, key?: AliasOption): DecoratorFunction;
-function alias(other: any, key: string, option: AliasOption): DecoratorFunction;
-function alias(other: any, key?: any, option?: any): DecoratorFunction {
+function alias(other: string, key?: AliasOption): MethodDecorator | PropertyDecorator;
+function alias(other: any, key: string, option: AliasOption): MethodDecorator | PropertyDecorator;
+function alias(other: any, key?: any, option?: any): MethodDecorator | PropertyDecorator {
   // set argument into right position
   if (arguments.length === 2) {
     if (isString(other)) {
@@ -79,6 +78,7 @@ function alias(other: any, key?: any, option?: any): DecoratorFunction {
       };
     }
     if (isInitializerDescriptor(descriptor)) {
+      // @ts-ignore: decorator can run as function in javascript
       return initialize(function(value) {
         const { target, name } = getTargetAndName(other, this, key);
         setAlias(this, prop, descriptor, target, name, { force, omit });
@@ -94,6 +94,7 @@ function alias(other: any, key?: any, option?: any): DecoratorFunction {
         inited = true;
         return value;
       };
+      // @ts-ignore: decorator can run as function in javascript
       return accessor({ get: handler, set: handler })(obj, prop, descriptor);
     }
     const { target, name } = getTargetAndName(other, obj, key);

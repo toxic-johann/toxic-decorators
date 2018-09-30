@@ -1,9 +1,8 @@
 import { getOwnKeys, getOwnPropertyDescriptors } from 'helper/utils';
 import { isArray, isFunction, isNil, isObject } from 'lodash';
-import { DecoratorFunction } from 'typings/base';
 const { defineProperty } = Object;
 export default function classify(
-  decorator: DecoratorFunction, {
+  decorator: MethodDecorator | PropertyDecorator, {
     requirement,
     customArgs = false,
   }: {

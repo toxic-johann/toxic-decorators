@@ -3,12 +3,12 @@ import accessor from 'accessor';
 import { isDescriptor, isPromise } from 'helper/utils';
 import { bind, isFunction, isNil, isObject, isString } from 'lodash';
 import { getDeepProperty } from 'toxic-utils';
-import { DataDescriptor, DecoratorFunction } from 'typings/base';
+import { DataDescriptor} from 'typings/base';
 const { getOwnPropertyDescriptor, defineProperty } = Object;
 export default function waituntil(
   key: ((...args: any[]) => (Promise<any> | boolean)) | Promise<any> | string,
   { other }: {other?: any} = {},
-): DecoratorFunction {
+): MethodDecorator {
   if (!isFunction(key) && !isPromise(key) && !isString(key)) {
     throw new TypeError('@waitUntil only accept Function, Promise or String');
   }
@@ -49,7 +49,9 @@ export default function waituntil(
               return value;
             };
             const desc = isDescriptor(descriptor)
+              // @ts-ignore: decorator can run as function in javascript
               ? accessor({ set })(target, prop, descriptor)
+              // @ts-ignore: decorator can run as function in javascript
               : accessor({ set })(target, prop, {
                 configurable: true,
                 enumerable: true,

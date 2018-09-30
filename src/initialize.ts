@@ -1,8 +1,7 @@
 import accessor from 'accessor';
 import { compressOneArgFnArray, isAccessorDescriptor, isDescriptor, isInitializerDescriptor } from 'helper/utils';
 import { bind } from 'lodash';
-import { DecoratorFunction } from 'typings/base';
-export default function initialize(...fns: Array<(x: any) => any>): DecoratorFunction {
+export default function initialize(...fns: Array<(x: any) => any>): MethodDecorator | PropertyDecorator {
   if (fns.length === 0) {
     // tslint:disable-next-line: max-line-length
     throw new Error('@initialize accept at least one parameter. If you don\'t need to initialize your value, do not add @initialize.');
@@ -23,6 +22,7 @@ export default function initialize(...fns: Array<(x: any) => any>): DecoratorFun
     if (isAccessorDescriptor(descriptor)) {
       let hasBeenReset = false;
       const { set: originSet } = descriptor;
+      // @ts-ignore: decorator can run as function in javascript
       return accessor({
         get(value) {
           if (hasBeenReset) { return value; }

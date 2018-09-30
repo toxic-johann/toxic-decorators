@@ -7,7 +7,6 @@ import {
 import { bind, isArray, isFunction } from 'lodash';
 import {
   AccessorDescriptor,
-  DecoratorFunction,
 } from 'typings/base';
 
 export default function accessor(
@@ -24,7 +23,7 @@ export default function accessor(
   }: {
     preGet?: boolean,
     preSet?: boolean,
-  } = {}): DecoratorFunction {
+  } = {}): MethodDecorator | PropertyDecorator {
   if (!(isArray(get) && get.length > 0) &&
     !(isArray(set) && set.length > 0) &&
     !isFunction(get) &&
