@@ -133,7 +133,7 @@ export function getOwnPropertyDescriptorsFn<T>(): (o: T) => { [P in keyof T]: Ty
 export const getOwnPropertyDescriptors = getOwnPropertyDescriptorsFn();
 
 // tslint:disable-next-line: max-line-length
-export function compressMultipleDecorators(...fns: Array<MethodDecorator | PropertyDecorator>): MethodDecorator | PropertyDecorator {
+export function compressMultipleDecorators(...fns: Array<MethodDecorator | PropertyDecorator | ClassDecorator>): MethodDecorator | PropertyDecorator | ClassDecorator {
   if (!fns.length) { throw new TypeError('You must pass in decorators in compressMultipleDecorators'); }
   fns.forEach((fn) => {
     if (!isFunction(fn)) {

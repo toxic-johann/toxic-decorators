@@ -16,3 +16,7 @@ export interface InitializerDescriptor {
   writable: boolean;
   initializer(): any;
 }
+
+export interface PropertyOrMethodOrClassDecorator extends MethodDecorator, PropertyDecorator, ClassDecorator {
+  (target: object, propertyKey: string | symbol): void;
+}
