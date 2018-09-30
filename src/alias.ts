@@ -1,16 +1,27 @@
 // @flow
-import { isAccessorDescriptor, isInitializerDescriptor } from 'helper/utils';
-import { isString, isPlainObject, isObject } from 'lodash';
-import { getDeepProperty } from 'toxic-utils';
 import accessor from 'accessor';
+import { isAccessorDescriptor, isInitializerDescriptor } from 'helper/utils';
 import initialize from 'initialize';
+import { isObject, isPlainObject, isString } from 'lodash';
+import { getDeepProperty } from 'toxic-utils';
+import { DecoratorFunction } from 'typings/base';
 const { getOwnPropertyDescriptor, defineProperty } = Object;
-function setAlias(root: Object, prop: string, { configurable, enumerable }: Descriptor, obj: Object, key: string, { force, omit }: {force: boolean, omit: boolean}): void {
+function setAlias(
+  root: any,
+  prop: string,
+  { configurable, enumerable }: PropertyDescriptor,
+  obj: object,
+  key: string,
+  { force, omit }: {force: boolean, omit: boolean},
+): void {
   const originDesc = getOwnPropertyDescriptor(obj, key);
   if (originDesc !== undefined) {
-    if (omit) return;
+    if (omit) { return; }
     // TODO: we should add an github link here
-    if (!force) throw new Error(`"${prop}" is an existing property, if you want to override it, please set "force" true in @alias option.`);
+    if (!force) {
+      // tslint:disable-next-line: max-line-length
+      throw new Error(`"${prop}" is an existing property, if you want to override it, please set "force" true in @alias option.`);
+    }
     if (!originDesc.configurable) {
       throw new Error(`property "${prop}" is unconfigurable.`);
     }
@@ -27,31 +38,33 @@ function setAlias(root: Object, prop: string, { configurable, enumerable }: Desc
     enumerable,
   });
 }
-export default function alias(other?: any, key: string, option?: {force: boolean, omit: boolean}): Function {
+type AliasOption = { force?: boolean, omit?: boolean };
+function alias(other: string, key?: AliasOption): DecoratorFunction;
+function alias(other: any, key: string, option: AliasOption): DecoratorFunction;
+function alias(other: any, key?: any, option?: any): DecoratorFunction {
   // set argument into right position
   if (arguments.length === 2) {
     if (isString(other)) {
-      // $FlowFixMe: i will check this later
-      option = key;
-      key = other;
+      (option as AliasOption) = key;
+      (key as string) = other;
       other = undefined;
     }
   } else if (arguments.length === 1) {
-    // $FlowFixMe: i will check this later
-    key = other;
+    (key as string) = other;
     other = undefined;
   }
   // argument validate
-  if (!isString(key)) throw new TypeError('@alias need a string as a key to find the porperty to set alias on');
+  if (!isString(key)) { throw new TypeError('@alias need a string as a key to find the porperty to set alias on'); }
+  // tslint:disable-next-line: max-line-length
   const illegalObjErrorMsg = 'If you want to use @alias to set alias on other instance, you must pass in a legal instance';
-  if (other !== undefined && !isObject(other)) throw new TypeError(illegalObjErrorMsg);
+  if (other !== undefined && !isObject(other)) { throw new TypeError(illegalObjErrorMsg); }
   const { force, omit } = isPlainObject(option) ? option : { force: false, omit: false };
-  return function(obj: Object, prop: string, descriptor: Descriptor): Descriptor {
+  return function(obj: object, prop: string, descriptor: PropertyDescriptor): PropertyDescriptor {
     descriptor = descriptor || {
-      value: undefined,
       configurable: true,
-      writable: true,
       enumerable: true,
+      value: undefined,
+      writable: true,
     };
     function getTargetAndName(other: any, obj: any, key: string): {target: any, name: string} {
       let target = !isObject(other) ? obj : other;
@@ -62,8 +75,8 @@ export default function alias(other?: any, key: string, option?: {force: boolean
         throw new TypeError(illegalObjErrorMsg);
       }
       return {
-        target,
         name,
+        target,
       };
     }
     if (isInitializerDescriptor(descriptor)) {
@@ -74,9 +87,9 @@ export default function alias(other?: any, key: string, option?: {force: boolean
       })(obj, prop, descriptor);
     }
     if (isAccessorDescriptor(descriptor)) {
-      let inited;
-      const handler = function(value) {
-        if (inited) return value;
+      let inited: boolean;
+      const handler = function(value: any) {
+        if (inited) { return value; }
         const { target, name } = getTargetAndName(other, this, key);
         setAlias(this, prop, descriptor, target, name, { force, omit });
         inited = true;
@@ -89,3 +102,5 @@ export default function alias(other?: any, key: string, option?: {force: boolean
     return descriptor;
   };
 }
+
+export default alias;
