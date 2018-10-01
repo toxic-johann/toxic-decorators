@@ -52,7 +52,7 @@ You can get the compiled code in the `lib` file
 
 ## Decorators
 
-**For Properties a Methods**
+**For Properties and Methods**
 
 * [@accessor](#accessor)
 * [@alias](#alias)
@@ -497,7 +497,7 @@ class Intro {
   name = 'BEN';
   constructor () {
     applyDecorators(this, {
-      name: initString(value => value.toLowerCase())
+      name: alwaysString(value => value.toLowerCase())
     }, {self: true});
   }
 }
