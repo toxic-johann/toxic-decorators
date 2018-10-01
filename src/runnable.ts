@@ -34,7 +34,6 @@ export default function runnable(key: (...args: any[]) => any | string, {
         if (bind(canIRun, this)(...args) === true) {
           return bind(value, this)(...args);
         }
-        // $FlowFixMe: I have reassign it when it's not a function
         return bind(backup, this)(...args);
       },
     };

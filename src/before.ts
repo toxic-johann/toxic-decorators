@@ -31,7 +31,6 @@ export default function before(...fns: Array<(...args: any[]) => any>): (...args
           ? paras
           : isArray(result)
             ? result
-          // $FlowFixMe: what the hell, it can be anything
             : [ result ];
       }, args);
       return bind(fn, this)(...paras);

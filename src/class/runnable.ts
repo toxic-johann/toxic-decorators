@@ -1,4 +1,3 @@
-// @flow
 import classify from 'helper/classify';
 import { isDataDescriptor } from 'helper/utils';
 import { isFunction } from 'lodash';

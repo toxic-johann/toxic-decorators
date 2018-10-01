@@ -251,7 +251,6 @@ export default function watch(...args: Array<string | ((...args: any[]) => any) 
       fns.push(isString(keyOrFn)
         ? function(newVal: any, oldVal: any) {
           const target = other || obj;
-          // $FlowFixMe: we have ensure it must be a string
           const fn = getDeepProperty(target, keyOrFn);
           if (!isFunction(fn)) {
             if (!omit) {

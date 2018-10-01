@@ -51,7 +51,6 @@ export default function frozen(obj: object, prop: string, descriptor: PropertyDe
       set: undefined,
     };
   }
-  // $FlowFixMe: comeon, can disjoint union be reliable?
   descriptor.writable = false;
   return descriptor;
 }

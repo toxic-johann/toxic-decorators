@@ -1,4 +1,3 @@
-// @flow
 import initialize from 'initialize';
 import { isFunction, isNumber } from 'lodash';
 export default function number(

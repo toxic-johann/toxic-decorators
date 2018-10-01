@@ -35,7 +35,6 @@ export default function lock(obj: object, prop: string, descriptor: PropertyDesc
       configurable: false,
       enumerable: descriptor.enumerable,
       get() {
-        // $FlowFixMe: get is a function now
         const value = bind(get, this)();
         defineProperty(this, prop, {
           configurable: false,
@@ -48,7 +47,6 @@ export default function lock(obj: object, prop: string, descriptor: PropertyDesc
       set: undefined,
     };
   }
-  // $FlowFixMe: comeon, can disjoint union be reliable?
   descriptor.writable = false;
   return descriptor;
 }

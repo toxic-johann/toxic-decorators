@@ -1,4 +1,3 @@
-// @flow
 import accessor from 'accessor';
 import { isDescriptor, isPromise } from 'helper/utils';
 import { bind, isFunction, isNil, isObject, isString } from 'lodash';
@@ -27,7 +26,6 @@ export default function waituntil(
       : isFunction(key)
         ? key
         : function() {
-          // $FlowFixMe: We have use isPromise to exclude
           const keys = key.split('.');
           const [ prop ] = keys.slice(-1);
           const originTarget = !isObject(other) ? this : other;
