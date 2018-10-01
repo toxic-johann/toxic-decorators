@@ -1,13 +1,19 @@
 import { compressMultipleDecorators, warn } from 'helper/utils';
 import { isArray, isFunction, isNil, isObject, isPlainObject } from 'lodash';
-import { PropertyOrMethodOrClassDecorator } from 'typings/base';
 const { defineProperty, getOwnPropertyDescriptor } = Object;
 
 export default function applyDecorators(
   Class: any,
-  props: {[x: string]: PropertyOrMethodOrClassDecorator[] | PropertyOrMethodOrClassDecorator }
-    | PropertyOrMethodOrClassDecorator
-    | PropertyOrMethodOrClassDecorator[],
+  props: {
+    [x: string]: Array<PropertyDecorator | MethodDecorator | ClassDecorator>
+    | PropertyDecorator
+    | MethodDecorator
+    | ClassDecorator,
+  }
+    | PropertyDecorator
+    | MethodDecorator
+    | ClassDecorator
+    | Array<PropertyDecorator | MethodDecorator | ClassDecorator>,
   {
     self = false,
     omit = false,
@@ -28,10 +34,11 @@ export default function applyDecorators(
       props(Class);
     } else {
       for (let i = 0, len = props.length; i < len; i++) {
-        const fn = (props as PropertyOrMethodOrClassDecorator[])[i];
+        const fn = (props as Array<PropertyDecorator | MethodDecorator | ClassDecorator>)[i];
         if (!isFunction(fn)) {
           throw new TypeError('If you want to decorate an class, you must pass it function or array of function');
         }
+        // @ts-ignore: decorator can call in Javascript
         fn(Class);
       }
     }
@@ -49,7 +56,12 @@ export default function applyDecorators(
   if (isNil(prototype)) { throw new Error('The class muse have a prototype, please take a check'); }
   // tslint:disable-next-line: forin
   for (const key in props) {
-    const value = (props as {[x: string]: PropertyOrMethodOrClassDecorator[] | PropertyOrMethodOrClassDecorator })[key];
+    const value = (props as {
+      [x: string]: Array<PropertyDecorator | MethodDecorator | ClassDecorator>
+      | PropertyDecorator
+      | MethodDecorator
+      | ClassDecorator,
+    })[key];
     const decorators = isArray(value) ? value : [ value ];
     let handler;
     try {

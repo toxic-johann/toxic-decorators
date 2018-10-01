@@ -37,4 +37,11 @@ export { default as waituntilClass } from 'class/waituntil';
 export { default as applyDecorators } from 'helper/apply-decorators';
 export { default as classify } from 'helper/classify';
 
-export { getOwnKeys, getOwnPropertyDescriptors, isDescriptor, isAccessorDescriptor, isInitializerDescriptor, isDataDescriptor } from 'helper/utils';
+export {
+  getOwnKeys,
+  getOwnPropertyDescriptors,
+  isDescriptor,
+  isAccessorDescriptor,
+  isInitializerDescriptor,
+  isDataDescriptor,
+} from 'helper/utils';
