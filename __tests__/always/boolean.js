@@ -12,11 +12,15 @@ describe('always/boolean', () => {
       this._car = value;
       return this._car;
     }
+    @alwaysBoolean(() => true)
+    lar = 3;
   }
+
   test('@alwaysBoolean support custom vaule', () => {
     const foo = new Foo();
     expect(foo.bar).toBe(true);
   });
+
   test('@alwaysBoolean can may property always be boolean', () => {
     const foo = new Foo();
     expect(typeof foo.bar).toBe('boolean');
@@ -25,6 +29,7 @@ describe('always/boolean', () => {
     foo.bar = 456;
     expect(typeof foo.bar).toBe('boolean');
   });
+
   test('@alwaysBoolean can may getter/setter always be boolean', () => {
     const foo = new Foo();
     expect(typeof foo.car).toBe('boolean');
@@ -35,5 +40,12 @@ describe('always/boolean', () => {
     foo.car = 456;
     expect(typeof foo.car).toBe('boolean');
     expect(typeof foo._car).toBe('boolean');
+  });
+
+  test('@alwaysBoolean accept function too', () => {
+    const foo = new Foo();
+    expect(foo.lar).toEqual(true);
+    foo.lar = [ 1, 2 ];
+    expect(foo.lar).toEqual(true);
   });
 });

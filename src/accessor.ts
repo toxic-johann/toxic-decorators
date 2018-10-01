@@ -14,8 +14,8 @@ export default function accessor(
     get,
     set,
   }: {
-    get?: (v: any) => any | Array<(v: any) => any>,
-    set?: (v: any) => any | Array<(v: any) => any>,
+    get?: ((v: any) => any) | Array<(v: any) => any>,
+    set?: ((v: any) => any) | Array<(v: any) => any>,
   } = {},
   {
     preGet = false,
@@ -33,10 +33,10 @@ export default function accessor(
     throw new TypeError('@accessor need a getter or setter. If you don\'t need to add setter/getter. You should remove @accessor');
   }
   const errmsg = '@accessor only accept function or array of function as getter/setter';
-  get = isArray(get)
+  const singleFnGet = isArray(get)
     ? compressOneArgFnArray(get, errmsg)
     : get;
-  set = isArray(set)
+  const singleFnSet = isArray(set)
     ? compressOneArgFnArray(set, errmsg)
     : set;
   return function(obj: object, prop: string, descriptor: PropertyDescriptor): AccessorDescriptor {
@@ -44,13 +44,13 @@ export default function accessor(
       configurable = true,
       enumerable = true,
     } = descriptor || {};
-    const hasGet = isFunction(get);
-    const hasSet = isFunction(set);
+    const hasGet = isFunction(singleFnGet);
+    const hasSet = isFunction(singleFnSet);
     const handleGet = function(value: any) {
-      return hasGet ? bind(get, this)(value) : value;
+      return hasGet ? bind(singleFnGet, this)(value) : value;
     };
     const handleSet = function(value: any) {
-      return hasSet ? bind(set, this)(value) : value;
+      return hasSet ? bind(singleFnSet, this)(value) : value;
     };
     if (isAccessorDescriptor(descriptor)) {
       const { get: originGet, set: originSet } = descriptor;
