@@ -497,7 +497,7 @@ class Intro {
   name = 'BEN';
   constructor () {
     applyDecorators(this, {
-      name: initString(value => value.toLowerCase())
+      name: alwaysString(value => value.toLowerCase())
     }, {self: true});
   }
 }
