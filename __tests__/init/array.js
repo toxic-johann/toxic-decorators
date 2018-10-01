@@ -11,6 +11,7 @@ describe('init/array', () => {
     expect(Array.isArray(foo.bar)).toBe(true);
     expect(Array.isArray(foo.car)).toBe(true);
   });
+
   test('@initArray support custom initial value', () => {
     class Foo {
       @initArray([ 12 ])
@@ -23,5 +24,14 @@ describe('init/array', () => {
     expect(foo.bar).toEqual([ 12 ]);
     expect(Array.isArray(foo.car)).toBe(true);
     expect(foo.car).toEqual([]);
+  });
+
+  test('@initArray accept function too', () => {
+    class Foo {
+      @initArray(value => value.slice(1))
+      bar = [ 1, 2, 3 ];
+    }
+    const foo = new Foo();
+    expect(foo.bar).toEqual([ 2, 3 ]);
   });
 });

@@ -11,6 +11,7 @@ describe('init/number', () => {
     expect(typeof foo.bar).toBe('number');
     expect(typeof foo.car).toBe('number');
   });
+
   test('@initNumber support custom initial value', () => {
     class Foo {
       @initNumber(2)
@@ -23,5 +24,14 @@ describe('init/number', () => {
     expect(foo.bar).toBe(1);
     expect(typeof foo.car).toBe('number');
     expect(foo.car).toBe(3);
+  });
+
+  test('@initNumber accept function too', () => {
+    class Foo {
+      @initNumber(value => value / 2)
+      bar = 10;
+    }
+    const foo = new Foo();
+    expect(foo.bar).toBe(5);
   });
 });

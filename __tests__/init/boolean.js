@@ -11,6 +11,7 @@ describe('init/boolean', () => {
     expect(typeof foo.bar).toBe('boolean');
     expect(typeof foo.car).toBe('boolean');
   });
+
   test('@initBoolean can set property initialize to be boolean', () => {
     class Foo {
       @initBoolean()
@@ -23,5 +24,14 @@ describe('init/boolean', () => {
     expect(foo.bar).toBe(true);
     expect(typeof foo.car).toBe('boolean');
     expect(foo.car).toBe(false);
+  });
+
+  test('@initBoolean accept function too', () => {
+    class Foo {
+      @initBoolean(value => !value)
+      bar = true;
+    }
+    const foo = new Foo();
+    expect(foo.bar).toBe(false);
   });
 });

@@ -11,6 +11,7 @@ describe('init/string', () => {
     expect(typeof foo.bar).toBe('string');
     expect(typeof foo.car).toBe('string');
   });
+
   test('@initString support initial value', () => {
     class Foo {
       @initString('123')
@@ -23,5 +24,14 @@ describe('init/string', () => {
     expect(typeof foo.car).toBe('string');
     expect(foo.bar).toBe('123');
     expect(foo.car).toBe('car');
+  });
+
+  test('@initString accept function too', () => {
+    class Foo {
+      @initString(value => value.toLowerCase())
+      bar = 'ABC';
+    }
+    const foo = new Foo();
+    expect(foo.bar).toBe('abc');
   });
 });
