@@ -1,13 +1,14 @@
-// @flow
+import classify from 'helper/classify';
 import { createDefaultSetter } from 'helper/utils';
+import { isDataDescriptor } from 'helper/utils';
 import { bind, isFunction } from 'lodash';
-import autobindClass from 'class/autobind';
-let mapStore;
+import { AccessorDescriptor, DataDescriptor } from 'typings/base';
+let mapStore: WeakMap<object, WeakMap<(...args: any[]) => any, (...args: any[]) => any>>;
 // save bound function for super
-function getBoundSuper(obj: Object, fn: Function): Function {
+function getBoundSuper(obj: object, fn: (...args: any[]) => any): (...args: any[]) => any {
   if (typeof WeakMap === 'undefined') {
     throw new Error(
-      `Using @autobind on ${fn.name}() requires WeakMap support due to its use of super.${fn.name}()`
+      `Using @autobind on ${fn.name}() requires WeakMap support due to its use of super.${fn.name}()`,
     );
   }
 
@@ -20,12 +21,9 @@ function getBoundSuper(obj: Object, fn: Function): Function {
   }
 
   const superStore = mapStore.get(obj);
-  // $FlowFixMe: already insure superStore is not undefined
   if (superStore.has(fn) === false) {
-    // $FlowFixMe: already insure superStore is not undefined
     superStore.set(fn, bind(fn, obj));
   }
-  // $FlowFixMe: already insure superStore is not undefined
   return superStore.get(fn);
 }
 /**
@@ -34,9 +32,18 @@ function getBoundSuper(obj: Object, fn: Function): Function {
  * @param {string} prop prop strong
  * @param {Object} descriptor
  */
-export default function autobind(obj: Object, prop: string, descriptor: DataDescriptor): AccessorDescriptor {
-  if (arguments.length === 1) return autobindClass()(obj);
-  const { value: fn, configurable } = descriptor || {};
+export default function autobind(obj: any, prop: string, descriptor: DataDescriptor): AccessorDescriptor {
+  if (arguments.length === 1) {
+    return classify(autobind, {
+      requirement(obj: any, prop: string, desc: PropertyDescriptor) {
+        return isDataDescriptor(desc) && isFunction(desc.value);
+      },
+    })()(obj);
+  }
+  const { value: fn, configurable } = descriptor || {
+    configurable: undefined,
+    value: undefined,
+  };
   if (!isFunction(fn)) {
     throw new TypeError(`@autobind can only be used on functions, not "${fn}" in ${typeof fn} on property "${prop}"`);
   }
@@ -45,7 +52,7 @@ export default function autobind(obj: Object, prop: string, descriptor: DataDesc
     configurable,
     enumerable: false,
     get() {
-      const boundFn = (...args: any) => fn.call(this, ...args);
+      const boundFn = (...args: any[]) => fn.call(this, ...args);
       // Someone accesses the property directly on the prototype on which it is
       // actually defined on, i.e. Class.prototype.hasOwnProperty(key)
       if (this === obj) {
@@ -64,10 +71,10 @@ export default function autobind(obj: Object, prop: string, descriptor: DataDesc
       }
       Object.defineProperty(this, prop, {
         configurable: true,
-        writable: true,
         // NOT enumerable when it's a bound method
         enumerable: false,
         value: boundFn,
+        writable: true,
       });
 
       return boundFn;

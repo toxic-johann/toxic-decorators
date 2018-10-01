@@ -1,11 +1,10 @@
-// @flow
-import autobind from 'autobind';
+import after from 'after';
 import classify from 'helper/classify';
 import { isDataDescriptor } from 'helper/utils';
 import { isFunction } from 'lodash';
-export default classify(autobind, {
-  requirement(obj: any, prop: string, desc: Descriptor) {
-    // $FlowFixMe: it's data descriptor now
+export default classify(after, {
+  requirement(obj: any, prop: string, desc: PropertyDescriptor) {
     return isDataDescriptor(desc) && isFunction(desc.value);
   },
+  customArgs: true,
 });

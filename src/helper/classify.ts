@@ -2,14 +2,15 @@ import { getOwnKeys, getOwnPropertyDescriptors } from 'helper/utils';
 import { isArray, isFunction, isNil, isObject } from 'lodash';
 const { defineProperty } = Object;
 export default function classify(
-  decorator: MethodDecorator | PropertyDecorator, {
+  decorator: MethodDecorator | PropertyDecorator | ((...args: any[]) => (MethodDecorator | PropertyDecorator)),
+  {
     requirement,
     customArgs = false,
   }: {
     requirement?: (...args: any[]) => any,
     customArgs?: boolean,
   } = {}): (
-    opt: {
+    opt?: {
       exclude?: string[],
       include?: string[],
       construct?: boolean,
@@ -36,9 +37,11 @@ export default function classify(
     if (!isArray(exclude)) { throw new TypeError('options.exclude must be an array'); }
     if (!isArray(include)) { throw new TypeError('options.include must be an array'); }
     // tslint:disable-next-line: ban-types
-    return function<TFunction extends Function>(Klass: TFunction): void | TFunction {
+    return function(Klass: any): void {
       const isClass = isFunction(Klass);
-      if (!self && !isClass) { throw new TypeError(`@${decorator.name}Class can only be used on class`); }
+      if (!self && !isClass) {
+        throw new TypeError(`@${decorator.name}Class can only be used on class`);
+      }
       if (self && !isObject(Klass)) {
         throw new TypeError(`@${decorator.name}Class must be used on non-primitive type value in 'self' mode`);
       }

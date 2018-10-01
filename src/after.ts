@@ -1,7 +1,7 @@
 import { compressOneArgFnArray, isDescriptor } from 'helper/utils';
 import { bind, isFunction } from 'lodash';
 import { DataDescriptor } from 'typings/base';
-export default function after(...fns: Array<(...args: any[]) => any>): (...args: any[]) => any {
+export default function after(...fns: Array<(...args: any[]) => any>): MethodDecorator {
   if (fns.length === 0) {
     // tslint:disable-next-line: max-line-length
     throw new Error('@after accept at least one parameter. If you don\'t need to preprocess after your function, do not add @after decorators');
