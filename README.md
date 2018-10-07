@@ -1228,6 +1228,8 @@ toxic-decorators aims to provide decorators that are fundamental to JavaScript i
 
 ### why configurable of InitializeInstanceFields is false when I use decorators on it?
 
+> This bug is fixed in Babel 7
+
 We all knows that, JavaScript class will support public fields later. But it bring use some problem.You can see in [this case](https://codepen.io/toxic-johann/pen/XgvGMy):
 
 ```javascript

@@ -20,8 +20,8 @@ describe('configurable', () => {
     }
     const foo = new Foo();
     expect(getOwnPropertyDescriptor(foo, 'a').configurable).toBe(true);
-    expect(getOwnPropertyDescriptor(foo, 'b').configurable).toBe(false);
-    expect(() => { delete foo.b; }).toThrow();
+    expect(getOwnPropertyDescriptor(foo, 'b').configurable).toBe(true);
+    expect(() => { delete foo.b; }).not.toThrow();
     expect(() => { delete foo.a; }).not.toThrow();
   });
 });
