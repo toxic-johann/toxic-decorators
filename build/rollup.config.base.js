@@ -1,73 +1,110 @@
-const { version, name, author, license } = require('../package.json');
-const banner = `
+const {
+  version,
+  name,
+  author,
+  license,
+  dependencies,
+} = require('../package.json');
+export const banner = `
 /**
  * ${name} v${version}
- * (c) 2017 ${author}
+ * (c) 2017-${(new Date()).getFullYear()} ${author}
  * Released under ${license}
+ * Built ad ${new Date()}
  */
 `;
-import flow from 'rollup-plugin-flow-no-whitespace';
 import babel from 'rollup-plugin-babel';
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 const babelConfig = {
   common: {
     presets: [
-      'flow',
-      [ 'env', { modules: false }],
-      'stage-0',
+      [ '@babel/preset-env', {
+        modules: false,
+        targets: {
+          browsers: [ 'last 2 versions', 'not ie <= 8' ],
+        },
+      }],
     ],
-    plugins: [ 'lodash', 'transform-runtime' ],
-    runtimeHelpers: true,
+    plugins: [ '@babel/plugin-transform-runtime', 'lodash' ],
     exclude: 'node_modules/**',
+    runtimeHelpers: true,
     babelrc: false,
   },
   es: {
     presets: [
-      'flow',
-      [ 'env', { modules: false }],
-      'stage-0',
+      [ '@babel/preset-env', {
+        modules: false,
+        targets: {
+          browsers: [ 'last 2 versions', 'not ie <= 8' ],
+        },
+      }],
     ],
-    plugins: [ 'lodash', 'transform-runtime' ],
+    plugins: [ '@babel/plugin-transform-runtime', 'lodash' ],
     exclude: 'node_modules/**',
     runtimeHelpers: true,
     babelrc: false,
   },
   umd: {
-    presets: [ 'flow', 'es2015-rollup', 'stage-0' ],
-    plugins: [ 'lodash' ],
+    presets: [
+      [ '@babel/preset-env', {
+        modules: false,
+        targets: {
+          browsers: [ 'last 2 versions', 'not ie <= 8' ],
+        },
+      }],
+    ],
+    plugins: [ '@babel/plugin-transform-runtime', 'lodash' ],
     exclude: 'node_modules/**',
+    runtimeHelpers: true,
     babelrc: false,
   },
   iife: {
-    presets: [ 'flow', 'es2015-rollup', 'stage-0' ],
-    plugins: [ 'lodash' ],
+    presets: [
+      [ '@babel/preset-env', {
+        modules: false,
+        targets: {
+          browsers: [ 'last 2 versions', 'not ie <= 8' ],
+        },
+      }],
+    ],
     exclude: 'node_modules/**',
+    plugins: [ 'lodash' ],
     babelrc: false,
   },
   min: {
-    presets: [ 'flow', 'es2015-rollup', 'stage-0' ],
+    presets: [
+      [ '@babel/preset-env', {
+        modules: false,
+        targets: {
+          browsers: [ 'last 2 versions', 'not ie <= 8' ],
+        },
+      }],
+    ],
     plugins: [ 'lodash' ],
     exclude: 'node_modules/**',
     babelrc: false,
   },
 };
+const externalRegExp = new RegExp(Object.keys(dependencies).join('|'));
 export default function(mode) {
   return {
-    input: 'src/index.js',
-    banner,
+    input: 'ts-out/index.js',
     external(id) {
-      return !/min|umd|iife/.test(mode) && /babel-runtime|toxic-predicate-functions|toxic-utils/.test(id);
+      return !/min|umd|iife/.test(mode) && externalRegExp.test(id);
     },
     plugins: [
       babel(babelConfig[mode]),
-      flow(),
-      resolve({
-        customResolveOptions: {
-          moduleDirectory: [ 'src', 'node_modules' ],
+      commonjs({
+        namedExports: {
+          lodash: [ 'node_modules/lodash/index.js' ],
         },
       }),
-      commonjs(),
+      resolve({
+        customResolveOptions: {
+          moduleDirectory: [ 'ts-out', 'node_modules' ],
+        },
+      }),
     ],
   };
 }

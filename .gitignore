@@ -23,3 +23,4 @@ node_modules
 .DS_Store
 .babel_cache
 package-lock.json
+ts-out

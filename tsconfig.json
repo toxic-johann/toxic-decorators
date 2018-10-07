@@ -2,6 +2,7 @@
     "compilerOptions": {
         "baseUrl": "./src",
         "module": "ESNext",
+        "target": "ESNext",
         "noImplicitAny": true,
         "removeComments": true,
         "preserveConstEnums": true,
@@ -14,6 +15,7 @@
             "node"
         ],
         "lib": [
+            "dom",
             "esnext"
         ],
         "declaration": true
