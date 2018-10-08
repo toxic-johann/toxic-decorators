@@ -1,11 +1,12 @@
 {
   "name": "toxic-decorators",
-  "version": "0.4.0-beta.2",
+  "version": "0.4.0-beta.3",
   "description": "decorators",
   "main": "lib/index.js",
   "module": "lib/index.mjs",
   "jsnext:main": "lib/index.mjs",
   "browser": "lib/index.browser.js",
+  "types": "lib/index.d.ts",
   "scripts": {
     "test": "jest --coverage",
     "start": "jest --coverage --watch",
