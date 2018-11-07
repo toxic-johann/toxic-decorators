@@ -5,7 +5,7 @@
 [![npm](https://img.shields.io/npm/v/toxic-decorators.svg?colorB=brightgreen&style=flat-square)](https://www.npmjs.com/package/toxic-decorators)
 [![npm download times](https://img.shields.io/npm/dm/toxic-decorators.svg)](https://www.npmjs.com/package/toxic-decorators)
 [![dependency Status](https://david-dm.org/toxic-johann/toxic-decorators.svg)](https://david-dm.org/toxic-johann/toxic-decorators)
-[![devDependency Status](https://david-dm.org/toxic-johann/toxic-decorators/dev-status.svg)](https://david-dm.org/toxic-johann/toxic-decorators?type=dev)
+[![devDependency Status](https://david-dm.org/toxic-johann/toxic-decorators/dev-status.svg)](https://david-dm.org/toxic-johann/toxic-decorators?type=dev) [![Greenkeeper badge](https://badges.greenkeeper.io/toxic-johann/toxic-decorators.svg)](https://greenkeeper.io/)
 
 
 
