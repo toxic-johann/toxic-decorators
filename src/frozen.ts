@@ -12,7 +12,7 @@ export default function frozen(obj: object, prop: string, descriptor: PropertyDe
   if (descriptor === undefined) {
     /* istanbul ignore else  */
     if (process.env.NODE_ENV !== 'production') {
-      // tslint:disable-next-line: max-line-length
+
       warn('You are using @frozen on an undefined property. This property will become a frozen undefined forever, which is meaningless');
     }
     return {
@@ -30,7 +30,7 @@ export default function frozen(obj: object, prop: string, descriptor: PropertyDe
     if (!isFunction(get)) {
       /* istanbul ignore else  */
       if (process.env.NODE_ENV !== 'production') {
-        // tslint:disable-next-line: max-line-length
+
         warn('You are using @frozen on one accessor descriptor without getter. This property will become a frozen undefined finally.Which maybe meaningless.');
       }
       return;

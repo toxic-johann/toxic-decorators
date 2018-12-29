@@ -3,7 +3,7 @@ import { compressOneArgFnArray, isAccessorDescriptor, isDescriptor, isInitialize
 import { bind } from 'lodash';
 export default function initialize(...fns: Array<(x: any) => any>): MethodDecorator | PropertyDecorator {
   if (fns.length === 0) {
-    // tslint:disable-next-line: max-line-length
+
     throw new Error('@initialize accept at least one parameter. If you don\'t need to initialize your value, do not add @initialize.');
   }
   if (fns.length > 2 && isDescriptor(fns[2])) {

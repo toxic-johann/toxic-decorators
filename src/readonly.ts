@@ -3,7 +3,7 @@ export default function readonly(obj: object, prop: string, descriptor: Property
   if (descriptor === undefined) {
     /* istanbul ignore else  */
     if (process.env.NODE_ENV !== 'production') {
-      // tslint:disable-next-line: max-line-length
+
       warn(`You are using @readonly on an undefined property "${prop}". This property will become a readonly undefined forever, which is meaningless.`);
     }
     return {

@@ -17,7 +17,7 @@ function setAlias(
     if (omit) { return; }
     // TODO: we should add an github link here
     if (!force) {
-      // tslint:disable-next-line: max-line-length
+
       throw new Error(`"${prop}" is an existing property, if you want to override it, please set "force" true in @alias option.`);
     }
     if (!originDesc.configurable) {
@@ -53,7 +53,7 @@ function alias(other: any, key?: any, option?: any): MethodDecorator | PropertyD
   }
   // argument validate
   if (!isString(key)) { throw new TypeError('@alias need a string as a key to find the porperty to set alias on'); }
-  // tslint:disable-next-line: max-line-length
+
   const illegalObjErrorMsg = 'If you want to use @alias to set alias on other instance, you must pass in a legal instance';
   if (other !== undefined && !isObject(other)) { throw new TypeError(illegalObjErrorMsg); }
   const { force, omit } = isPlainObject(option) ? option : { force: false, omit: false };

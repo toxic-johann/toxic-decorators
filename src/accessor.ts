@@ -29,7 +29,7 @@ export default function accessor(
     !isFunction(get) &&
     !isFunction(set)
   ) {
-    // tslint:disable-next-line: max-line-length
+
     throw new TypeError('@accessor need a getter or setter. If you don\'t need to add setter/getter. You should remove @accessor');
   }
   const errmsg = '@accessor only accept function or array of function as getter/setter';

@@ -45,7 +45,7 @@ export default function applyDecorators(
     return Class;
   }
   if (!self && !isFunction(Class)) {
-    // tslint:disable-next-line: max-line-length
+
     throw new TypeError('applyDecorators only accept class as first arguments. If you want to modify instance, you should set options.self true.');
   }
   if (self && !isObject(Class)) {

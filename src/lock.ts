@@ -12,7 +12,7 @@ export default function lock(obj: object, prop: string, descriptor: PropertyDesc
   if (descriptor === undefined) {
     /* istanbul ignore else  */
     if (process.env.NODE_ENV !== 'production') {
-      // tslint:disable-next-line: max-line-length
+
       warn(`You are using @lock on an undefined property "${prop}". This property will become a lock undefined forever, which is meaningless.`);
     }
     return {
@@ -27,7 +27,7 @@ export default function lock(obj: object, prop: string, descriptor: PropertyDesc
     const { get } = descriptor;
     descriptor.set = undefined;
     if (!isFunction(get)) {
-      // tslint:disable-next-line: max-line-length
+
       warn('You are using @lock on one accessor descriptor without getter. This property will become a lock undefined finally.Which maybe meaningless.');
       return;
     }
