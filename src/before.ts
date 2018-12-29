@@ -2,7 +2,7 @@ import { isDescriptor } from 'helper/utils';
 import { bind, isArray, isFunction } from 'lodash';
 import { DataDescriptor } from 'typings/base';
 
-export default function before(...fns: Array<(...args: any[]) => any>): (obj: object, prop: string, descriptor: TypedPropertyDescriptor<(...args: any[]) => any>) => DataDescriptor {
+export default function before(...fns: Array<(...args: any[]) => any>): (...args: any[]) => any {
   if (fns.length === 0) {
     throw new Error('@before accept at least one parameter. If you don\'t need to preprocess before your function, do not add @before decorators');
   }
