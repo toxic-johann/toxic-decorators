@@ -1,7 +1,8 @@
 import { isDescriptor } from 'helper/utils';
 import { bind, isArray, isFunction } from 'lodash';
 import { DataDescriptor } from 'typings/base';
-export default function before(...fns: Array<(...args: any[]) => any>): (...args: any[]) => any {
+// tslint:disable-next-line: max-line-length
+export default function before(...fns: Array<(...args: any[]) => any>): (obj: object, prop: string, descriptor: DataDescriptor) => DataDescriptor {
   if (fns.length === 0) {
     // tslint:disable-next-line: max-line-length
     throw new Error('@before accept at least one parameter. If you don\'t need to preprocess before your function, do not add @before decorators');
