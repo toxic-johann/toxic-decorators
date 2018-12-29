@@ -10,7 +10,6 @@
   "scripts": {
     "test": "jest --coverage",
     "start": "jest --coverage --watch",
-    "flow": "flow check",
     "jest": "jest",
     "lint": "tslint -c ./tslint.json 'src/**/*.ts' --fix && eslint . --fix",
     "eslint": "eslint . --fix",
@@ -21,7 +20,7 @@
     "b-es": "rollup -c build/rollup.config.es.js",
     "b-umd": "rollup -c build/rollup.config.umd.js",
     "b-min": "rollup -c build/rollup.config.min.js",
-    "tsc": " tsc --outDir ./ts-out"
+    "tsc": "tsc --outDir ./ts-out"
   },
   "repository": {
     "type": "git",
