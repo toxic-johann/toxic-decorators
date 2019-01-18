@@ -1,5 +1,5 @@
 export * from 'toxic-predicate-functions';
-import { AccessorDescriptor, DataDescriptor, InitializerDescriptor } from 'typings/base';
+import { AccessorDescriptor, DataDescriptor, InitializerDescriptor } from '../typings/base';
 export declare function isDescriptor(desc: any): desc is PropertyDescriptor;
 export declare function isAccessorDescriptor(desc: any): desc is AccessorDescriptor;
 export declare function isDataDescriptor(desc: any): desc is DataDescriptor;
