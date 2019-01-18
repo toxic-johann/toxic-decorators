@@ -1,6 +1,6 @@
-import accessor from 'accessor';
-import { compressOneArgFnArray, isAccessorDescriptor, isDescriptor, isInitializerDescriptor } from 'helper/utils';
 import { bind } from 'lodash';
+import accessor from './accessor';
+import { compressOneArgFnArray, isAccessorDescriptor, isDescriptor, isInitializerDescriptor } from './helper/utils';
 export default function initialize(...fns: Array<(x: any) => any>): MethodDecorator | PropertyDecorator {
   if (fns.length === 0) {
 

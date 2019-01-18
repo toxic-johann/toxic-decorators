@@ -1,7 +1,7 @@
-import after from 'after';
-import classify from 'helper/classify';
-import { isDataDescriptor } from 'helper/utils';
 import { isFunction } from 'lodash';
+import after from '../after';
+import classify from '../helper/classify';
+import { isDataDescriptor } from '../helper/utils';
 export default classify(after, {
   requirement(obj: any, prop: string, desc: PropertyDescriptor) {
     return isDataDescriptor(desc) && isFunction(desc.value);

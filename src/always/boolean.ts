@@ -1,5 +1,5 @@
-import accessor from 'accessor';
 import { isBoolean, isFunction } from 'lodash';
+import accessor from '../accessor';
 export default function boolean(
   defaultValue: boolean | ((v: any) => any),
   // tslint:disable-next-line: trailing-comma

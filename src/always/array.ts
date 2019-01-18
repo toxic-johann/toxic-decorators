@@ -1,5 +1,5 @@
-import accessor from 'accessor';
 import { isArray, isFunction } from 'lodash';
+import accessor from '../accessor';
 export default function array(
   defaultValue: any[] | ((v: any) => any),
   // tslint:disable-next-line: trailing-comma

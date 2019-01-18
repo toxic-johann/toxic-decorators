@@ -1,4 +1,4 @@
-import { isAccessorDescriptor, warn } from 'helper/utils';
+import { isAccessorDescriptor, warn } from './helper/utils';
 export default function readonly(obj: object, prop: string, descriptor: PropertyDescriptor): PropertyDescriptor {
   if (descriptor === undefined) {
     /* istanbul ignore else  */

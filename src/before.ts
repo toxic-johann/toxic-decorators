@@ -1,6 +1,6 @@
-import { isDescriptor } from 'helper/utils';
 import { bind, isArray, isFunction } from 'lodash';
-import { DataDescriptor } from 'typings/base';
+import { isDescriptor } from './helper/utils';
+import { DataDescriptor } from './typings/base';
 
 export default function before(...fns: Array<(...args: any[]) => any>): (...args: any[]) => any {
   if (fns.length === 0) {

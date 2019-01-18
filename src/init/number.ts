@@ -1,5 +1,5 @@
-import initialize from 'initialize';
 import { isFunction, isNumber } from 'lodash';
+import initialize from '../initialize';
 export default function number(
   defaultValue: number | ((x: any) => any),
   ...args: Array<(x: any) => any>): PropertyDecorator {

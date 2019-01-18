@@ -1,8 +1,8 @@
-import classify from 'helper/classify';
-import { createDefaultSetter } from 'helper/utils';
-import { isDataDescriptor } from 'helper/utils';
 import { bind, isFunction } from 'lodash';
-import { AccessorDescriptor, DataDescriptor } from 'typings/base';
+import classify from './helper/classify';
+import { createDefaultSetter } from './helper/utils';
+import { isDataDescriptor } from './helper/utils';
+import { AccessorDescriptor, DataDescriptor } from './typings/base';
 let mapStore: WeakMap<object, WeakMap<(...args: any[]) => any, (...args: any[]) => any>>;
 // save bound function for super
 function getBoundSuper(obj: object, fn: (...args: any[]) => any): (...args: any[]) => any {

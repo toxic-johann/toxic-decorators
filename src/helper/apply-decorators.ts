@@ -1,5 +1,5 @@
-import { compressMultipleDecorators, warn } from 'helper/utils';
 import { isArray, isFunction, isNil, isObject, isPlainObject } from 'lodash';
+import { compressMultipleDecorators, warn } from '../helper/utils';
 const { defineProperty, getOwnPropertyDescriptor } = Object;
 
 export default function applyDecorators(

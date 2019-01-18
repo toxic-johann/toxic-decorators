@@ -1,5 +1,5 @@
-import initialize from 'initialize';
 import { isFunction, isString } from 'lodash';
+import initialize from '../initialize';
 export default function string(
   defaultValue: string | ((x: any) => any),
   ...args: Array<(x: any) => any>): PropertyDecorator {

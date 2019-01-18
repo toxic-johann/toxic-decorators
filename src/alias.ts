@@ -1,8 +1,8 @@
-import accessor from 'accessor';
-import { isAccessorDescriptor, isInitializerDescriptor } from 'helper/utils';
-import initialize from 'initialize';
 import { isObject, isPlainObject, isString } from 'lodash';
 import { getDeepProperty } from 'toxic-utils';
+import accessor from './accessor';
+import { isAccessorDescriptor, isInitializerDescriptor } from './helper/utils';
+import initialize from './initialize';
 const { getOwnPropertyDescriptor, defineProperty } = Object;
 function setAlias(
   root: any,

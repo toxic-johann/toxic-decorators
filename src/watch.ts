@@ -1,11 +1,11 @@
-import accessor from 'accessor';
-import applyDecorators from 'helper/apply-decorators';
-import { compressMultipleDecorators, getOwnKeys, warn } from 'helper/utils';
-import initialize from 'initialize';
 import { bind, isArray, isFunction, isObject, isPlainObject, isString } from 'lodash';
-import nonenumerable from 'nonenumerable';
 import { getDeepProperty } from 'toxic-utils';
-import { AccessorDescriptor } from 'typings/base';
+import accessor from './accessor';
+import applyDecorators from './helper/apply-decorators';
+import { compressMultipleDecorators, getOwnKeys, warn } from './helper/utils';
+import initialize from './initialize';
+import nonenumerable from './nonenumerable';
+import { AccessorDescriptor } from './typings/base';
 const arrayChangeMethod = [ 'push', 'pop', 'unshift', 'shift', 'splice', 'sort', 'reverse' ];
 
 function deepProxy(

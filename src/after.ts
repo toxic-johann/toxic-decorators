@@ -1,6 +1,6 @@
-import { compressOneArgFnArray, isDescriptor } from 'helper/utils';
 import { bind, isFunction } from 'lodash';
-import { DataDescriptor } from 'typings/base';
+import { compressOneArgFnArray, isDescriptor } from './helper/utils';
+import { DataDescriptor } from './typings/base';
 export default function after(...fns: Array<(...args: any[]) => any>): MethodDecorator {
   if (fns.length === 0) {
 

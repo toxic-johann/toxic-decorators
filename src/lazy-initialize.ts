@@ -1,6 +1,6 @@
-import { createDefaultSetter, warn } from 'helper/utils';
 import { bind, isFunction } from 'lodash';
-import { AccessorDescriptor, InitializerDescriptor } from 'typings/base';
+import { createDefaultSetter, warn } from './helper/utils';
+import { AccessorDescriptor, InitializerDescriptor } from './typings/base';
 const { defineProperty } = Object;
 export default function lazyInit(obj: any, prop: string, descriptor: InitializerDescriptor): AccessorDescriptor {
   if (descriptor === undefined) { throw new TypeError('@lazyInit cannot be apply on undefined property.'); }

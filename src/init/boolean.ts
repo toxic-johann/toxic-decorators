@@ -1,5 +1,5 @@
-import initialize from 'initialize';
 import { isBoolean, isFunction } from 'lodash';
+import initialize from '../initialize';
 export default function boolean(
   defaultValue: boolean | ((x: any) => any),
   ...args: Array<(x: any) => any>): PropertyDecorator {

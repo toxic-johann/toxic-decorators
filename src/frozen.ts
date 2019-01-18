@@ -1,5 +1,5 @@
-import { isAccessorDescriptor, warn } from 'helper/utils';
 import { bind, isFunction } from 'lodash';
+import { isAccessorDescriptor, warn } from './helper/utils';
 const { defineProperty } = Object;
 /**
  * make one attr only can be read, but could not be rewrited/ deleted

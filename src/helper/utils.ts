@@ -1,6 +1,6 @@
 export * from 'toxic-predicate-functions';
 import { bind, isArray, isBoolean, isFunction } from 'lodash';
-import { AccessorDescriptor, DataDescriptor, InitializerDescriptor } from 'typings/base';
+import { AccessorDescriptor, DataDescriptor, InitializerDescriptor } from '../typings/base';
 const { getOwnPropertyDescriptor } = Object;
 /**
  * to check if an descriptor

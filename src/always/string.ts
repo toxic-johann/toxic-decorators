@@ -1,5 +1,5 @@
-import accessor from 'accessor';
 import { isFunction, isString } from 'lodash';
+import accessor from '../accessor';
 export default function string(
   defaultValue: string | ((v: any) => any),
   // tslint:disable-next-line: trailing-comma

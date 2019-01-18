@@ -1,8 +1,8 @@
-import accessor from 'accessor';
-import { isDescriptor, isPromise } from 'helper/utils';
 import { bind, isFunction, isNil, isObject, isString } from 'lodash';
 import { getDeepProperty } from 'toxic-utils';
-import { DataDescriptor} from 'typings/base';
+import accessor from './accessor';
+import { isDescriptor, isPromise } from './helper/utils';
+import { DataDescriptor} from './typings/base';
 const { getOwnPropertyDescriptor, defineProperty } = Object;
 export default function waituntil(
   key: ((...args: any[]) => (Promise<any> | boolean)) | Promise<any> | string,

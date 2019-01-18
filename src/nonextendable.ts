@@ -1,4 +1,4 @@
-import initialize from 'initialize';
+import initialize from './initialize';
 const { preventExtensions } = Object;
 export default function nonextendable(obj: any, prop: string, descriptor: PropertyDescriptor): PropertyDescriptor {
   if (descriptor === undefined) {
