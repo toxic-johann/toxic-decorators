@@ -1,1 +1,1 @@
-export default function string(defaultValue: string | ((x: any) => any), ...args: Array<(x: any) => any>): PropertyDecorator;
+export default function string(defaultValue?: string | ((x: any) => any), ...args: Array<(x: any) => any>): PropertyDecorator;
