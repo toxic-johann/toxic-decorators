@@ -1,7 +1,7 @@
 import { isBoolean, isFunction } from 'lodash';
 import accessor from '../accessor';
 export default function boolean(
-  defaultValue: boolean | ((v: any) => any),
+  defaultValue?: boolean | ((v: any) => any),
   // tslint:disable-next-line: trailing-comma
   ...args: Array<(v: any) => any>
 ): PropertyDecorator {

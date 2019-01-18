@@ -1,7 +1,7 @@
 import { isBoolean, isFunction } from 'lodash';
 import initialize from '../initialize';
 export default function boolean(
-  defaultValue: boolean | ((x: any) => any),
+  defaultValue?: boolean | ((x: any) => any),
   ...args: Array<(x: any) => any>): PropertyDecorator {
   if (isFunction(defaultValue)) {
     args.unshift(defaultValue);

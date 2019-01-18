@@ -1,7 +1,7 @@
 import { isFunction, isString } from 'lodash';
 import accessor from '../accessor';
 export default function string(
-  defaultValue: string | ((v: any) => any),
+  defaultValue?: string | ((v: any) => any),
   // tslint:disable-next-line: trailing-comma
   ...args: Array<(v: any) => any>
 ): PropertyDecorator {

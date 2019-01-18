@@ -1,7 +1,7 @@
 import { isFunction, isString } from 'lodash';
 import initialize from '../initialize';
 export default function string(
-  defaultValue: string | ((x: any) => any),
+  defaultValue?: string | ((x: any) => any),
   ...args: Array<(x: any) => any>): PropertyDecorator {
   if (isFunction(defaultValue)) {
     args.unshift(defaultValue);
