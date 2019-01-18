@@ -90,7 +90,7 @@ describe('@frozen', () => {
     applyDecorators(Foo, {
       a: frozen,
     });
-    expect(console.warn).lastCalledWith('You are using @frozen on an undefined property. This property will become a frozen undefined forever, which is meaningless');
+    expect(console.warn).lastCalledWith("You are using @frozen on an undefined property. This property will become a frozen undefined forever, which is meaningless. It's property name is a.");
     expect(Foo.prototype.a).toBe();
     expect(() => { Foo.prototype.a = 3; }).toThrow();
     expect(() => { delete Foo.prototype.a; }).toThrow();

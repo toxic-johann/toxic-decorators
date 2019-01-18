@@ -13,7 +13,7 @@ export default function frozen(obj: object, prop: string, descriptor: PropertyDe
     /* istanbul ignore else  */
     if (process.env.NODE_ENV !== 'production') {
 
-      warn(`You are using @frozen on an undefined property. This property will become a frozen undefined forever, which is meaningless. It's property name is ${prop}`);
+      warn(`You are using @frozen on an undefined property. This property will become a frozen undefined forever, which is meaningless. It's property name is ${prop}.`);
     }
     return {
       configurable: false,
