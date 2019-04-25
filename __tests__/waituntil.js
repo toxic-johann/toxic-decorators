@@ -78,6 +78,7 @@ describe('waituntil', () => {
     fn = null;
     Foo = null;
   });
+
   test('@waitUntil only accept Function, Promise or String', () => {
     expect(() => {
       return class {
@@ -86,6 +87,7 @@ describe('waituntil', () => {
       };
     }).toThrow('@waitUntil only accept Function, Promise or String');
   });
+
   test('wait until Promise resolved', async () => {
     const foo = new Foo();
     foo.runByPromise(foo);
@@ -99,6 +101,7 @@ describe('waituntil', () => {
     await waiter;
     expect(fn).toHaveBeenCalledTimes(2);
   });
+
   test('wait until promise returned by function resolved', async () => {
     const foo = new Foo();
     foo.runByFunction(foo);
@@ -112,6 +115,7 @@ describe('waituntil', () => {
     await waiter;
     expect(fn).toHaveBeenCalledTimes(2);
   });
+
   test('wait until promise on instance returen by function resolved', async () => {
     const foo = new Foo();
     foo.runByLocalFunction(foo);
@@ -125,6 +129,7 @@ describe('waituntil', () => {
     await waiter;
     expect(fn).toHaveBeenCalledTimes(2);
   });
+
   test('run only when flag returned by function is true', () => {
     const foo = new Foo();
     foo.runByFlag(foo);
@@ -135,6 +140,7 @@ describe('waituntil', () => {
     expect(fn).toHaveBeenCalledTimes(1);
     expect(fn).lastCalledWith(foo, 1);
   });
+
   test('@waituntil can only be used on function', () => {
     expect(() => {
       return class {
@@ -143,6 +149,7 @@ describe('waituntil', () => {
       };
     }).toThrow('@waituntil can only be used on function, but not undefined');
   });
+
   test('wait until the getter/setter flag on instance to be true', () => {
     const bar = new Bar();
     bar.useFnFlag(bar);
@@ -154,6 +161,7 @@ describe('waituntil', () => {
     expect(fn).toHaveBeenCalledTimes(2);
     expect(fn).lastCalledWith(bar, 1);
   });
+
   test('wait until the getter/setter flag on static prototype to be true', () => {
     Bar.useStaticFnFlag(Bar);
     expect(fn).toHaveBeenCalledTimes(0);
@@ -164,6 +172,7 @@ describe('waituntil', () => {
     expect(fn).toHaveBeenCalledTimes(2);
     expect(fn).lastCalledWith(Bar, 1);
   });
+
   test('wait until the flag on instance to be true', () => {
     const bar = new Bar();
     bar.useFlag(bar);
@@ -175,6 +184,7 @@ describe('waituntil', () => {
     expect(fn).toHaveBeenCalledTimes(2);
     expect(fn).lastCalledWith(bar, 1);
   });
+
   test('wait until the flag on static prototype to be true', () => {
     Bar.useStaticFlag(Bar);
     expect(fn).toHaveBeenCalledTimes(0);
@@ -185,6 +195,7 @@ describe('waituntil', () => {
     expect(fn).toHaveBeenCalledTimes(2);
     expect(fn).lastCalledWith(Bar, 1);
   });
+
   test('reset flag again and do not called the old function in waiting queue', () => {
     const bar = new Bar();
     bar.useFlag(bar);
@@ -202,6 +213,7 @@ describe('waituntil', () => {
     expect(fn).toHaveBeenCalledTimes(3);
     expect(fn).lastCalledWith(bar, 2);
   });
+
   test('@waituntil can also rely on flag on other instance', () => {
     const fn = jest.fn();
     class Foo {
@@ -227,6 +239,7 @@ describe('waituntil', () => {
     expect(fn).toHaveBeenCalledTimes(2);
     expect(fn).lastCalledWith(2);
   });
+
   test('@waituntil can handle deep property', () => {
     const fn = jest.fn();
     class Bar {
@@ -255,6 +268,7 @@ describe('waituntil', () => {
     expect(fn).toHaveBeenCalledTimes(2);
     expect(fn).lastCalledWith(2);
   });
+
   test('whatif the property do not exist.', () => {
     const fn = jest.fn();
     class Bar {
@@ -272,6 +286,7 @@ describe('waituntil', () => {
     bar.a.flag = true;
     expect(fn).toHaveBeenCalledTimes(2);
   });
+
   test('throw error if descirptor is undefined', () => {
     class Foo {}
     expect(() => applyDecorators(Foo, {

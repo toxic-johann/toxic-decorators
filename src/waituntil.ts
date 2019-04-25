@@ -47,16 +47,16 @@ export default function waituntil(
               return value;
             };
             const desc = isDescriptor(descriptor)
-              // @ts-ignore: decorator can run as function in javascript
               ? accessor({ set })(target, prop, descriptor)
-              // @ts-ignore: decorator can run as function in javascript
               : accessor({ set })(target, prop, {
                 configurable: true,
                 enumerable: true,
                 value: undefined,
                 writable: true,
               });
-            defineProperty(target, prop, desc);
+            if (desc) {
+              defineProperty(target, prop, desc);
+            }
             binded = true;
           }
           return getDeepProperty(originTarget, keys);
