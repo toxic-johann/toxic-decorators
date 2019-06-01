@@ -1,4 +1,4 @@
-import { bind, isArray, isFunction } from 'lodash';
+import { bind, isArray, isFunction } from 'lodash-es';
 import { isDescriptor } from './helper/utils';
 import { DataDescriptor } from './typings/base';
 

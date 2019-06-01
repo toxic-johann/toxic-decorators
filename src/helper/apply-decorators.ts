@@ -1,4 +1,4 @@
-import { isArray, isFunction, isNil, isObject, isPlainObject } from 'lodash';
+import { isArray, isFunction, isNil, isObject, isPlainObject } from 'lodash-es';
 import { compressMultipleDecorators, warn } from '../helper/utils';
 const { defineProperty, getOwnPropertyDescriptor } = Object;
 

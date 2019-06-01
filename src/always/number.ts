@@ -1,4 +1,4 @@
-import { isFunction, isNumber } from 'lodash';
+import { isFunction, isNumber } from 'lodash-es';
 import accessor from '../accessor';
 export default function number(
   defaultValue?: number | ((v: any) => any),

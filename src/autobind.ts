@@ -1,4 +1,4 @@
-import { bind, isFunction } from 'lodash';
+import { bind, isFunction } from 'lodash-es';
 import classify from './helper/classify';
 import { createDefaultSetter } from './helper/utils';
 import { isDataDescriptor } from './helper/utils';

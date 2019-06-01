@@ -1,4 +1,4 @@
-import { bind, isFunction } from 'lodash';
+import { bind, isFunction } from 'lodash-es';
 import { createDefaultSetter, warn } from './helper/utils';
 import { AccessorDescriptor, InitializerDescriptor } from './typings/base';
 const { defineProperty } = Object;

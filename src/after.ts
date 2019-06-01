@@ -1,4 +1,4 @@
-import { bind, isFunction } from 'lodash';
+import { bind, isFunction } from 'lodash-es';
 import { compressOneArgFnArray, isDescriptor } from './helper/utils';
 import { DataDescriptor } from './typings/base';
 export default function after(...fns: Array<(...args: any[]) => any>): MethodDecorator {

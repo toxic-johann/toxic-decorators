@@ -1,4 +1,4 @@
-import { isArray, isFunction } from 'lodash';
+import { isArray, isFunction } from 'lodash-es';
 import initialize from '../initialize';
 export default function array(
   defaultValue?: any[] | ((x: any) => any),

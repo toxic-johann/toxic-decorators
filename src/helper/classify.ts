@@ -1,4 +1,4 @@
-import { isArray, isFunction, isNil, isObject } from 'lodash';
+import { isArray, isFunction, isNil, isObject } from 'lodash-es';
 import { getOwnKeys, getOwnPropertyDescriptors } from '../helper/utils';
 const { defineProperty } = Object;
 export default function classify(

@@ -1,4 +1,4 @@
-import { isArray, isFunction } from 'lodash';
+import { isArray, isFunction } from 'lodash-es';
 import accessor from '../accessor';
 export default function array(
   defaultValue?: any[] | ((v: any) => any),

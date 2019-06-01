@@ -1,4 +1,4 @@
-import { bind, isFunction, isObject, isString } from 'lodash';
+import { bind, isFunction, isObject, isString } from 'lodash-es';
 import { getDeepProperty } from 'toxic-utils';
 import { DataDescriptor } from './typings/base';
 export default function runnable(key: (...args: any[]) => any | string, {

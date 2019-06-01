@@ -1,4 +1,4 @@
-import { isBoolean, isFunction } from 'lodash';
+import { isBoolean, isFunction } from 'lodash-es';
 import accessor from '../accessor';
 export default function boolean(
   defaultValue?: boolean | ((v: any) => any),

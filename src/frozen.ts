@@ -1,4 +1,4 @@
-import { bind, isFunction } from 'lodash';
+import { bind, isFunction } from 'lodash-es';
 import { isAccessorDescriptor, warn } from './helper/utils';
 const { defineProperty } = Object;
 /**

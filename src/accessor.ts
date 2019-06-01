@@ -1,4 +1,4 @@
-import { bind, isArray, isFunction } from 'lodash';
+import { bind, isArray, isFunction } from 'lodash-es';
 import {
   compressOneArgFnArray,
   isAccessorDescriptor,

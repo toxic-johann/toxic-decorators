@@ -1,4 +1,4 @@
-import { bind } from 'lodash';
+import { bind } from 'lodash-es';
 import accessor from './accessor';
 import { compressOneArgFnArray, isAccessorDescriptor, isDescriptor, isInitializerDescriptor } from './helper/utils';
 export default function initialize(...fns: Array<(x: any) => any>): MethodDecorator | PropertyDecorator {

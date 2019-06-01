@@ -1,5 +1,5 @@
 export * from 'toxic-predicate-functions';
-import { bind, isArray, isBoolean, isFunction } from 'lodash';
+import { bind, isArray, isBoolean, isFunction } from 'lodash-es';
 import { AccessorDescriptor, DataDescriptor, InitializerDescriptor } from '../typings/base';
 const { getOwnPropertyDescriptor } = Object;
 /**

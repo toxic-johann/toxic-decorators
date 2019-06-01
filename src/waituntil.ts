@@ -1,4 +1,4 @@
-import { bind, isFunction, isNil, isObject, isString } from 'lodash';
+import { bind, isFunction, isNil, isObject, isString } from 'lodash-es';
 import { getDeepProperty } from 'toxic-utils';
 import accessor from './accessor';
 import { isDescriptor, isPromise } from './helper/utils';

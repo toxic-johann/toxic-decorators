@@ -1,4 +1,4 @@
-import { isObject, isPlainObject, isString } from 'lodash';
+import { isObject, isPlainObject, isString } from 'lodash-es';
 import { getDeepProperty } from 'toxic-utils';
 import accessor from './accessor';
 import { isAccessorDescriptor, isInitializerDescriptor } from './helper/utils';

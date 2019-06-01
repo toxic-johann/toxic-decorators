@@ -1,4 +1,4 @@
-import { bind, isArray, isFunction, isObject, isPlainObject, isString } from 'lodash';
+import { bind, isArray, isFunction, isObject, isPlainObject, isString } from 'lodash-es';
 import { getDeepProperty } from 'toxic-utils';
 import accessor from './accessor';
 import applyDecorators from './helper/apply-decorators';

@@ -1,4 +1,4 @@
-import { isFunction, isString } from 'lodash';
+import { isFunction, isString } from 'lodash-es';
 import accessor from '../accessor';
 export default function string(
   defaultValue?: string | ((v: any) => any),

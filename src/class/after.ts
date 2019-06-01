@@ -1,4 +1,4 @@
-import { isFunction } from 'lodash';
+import { isFunction } from 'lodash-es';
 import after from '../after';
 import classify from '../helper/classify';
 import { isDataDescriptor } from '../helper/utils';

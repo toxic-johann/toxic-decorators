@@ -1,4 +1,4 @@
-import { isBoolean, isFunction } from 'lodash';
+import { isBoolean, isFunction } from 'lodash-es';
 import initialize from '../initialize';
 export default function boolean(
   defaultValue?: boolean | ((x: any) => any),
