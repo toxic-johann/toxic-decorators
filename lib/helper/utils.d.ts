@@ -14,7 +14,7 @@ export declare function getOwnPropertyDescriptorsFn<T>(): (o: T) => {
 } & {
     [x: string]: PropertyDescriptor;
 };
-export declare const getOwnPropertyDescriptors: (o: {}) => {} & {
+export declare const getOwnPropertyDescriptors: (o: unknown) => {} & {
     [x: string]: PropertyDescriptor;
 };
 export declare function compressMultipleDecorators(...fns: Array<MethodDecorator | PropertyDecorator | ClassDecorator>): MethodDecorator | PropertyDecorator | ClassDecorator;
