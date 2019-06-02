@@ -8,7 +8,7 @@
   "browser": "lib/index.browser.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "test": "jest --coverage",
+    "test": "jest --coverage && node env-node-check",
     "start": "jest --coverage --watch",
     "jest": "jest",
     "lint": "tslint -c ./tslint.json 'src/**/*.ts' --fix && eslint . --fix",
