@@ -108,7 +108,7 @@
     ]
   },
   "dependencies": {
-    "@babel/runtime": "^7.4.5",
+    "@babel/runtime": "^7.5.1",
     "lodash-es": "^4.17.11",
     "toxic-predicate-functions": "^0.4.1",
     "toxic-utils": "^0.4.3"
