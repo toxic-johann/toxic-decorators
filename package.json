@@ -109,7 +109,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.4.5",
-    "lodash-es": "^4.17.11",
+    "lodash-es": "^4.17.13",
     "toxic-predicate-functions": "^0.4.1",
     "toxic-utils": "^0.4.3"
   }
