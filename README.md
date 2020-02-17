@@ -1384,3 +1384,9 @@ rollup({
 ## License
 
 [GPL-3.0](https://opensource.org/licenses/GPL-3.0)
+
+## Donation
+
+You can donation to us, that will help us to keep on moving.
+
+![image](https://user-images.githubusercontent.com/2577157/74649176-0a7db980-51ba-11ea-9db4-4dea2e72c6be.png)
