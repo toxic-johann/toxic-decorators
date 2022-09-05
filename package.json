@@ -37,7 +37,7 @@
     "decorators"
   ],
   "author": "toxic-johann",
-  "license": "GPL-3.0",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/toxic-johann/toxic-decorators/issues"
   },

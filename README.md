@@ -1383,7 +1383,7 @@ rollup({
 
 ## License
 
-[GPL-3.0](https://opensource.org/licenses/GPL-3.0)
+[MIT](https://opensource.org/licenses/MIT)
 
 ## Donation
 
