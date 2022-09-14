@@ -1,8 +1,11 @@
 import { isArray, isFunction, isNil, isObject } from 'lodash-es';
 import { getOwnKeys, getOwnPropertyDescriptors } from '../helper/utils';
 const { defineProperty } = Object;
+
+type DecoratorCreatorType = ((...args: any[]) => (MethodDecorator | PropertyDecorator));
+
 export default function classify(
-  decorator: MethodDecorator | PropertyDecorator | ((...args: any[]) => (MethodDecorator | PropertyDecorator)),
+  decorator: MethodDecorator | PropertyDecorator | DecoratorCreatorType,
   {
     requirement,
     customArgs = false,
@@ -59,9 +62,9 @@ export default function classify(
           defineProperty(prototype, key, (
             customArgs
               // @ts-ignore: ignore the arguments length
-              ? decorator(...args)
+              ? (decorator as DecoratorCreatorType)(...args)
               : decorator
-            )(prototype, key, desc));
+            )(prototype, key, desc) as TypedPropertyDescriptor<any>);
         });
     };
   };
