@@ -1,4 +1,5 @@
-export default function classify(decorator: MethodDecorator | PropertyDecorator | ((...args: any[]) => (MethodDecorator | PropertyDecorator)), { requirement, customArgs, }?: {
+declare type DecoratorCreatorType = ((...args: any[]) => (MethodDecorator | PropertyDecorator));
+export default function classify(decorator: MethodDecorator | PropertyDecorator | DecoratorCreatorType, { requirement, customArgs, }?: {
     requirement?: (...args: any[]) => any;
     customArgs?: boolean;
 }): (opt?: {
@@ -7,3 +8,4 @@ export default function classify(decorator: MethodDecorator | PropertyDecorator 
     construct?: boolean;
     self?: boolean;
 }, ...args: any[]) => ClassDecorator;
+export {};
